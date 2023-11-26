@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="b">#1A1836</color>
+    <color name="w">#FFFFFFFF</color>
+    <color name="mp">#5C21A4</color>
+    <color name="dp">#342B67</color>
+    <color name="ap">#9370DB</color>
+    <color name="g">#BBBBBB</color>
+    <color name="dg">#7C7C7C</color>
+    <color name="lg">#DFDFDF</color>
+    <color name="ow">#EFF0F4</color>
+    <color name="dw">#E4E5EC</color>
+    <color name="r">#FF0000</color>
+</resources>
