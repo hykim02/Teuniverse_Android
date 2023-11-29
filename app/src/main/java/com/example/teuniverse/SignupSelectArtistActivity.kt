@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         val nextBtn = findViewById<Button>(R.id.next_btn)
         val backBtn = findViewById<ImageButton>(R.id.back_btn)
         val filterSpinner = findViewById<Spinner>(R.id.select_spinner)
+        val searchTxt = findViewById<EditText>(R.id.search_txt)
+
+        searchTxt.hint = "아티스트를 검색하세요"
 
         nextBtn.setOnClickListener {
             val intent = Intent(this, SignupEndActivity::class.java)
