@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Teuniverse"
         tools:targetApi="31">
+
+        <activity android:name=".SignupApprovalActivity"/>
+        <activity android:name=".SignupEndActivity"/>
+        <activity android:name=".SignupProfileActivity"/>
+        <activity android:name=".SignupSelectArtistActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

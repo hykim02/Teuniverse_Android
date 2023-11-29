@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/back_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="24dp"
@@ -37,9 +37,9 @@
             android:textColor="@color/b"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
-            app:layout_constraintStart_toEndOf="@+id/imageButton2"
-            app:layout_constraintTop_toTopOf="@+id/imageButton2" />
+            app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+            app:layout_constraintStart_toEndOf="@+id/back_btn"
+            app:layout_constraintTop_toTopOf="@+id/back_btn" />
 
         <TextView
             android:id="@+id/textView16"
@@ -54,30 +54,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
-        <TextView
-            android:id="@+id/textView19"
-            android:layout_width="350dp"
+        <EditText
+            android:id="@+id/search_txt"
+            android:layout_width="360dp"
             android:layout_height="45dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/custom_search"
-            android:padding="8dp"
-            android:text="         아티스트를 검색하세요"
+            android:ems="10"
+            android:inputType="text"
+            android:paddingStart="50dp"
+            android:text="아티스트를 검색하세요"
             android:textColor="@color/g"
-            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imageView"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="16dp"
-            android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@+id/textView19"
-            app:layout_constraintStart_toStartOf="@+id/textView19"
-            app:layout_constraintTop_toTopOf="@+id/textView19"
+            app:layout_constraintBottom_toBottomOf="@+id/search_txt"
+            app:layout_constraintStart_toStartOf="@+id/search_txt"
+            app:layout_constraintTop_toTopOf="@+id/search_txt"
             app:srcCompat="@drawable/search" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -87,7 +86,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:background="@color/w"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintBottom_toTopOf="@+id/next_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
@@ -102,7 +101,7 @@
                 android:layout_height="match_parent">
 
                 <Spinner
-                    android:id="@+id/spinner2"
+                    android:id="@+id/select_spinner"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -163,9 +162,11 @@
                     android:id="@+id/imageView9"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:srcCompat="@drawable/star"
-                    tools:layout_editor_absoluteX="277dp"
-                    tools:layout_editor_absoluteY="79dp" />
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView3"
+                    app:layout_constraintStart_toEndOf="@+id/textView3"
+                    app:layout_constraintTop_toTopOf="@+id/textView3"
+                    app:srcCompat="@drawable/star" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -244,7 +245,7 @@
                     android:src="@drawable/profile" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/textView51"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
@@ -307,7 +308,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/nickname_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
@@ -367,7 +368,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/next_btn"
         style="@style/next_btn"
         android:layout_width="360dp"
         android:layout_height="50dp"

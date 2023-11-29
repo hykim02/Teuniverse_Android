@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/back_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
@@ -26,9 +26,9 @@
         android:textColor="@color/b"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
-        app:layout_constraintTop_toTopOf="@+id/imageButton" />
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintStart_toEndOf="@+id/back_btn"
+        app:layout_constraintTop_toTopOf="@+id/back_btn" />
 
     <TextView
         android:id="@+id/textView5"
@@ -99,9 +99,9 @@
         android:text="보기"
         android:textSize="12sp"
         android:textColor="@color/ap"
-        app:layout_constraintBottom_toBottomOf="@+id/textView14"
-        app:layout_constraintStart_toEndOf="@+id/textView14"
-        app:layout_constraintTop_toTopOf="@+id/textView14" />
+        app:layout_constraintBottom_toBottomOf="@+id/approval1"
+        app:layout_constraintStart_toEndOf="@+id/approval1"
+        app:layout_constraintTop_toTopOf="@+id/approval1" />
 
     <TextView
         android:id="@+id/textView21"
@@ -114,9 +114,9 @@
         android:text="보기"
         android:textSize="12sp"
         android:textColor="@color/ap"
-        app:layout_constraintBottom_toBottomOf="@+id/textView20"
-        app:layout_constraintStart_toEndOf="@+id/textView20"
-        app:layout_constraintTop_toTopOf="@+id/textView20" />
+        app:layout_constraintBottom_toBottomOf="@+id/approval3"
+        app:layout_constraintStart_toEndOf="@+id/approval3"
+        app:layout_constraintTop_toTopOf="@+id/approval3" />
 
     <TextView
         android:id="@+id/textView11"
@@ -129,9 +129,9 @@
         android:text="보기"
         android:textSize="12sp"
         android:textColor="@color/ap"
-        app:layout_constraintBottom_toBottomOf="@+id/textView15"
-        app:layout_constraintStart_toEndOf="@+id/textView15"
-        app:layout_constraintTop_toTopOf="@+id/textView15" />
+        app:layout_constraintBottom_toBottomOf="@+id/approval2"
+        app:layout_constraintStart_toEndOf="@+id/approval2"
+        app:layout_constraintTop_toTopOf="@+id/approval2" />
 
     <TextView
         android:id="@+id/textView13"
@@ -144,12 +144,12 @@
         android:text="보기"
         android:textSize="12sp"
         android:textColor="@color/ap"
-        app:layout_constraintBottom_toBottomOf="@+id/textView17"
-        app:layout_constraintStart_toEndOf="@+id/textView17"
-        app:layout_constraintTop_toTopOf="@+id/textView17" />
+        app:layout_constraintBottom_toBottomOf="@+id/approval4"
+        app:layout_constraintStart_toEndOf="@+id/approval4"
+        app:layout_constraintTop_toTopOf="@+id/approval4" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/approval1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -160,7 +160,7 @@
         app:layout_constraintTop_toTopOf="@+id/checkBox" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/approval2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -171,7 +171,7 @@
         app:layout_constraintTop_toTopOf="@+id/checkBox2" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/approval4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -182,7 +182,7 @@
         app:layout_constraintTop_toTopOf="@+id/checkBox4" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/next_btn"
         style="@style/next_btn"
         android:layout_width="360dp"
         android:layout_height="50dp"
@@ -192,7 +192,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/approval3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
