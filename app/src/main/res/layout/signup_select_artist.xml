@@ -10,7 +10,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="195dp"
-        android:background="@drawable/custom_background"
+        android:background="@drawable/custom_background_bottom"
         android:translationZ="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -30,7 +30,7 @@
             app:srcCompat="@drawable/back_btn" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/select_tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="@+id/back_btn" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/select_tv2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -53,7 +53,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/select_tv1" />
 
         <EditText
             android:id="@+id/search_txt"
@@ -67,7 +67,7 @@
             android:textColor="@color/g"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintTop_toBottomOf="@+id/select_tv2" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -132,7 +132,7 @@
                     app:srcCompat="@drawable/profile" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/select_tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -146,7 +146,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/select_tv4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -154,18 +154,18 @@
                     android:textColor="@color/ap"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-                    app:layout_constraintStart_toEndOf="@+id/imageView9"
-                    app:layout_constraintTop_toTopOf="@+id/imageView9" />
+                    app:layout_constraintBottom_toBottomOf="@+id/select_img_star"
+                    app:layout_constraintStart_toEndOf="@+id/select_img_star"
+                    app:layout_constraintTop_toTopOf="@+id/select_img_star" />
 
                 <ImageView
-                    android:id="@+id/imageView9"
+                    android:id="@+id/select_img_star"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="8dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView3"
-                    app:layout_constraintStart_toEndOf="@+id/textView3"
-                    app:layout_constraintTop_toTopOf="@+id/textView3"
+                    app:layout_constraintBottom_toBottomOf="@+id/select_tv3"
+                    app:layout_constraintStart_toEndOf="@+id/select_tv3"
+                    app:layout_constraintTop_toTopOf="@+id/select_tv3"
                     app:srcCompat="@drawable/star" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -199,7 +199,7 @@
                     android:src="@drawable/profile" />
 
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/name1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
@@ -208,7 +208,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/name2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
@@ -216,7 +216,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView24"
+                    android:id="@+id/name3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
@@ -245,7 +245,7 @@
                     android:src="@drawable/profile" />
 
                 <TextView
-                    android:id="@+id/textView51"
+                    android:id="@+id/name4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
@@ -254,7 +254,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/name5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
@@ -262,7 +262,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/name6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
@@ -291,7 +291,7 @@
                     android:src="@drawable/profile" />
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/name7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
@@ -300,7 +300,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/name8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
@@ -308,7 +308,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/nickname_txt"
+                    android:id="@+id/name9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
@@ -337,7 +337,7 @@
                     android:src="@drawable/profile" />
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/name10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
@@ -346,7 +346,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/name11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
@@ -354,7 +354,7 @@
                     android:text="이름" />
 
                 <TextView
-                    android:id="@+id/textView21"
+                    android:id="@+id/name12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"

@@ -8,7 +8,7 @@
     tools:context=".SignupEndActivity">
 
     <TextView
-        android:id="@+id/textView22"
+        android:id="@+id/end_tv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_home"
         android:layout_width="130dp"
         android:layout_height="50dp"
         android:layout_marginTop="80dp"
@@ -31,7 +31,7 @@
         android:textColor="@color/mp"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/textView22"
-        app:layout_constraintStart_toStartOf="@+id/textView22"
-        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+        app:layout_constraintEnd_toEndOf="@+id/end_tv1"
+        app:layout_constraintStart_toStartOf="@+id/end_tv1"
+        app:layout_constraintTop_toBottomOf="@+id/end_tv1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

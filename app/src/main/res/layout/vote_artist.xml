@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/artist_main_logo"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/teniverse" />
+
+    <ImageButton
+        android:id="@+id/img_btn_vote"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/vote_count"
+        app:layout_constraintEnd_toStartOf="@+id/vote_count"
+        app:layout_constraintTop_toTopOf="@+id/vote_count"
+        app:srcCompat="@drawable/vote" />
+
+    <ImageButton
+        android:id="@+id/img_btn_person"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/person" />
+
+    <TextView
+        android:id="@+id/vote_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="개수"
+        app:layout_constraintBottom_toBottomOf="@+id/img_btn_person"
+        app:layout_constraintEnd_toStartOf="@+id/img_btn_person"
+        app:layout_constraintTop_toTopOf="@+id/img_btn_person" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/g"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/artist_main_logo" />
+
+    <TextView
+        android:id="@+id/vote_tv_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="8"
+        android:textColor="@color/b"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/vote_tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="월 투표"
+        android:textColor="@color/b"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vote_tv_month"
+        app:layout_constraintStart_toEndOf="@+id/vote_tv_month"
+        app:layout_constraintTop_toTopOf="@+id/vote_tv_month" />
+
+    <TextView
+        android:id="@+id/vote_tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="2dp"
+        android:text="투표마감"
+        android:textColor="@color/dg"
+        app:layout_constraintBottom_toBottomOf="@+id/vote_tv1"
+        app:layout_constraintStart_toEndOf="@+id/vote_tv1" />
+
+    <TextView
+        android:id="@+id/vote_tv_lastday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="10"
+        android:textColor="@color/dg"
+        app:layout_constraintBottom_toBottomOf="@+id/vote_tv2"
+        app:layout_constraintStart_toEndOf="@+id/vote_tv2"
+        app:layout_constraintTop_toTopOf="@+id/vote_tv2" />
+
+    <TextView
+        android:id="@+id/vote_tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="일 전"
+        android:textColor="@color/dg"
+        app:layout_constraintBottom_toBottomOf="@+id/vote_tv_lastday"
+        app:layout_constraintStart_toEndOf="@+id/vote_tv_lastday"
+        app:layout_constraintTop_toTopOf="@+id/vote_tv_lastday" />
+
+    <TextView
+        android:id="@+id/vote_tv4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:text="지난 결과"
+        android:textStyle="bold"
+        android:textColor="@color/b"
+        app:layout_constraintBottom_toBottomOf="@+id/imageButton5"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton5"
+        app:layout_constraintTop_toTopOf="@+id/imageButton5" />
+
+    <ImageButton
+        android:id="@+id/imageButton5"
+        android:layout_width="15dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:srcCompat="@drawable/arrow_forward" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout5"
+        android:layout_width="360dp"
+        android:layout_height="210dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/vote_chartbox_custom"
+        android:translationZ="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vote_tv1">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/vote_btn"
+        android:layout_width="360dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/mp"
+        android:text="투표하기"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout5"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout5"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="@drawable/custom_background_top"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/icon_video"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/video" />
+
+        <ImageButton
+            android:id="@+id/icon_calendar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toStartOf="@+id/icon_vote"
+            app:layout_constraintStart_toEndOf="@+id/icon_home"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/calendar" />
+
+        <ImageButton
+            android:id="@+id/icon_vote"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/voteicon" />
+
+        <ImageButton
+            android:id="@+id/icon_community"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toStartOf="@+id/icon_video"
+            app:layout_constraintStart_toEndOf="@+id/icon_vote"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/community" />
+
+        <ImageButton
+            android:id="@+id/icon_home"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/mainhome" />
+
+        <TextView
+            android:id="@+id/tv_community"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="커뮤니티"
+            android:textColor="@color/dg"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/icon_community"
+            app:layout_constraintStart_toStartOf="@+id/icon_community"
+            app:layout_constraintTop_toBottomOf="@+id/icon_community" />
+
+        <TextView
+            android:id="@+id/tv_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="미디어"
+            android:textColor="@color/dg"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/icon_video"
+            app:layout_constraintStart_toStartOf="@+id/icon_video"
+            app:layout_constraintTop_toBottomOf="@+id/icon_video" />
+
+        <TextView
+            android:id="@+id/tv_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="홈"
+            android:textColor="@color/dg"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/icon_home"
+            app:layout_constraintStart_toStartOf="@+id/icon_home"
+            app:layout_constraintTop_toBottomOf="@+id/icon_home" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="투표"
+            android:textStyle="bold"
+            android:textColor="@color/mp"
+            app:layout_constraintEnd_toEndOf="@+id/icon_vote"
+            app:layout_constraintStart_toStartOf="@+id/icon_vote"
+            app:layout_constraintTop_toBottomOf="@+id/icon_vote" />
+
+        <TextView
+            android:id="@+id/tv_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="일정"
+            android:textColor="@color/dg"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/icon_vote"
+            app:layout_constraintStart_toEndOf="@+id/icon_home"
+            app:layout_constraintTop_toBottomOf="@+id/icon_calendar" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
