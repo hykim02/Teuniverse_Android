@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/fragment_home"
+        android:title="홈"
+        android:icon="@drawable/home_off"
+        app:showAsAction="always"/>
+    <item android:id="@+id/fragment_calendar"
+        android:title="일정"
+        android:icon="@drawable/calendar_off"
+        app:showAsAction="always"/>
+    <item android:id="@+id/fragment_vote"
+        android:title="투표"
+        android:icon="@drawable/vote_off"
+        app:showAsAction="always"/>
+    <item android:id="@+id/fragment_community"
+        android:title="커뮤니티"
+        android:icon="@drawable/community_off"
+        app:showAsAction="always"/>
+    <item android:id="@+id/fragment_media"
+        android:title="미디어"
+        android:icon="@drawable/media_off"
+        app:showAsAction="always"/>
+
+</menu>

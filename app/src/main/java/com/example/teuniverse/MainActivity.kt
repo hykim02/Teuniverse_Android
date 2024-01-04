@@ -1,8 +1,10 @@
 package com.example.teuniverse
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 
 class MainActivity : AppCompatActivity() {
@@ -14,7 +16,8 @@ class MainActivity : AppCompatActivity() {
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
         kakaoLogin.setOnClickListener{
-            val intent = Intent(this, SignupProfileActivity::class.java)
+            Log.d(TAG, "확인")
+            val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
             finish()
         }

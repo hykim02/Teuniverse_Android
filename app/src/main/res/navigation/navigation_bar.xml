@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_bar">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.teuniverse.HomeFragment"
+        android:label="홈"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/navigation_vote"
+        android:name="com.example.teuniverse.VoteFragment"
+        android:label="투표"
+        tools:layout="@layout/fragment_vote" />
+    <fragment
+        android:id="@+id/navigation_community"
+        android:name="com.example.teuniverse.CommunityFragment"
+        android:label="커뮤니티"
+        tools:layout="@layout/fragment_community" />
+    <fragment
+        android:id="@+id/navigation_calendar"
+        android:name="com.example.teuniverse.CalendarFragment"
+        android:label="일정"
+        tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/navigation_media"
+        android:name="com.example.teuniverse.MediaFragment"
+        android:label="미디어"
+        tools:layout="@layout/fragment_media" />
+
+</navigation>

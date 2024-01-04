@@ -13,13 +13,9 @@ import com.example.teuniverse.databinding.ActivityMainBinding
 
 class SignupProfileActivity:AppCompatActivity() {
 
-    //바인딩 객체 선언
-    private var mBinding: ActivitySignupProfileBinding? = null
-    private val binding get() = mBinding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.signup_profile)
 
         val nextBtn = findViewById<Button>(R.id.next_btn)
         val backBtn = findViewById<ImageButton>(R.id.back_btn)
@@ -36,23 +32,6 @@ class SignupProfileActivity:AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }
-
-        galleryBtn.setOnClickListener{
-            //갤러리 호출
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            activityResult.launch(intent)
-        }
-    }
-
-    private val activityResult: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()){
-        if(it.resultCode == RESULT_OK && it.data != null){
-            val uri = it.data!!.data
-
-            //화면에 보여주기
-            Glide.with(this).load(uri).into(profileImg)
         }
     }
 }
