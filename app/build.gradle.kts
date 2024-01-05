@@ -1,11 +1,22 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
 
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
+}
+
 android {
     namespace = "com.example.teuniverse"
     compileSdk = 34
+
+    buildFeatures{
+        viewBinding = true
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.teuniverse"
@@ -15,10 +26,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
-    buildFeatures{
-        viewBinding = true
+        buildConfigField("String", "BASE_URL", getApiKey("BASE_URL"))
     }
 
     buildTypes {
@@ -38,6 +47,10 @@ android {
 
 dependencies {
 
+//    implementation 'com.squareup.retrofit2:retrofit:(insert latest version)'
+//    implementation 'com.squareup.retrofit2:converter-gson:(insert latest version)'
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")

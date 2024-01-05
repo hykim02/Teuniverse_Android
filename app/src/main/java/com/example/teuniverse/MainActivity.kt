@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
         kakaoLogin.setOnClickListener{
             Log.d(TAG, "확인")
-            val intent = Intent(this, MenuActivity::class.java)
+            val intent = Intent(this, SignupSelectArtistActivity::class.java)
             startActivity(intent)
             finish()
         }

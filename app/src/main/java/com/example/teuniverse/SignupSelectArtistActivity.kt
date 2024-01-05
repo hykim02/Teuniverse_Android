@@ -8,8 +8,14 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+
 
 class SignupSelectArtistActivity:AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_select_artist)
@@ -33,8 +39,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             finish()
         }
 
-        var spinnerList = listOf("인기순", "가나다순")
-        var spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerList)
+        var spinnerList = arrayOf("인기순", "가나다순")
+        var spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerList)
         filterSpinner.adapter = spinnerAdapter
+        filterSpinner.setSelection(0)
     }
 }
