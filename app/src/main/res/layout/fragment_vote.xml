@@ -149,9 +149,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/first_ct"
-                        android:layout_width="65dp"
+                        android:layout_width="70dp"
                         android:layout_height="150dp"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="18dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/mp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -174,8 +174,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="75dp"
                             android:text="이름"
-                            android:textStyle="bold"
                             android:textColor="@color/w"
+                            android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/first_txt" />
@@ -194,7 +194,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/second_ct"
-                        android:layout_width="65dp"
+                        android:layout_width="70dp"
                         android:layout_height="130dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
@@ -239,9 +239,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/third_ct"
-                        android:layout_width="65dp"
+                        android:layout_width="70dp"
                         android:layout_height="110dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginEnd="14dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -264,8 +264,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="35dp"
                             android:text="이름"
-                            android:textStyle="bold"
                             android:textColor="@color/w"
+                            android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/third_txt" />
@@ -284,9 +284,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/fourth_ct"
-                        android:layout_width="65dp"
+                        android:layout_width="70dp"
                         android:layout_height="90dp"
-                        android:layout_marginEnd="24dp"
+                        android:layout_marginEnd="18dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -309,8 +309,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:text="이름"
-                            android:textStyle="bold"
                             android:textColor="@color/w"
+                            android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/fourth_txt" />
@@ -344,38 +344,458 @@
                 <Button
                     android:id="@+id/vote_btn"
                     android:layout_width="360dp"
-                    android:layout_height="40dp"
+                    android:layout_height="45dp"
                     android:layout_marginTop="8dp"
                     android:layout_gravity="center"
                     android:backgroundTint="@color/mp"
                     android:text="투표하기" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="390dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="#F4E7E7">
 
                     <ImageButton
                         android:id="@+id/imageButton2"
-                        android:layout_width="130dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
+                        android:layout_width="278dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="24dp"
                         android:background="@android:color/transparent"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/tab_fan" />
+                        android:src="@drawable/artist_tab"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageButton
-                        android:id="@+id/imageButton3"
-                        android:layout_width="130dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:elevation="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/tab_artist" />
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/fan_tab_off"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="4dp"
+                        android:text="팬 순위"
+                        android:textColor="@color/dg"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/imageButton2"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/artist_tab_on"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="전체 아티스트 순위"
+                        android:textColor="@color/mp"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/imageButton2"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/custom_background_all"
+                        android:backgroundTint="@color/lg"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageButton2">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="170dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <ImageView
+                                android:id="@+id/raking_first_img"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:background="@drawable/custom_circle_mp"
+                                android:padding="1dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_third_img"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginStart="16dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="@+id/raking_first_img"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_first_img" />
+
+                            <ImageView
+                                android:id="@+id/raking_second_img"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginEnd="16dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="@+id/raking_first_img"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_first_img"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_first"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="1위"
+                                android:textColor="@color/b"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@+id/raking_first_img"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_first_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_first_img" />
+
+                            <TextView
+                                android:id="@+id/ranking_third"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="3위"
+                                android:textColor="@color/b"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@+id/raking_third_img"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_third_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_third_img" />
+
+                            <TextView
+                                android:id="@+id/ranking_second"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="2위"
+                                android:textColor="@color/b"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@+id/raking_second_img"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_second_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_second_img" />
+
+                            <TextView
+                                android:id="@+id/ranking_second_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_second_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_second_img"
+                                app:layout_constraintTop_toBottomOf="@+id/raking_second_img" />
+
+                            <TextView
+                                android:id="@+id/ranking_first_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_first_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_first_img"
+                                app:layout_constraintTop_toBottomOf="@+id/raking_first_img" />
+
+                            <TextView
+                                android:id="@+id/ranking_third_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_third_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_third_img"
+                                app:layout_constraintTop_toBottomOf="@+id/raking_third_img" />
+
+                            <TextView
+                                android:id="@+id/ranking_second_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="count"
+                                app:layout_constraintEnd_toEndOf="@+id/ranking_second_name"
+                                app:layout_constraintStart_toStartOf="@+id/ranking_second_name"
+                                app:layout_constraintTop_toBottomOf="@+id/ranking_second_name" />
+
+                            <TextView
+                                android:id="@+id/ranking_first_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="count"
+                                app:layout_constraintEnd_toEndOf="@+id/ranking_first_name"
+                                app:layout_constraintStart_toStartOf="@+id/ranking_first_name"
+                                app:layout_constraintTop_toBottomOf="@+id/ranking_first_name" />
+
+                            <TextView
+                                android:id="@+id/ranking_third_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="count"
+                                app:layout_constraintEnd_toEndOf="@+id/ranking_third_name"
+                                app:layout_constraintStart_toStartOf="@+id/ranking_third_name"
+                                app:layout_constraintTop_toBottomOf="@+id/ranking_third_name" />
+
+                            <TextView
+                                android:id="@+id/fan_tab_all"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="12dp"
+                                android:text="전체"
+                                android:textColor="@color/mp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toStartOf="@+id/fan_tab_best"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/fan_tab_best"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="24dp"
+                                android:text="최애"
+                                android:textColor="@color/dg"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <TextView
+                                android:id="@+id/ranking_fourth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="50dp"
+                                android:text="4위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_4th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="40dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/ranking_fourth"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_4th_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_4th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_4th_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <TextView
+                                android:id="@+id/ranking_fifth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="50dp"
+                                android:text="5위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_5th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="40dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/ranking_fifth"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_5th_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_5th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_5th_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <TextView
+                                android:id="@+id/ranking_nth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="50dp"
+                                android:text="n위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_nth_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="40dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/ranking_nth"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_nth_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_nth_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_nth_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/custom_ranking_list"
+                            android:elevation="10dp">
+
+                            <TextView
+                                android:id="@+id/ranking_mth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="48dp"
+                                android:text="m위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_mth_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="40dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/ranking_mth"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_mth_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_mth_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_mth_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             </LinearLayout>
