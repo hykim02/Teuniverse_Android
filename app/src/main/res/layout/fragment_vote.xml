@@ -1,15 +1,386 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/w"
     tools:context=".VoteFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="투표"
-        android:gravity="center"/>
+        android:layout_height="match_parent">
 
+        <ImageButton
+            android:id="@+id/artist_main_logo"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/teniverse" />
+
+        <ImageButton
+            android:id="@+id/img_btn_vote"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="4dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/vote_count"
+            app:layout_constraintEnd_toStartOf="@+id/vote_count"
+            app:layout_constraintTop_toTopOf="@+id/vote_count"
+            app:srcCompat="@drawable/buy_vote" />
+
+        <ImageButton
+            android:id="@+id/img_btn_person"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="24dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/person" />
+
+        <TextView
+            android:id="@+id/vote_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="개수"
+            app:layout_constraintBottom_toBottomOf="@+id/img_btn_person"
+            app:layout_constraintEnd_toStartOf="@+id/img_btn_person"
+            app:layout_constraintTop_toTopOf="@+id/img_btn_person" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/g"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/artist_main_logo" />
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/vote_tv_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8"
+                        android:textColor="@color/b"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="7dp"/>
+
+                    <TextView
+                        android:id="@+id/vote_tv1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:text="월 투표"
+                        android:textColor="@color/b"
+                        android:textStyle="bold"
+                        android:textSize="24sp"
+                        android:layout_marginTop="7dp"/>
+
+                    <TextView
+                        android:id="@+id/vote_tv2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="2dp"
+                        android:text="투표마감"
+                        android:textColor="@color/dg"
+                        android:layout_marginTop="6dp"/>
+
+                    <TextView
+                        android:id="@+id/vote_tv_lastday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="10"
+                        android:textColor="@color/dg"
+                        android:layout_marginTop="6dp"/>
+
+                    <TextView
+                        android:id="@+id/vote_tv3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:text="일 전"
+                        android:textColor="@color/dg"
+                        android:layout_marginTop="6dp"/>
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout5"
+                    android:layout_width="360dp"
+                    android:layout_height="210dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/vote_chartbox_custom"
+                    android:elevation="20dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/first_ct"
+                        android:layout_width="65dp"
+                        android:layout_height="150dp"
+                        android:layout_marginStart="24dp"
+                        android:background="@drawable/chartbox_custom"
+                        android:backgroundTint="@color/mp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <TextView
+                            android:id="@+id/first_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="1위"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/first_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="75dp"
+                            android:text="이름"
+                            android:textStyle="bold"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/first_txt" />
+
+                        <TextView
+                            android:id="@+id/first_vote_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="투표수"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/first_name" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/second_ct"
+                        android:layout_width="65dp"
+                        android:layout_height="130dp"
+                        android:background="@drawable/chartbox_custom"
+                        android:backgroundTint="@color/dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/third_ct"
+                        app:layout_constraintStart_toEndOf="@+id/first_ct">
+
+                        <TextView
+                            android:id="@+id/second_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="2위"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/second_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="55dp"
+                            android:text="이름"
+                            android:textStyle="bold"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/second_txt" />
+
+                        <TextView
+                            android:id="@+id/second_vote_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="투표수"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/second_name" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/third_ct"
+                        android:layout_width="65dp"
+                        android:layout_height="110dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/chartbox_custom"
+                        android:backgroundTint="@color/dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/fourth_ct">
+
+                        <TextView
+                            android:id="@+id/third_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="3위"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/third_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="35dp"
+                            android:text="이름"
+                            android:textStyle="bold"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/third_txt" />
+
+                        <TextView
+                            android:id="@+id/third_vote_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="투표수"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/third_name" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/fourth_ct"
+                        android:layout_width="65dp"
+                        android:layout_height="90dp"
+                        android:layout_marginEnd="24dp"
+                        android:background="@drawable/chartbox_custom"
+                        android:backgroundTint="@color/dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:id="@+id/fourth_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="4위"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/fourth_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:text="이름"
+                            android:textStyle="bold"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/fourth_txt" />
+
+                        <TextView
+                            android:id="@+id/fourth_vote_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="투표수"
+                            android:textColor="@color/w"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/fourth_name" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <ImageView
+                        android:id="@+id/first_img"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginBottom="3dp"
+                        android:scaleType="centerCrop"
+                        android:padding="1dp"
+                        android:background="@drawable/custom_circle_mp"
+                        app:layout_constraintBottom_toTopOf="@+id/first_ct"
+                        app:layout_constraintEnd_toEndOf="@+id/first_ct"
+                        app:layout_constraintStart_toStartOf="@+id/first_ct"
+                        app:srcCompat="@drawable/profile" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/vote_btn"
+                    android:layout_width="360dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/mp"
+                    android:text="투표하기" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/imageButton2"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/tab_fan" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton3"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:elevation="20dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/tab_artist" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
