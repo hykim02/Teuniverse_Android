@@ -16,6 +16,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -92,33 +95,32 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     // 받아온 아티스트 목록을 반복문을 통해 출력
     @SuppressLint("DiscouragedApi")
     private fun handleResponse(artistList: SelectArtistResponse?) {
-        // artistList 처리 코드
+        // artistList를 처리하는 코드
         if (artistList != null) {
-            Log.d("아티스트 목록:", "${artistList.data}")
-
-            // 이미지뷰에 이미지 설정
+            // 이미지뷰와 텍스트뷰의 인덱스를 반복문으로 순회
             for (i in artistList.data.indices) {
+                // 이미지 데이터 추출
                 val artistData = artistList.data[i]
                 val imageUrl = artistData.thumbnailUrl
                 val nametxt = artistData.name
 
                 // 이미지뷰 ID
                 val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
-                Log.d("imageId", imageViewId.toString())
                 // 이미지뷰 가져오기
                 val imageView = findViewById<ImageView>(imageViewId)
+
+                // 텍스트뷰 ID
+                val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
+                // 텍스트뷰 가져오기
+                val textView = findViewById<TextView>(textViewId)
 
                 // Glide를 사용하여 이미지 로딩
                 Glide.with(this)
                     .load(imageUrl)
+                    .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
                     .into(imageView)
 
-                // 텍스트뷰 ID
-                val textViewId = resources.getIdentifier("textView${i + 1}", "id", packageName)
-                // 텍스트뷰 가져오기
-                val textView = findViewById<TextView>(textViewId)
-
-                // 아티스트 데이터를 텍스트뷰에 설정
+                // 텍스트뷰에 아티스트 데이터 연결
                 textView.text = nametxt
 
                 // 이미지뷰에 아티스트 데이터 연결
@@ -126,6 +128,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             }
         }
     }
+
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/w"
     tools:context=".SignupSelectArtistActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -206,7 +207,8 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name2"
@@ -214,7 +216,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name3"
@@ -222,14 +225,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <ImageView
                     android:id="@+id/artist4"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
                     android:layout_marginStart="25dp"
-                    android:src="@drawable/profile" />
+                    android:src="@drawable/profile"
+                    />
 
                 <ImageView
                     android:id="@+id/artist5"
@@ -252,7 +257,8 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name5"
@@ -260,7 +266,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name6"
@@ -268,7 +275,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <ImageView
                     android:id="@+id/artist7"
@@ -298,7 +306,8 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name8"
@@ -306,7 +315,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name9"
@@ -314,7 +324,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <ImageView
                     android:id="@+id/artist10"
@@ -344,7 +355,8 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name11"
@@ -352,7 +364,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/name12"
@@ -360,7 +373,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름" />
+                    android:text="이름"
+                    android:textSize="16sp"/>
 
             </androidx.gridlayout.widget.GridLayout>
 
