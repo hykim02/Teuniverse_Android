@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
         kakaoLogin.setOnClickListener{
-            Log.d(TAG, "확인")
             val intent = Intent(this, SignupSelectArtistActivity::class.java)
             startActivity(intent)
             finish()
