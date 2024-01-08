@@ -158,7 +158,7 @@
                         app:layout_constraintStart_toStartOf="parent">
 
                         <TextView
-                            android:id="@+id/first_txt"
+                            android:id="@+id/txt_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -169,7 +169,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/first_name"
+                            android:id="@+id/name_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="75dp"
@@ -178,10 +178,10 @@
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/first_txt" />
+                            app:layout_constraintTop_toBottomOf="@+id/txt_1" />
 
                         <TextView
-                            android:id="@+id/first_vote_count"
+                            android:id="@+id/vote_count_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
@@ -189,7 +189,7 @@
                             android:textColor="@color/w"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/first_name" />
+                            app:layout_constraintTop_toBottomOf="@+id/name_1" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -203,7 +203,7 @@
                         app:layout_constraintStart_toEndOf="@+id/first_ct">
 
                         <TextView
-                            android:id="@+id/second_txt"
+                            android:id="@+id/txt_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -214,7 +214,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/second_name"
+                            android:id="@+id/name_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="55dp"
@@ -223,10 +223,10 @@
                             android:textColor="@color/w"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/second_txt" />
+                            app:layout_constraintTop_toBottomOf="@+id/txt_2" />
 
                         <TextView
-                            android:id="@+id/second_vote_count"
+                            android:id="@+id/vote_count_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
@@ -234,7 +234,7 @@
                             android:textColor="@color/w"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/second_name" />
+                            app:layout_constraintTop_toBottomOf="@+id/name_2" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -248,7 +248,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/fourth_ct">
 
                         <TextView
-                            android:id="@+id/third_txt"
+                            android:id="@+id/txt_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -259,7 +259,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/third_name"
+                            android:id="@+id/name_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="35dp"
@@ -268,10 +268,10 @@
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/third_txt" />
+                            app:layout_constraintTop_toBottomOf="@+id/txt_3" />
 
                         <TextView
-                            android:id="@+id/third_vote_count"
+                            android:id="@+id/vote_count_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
@@ -279,7 +279,7 @@
                             android:textColor="@color/w"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/third_name" />
+                            app:layout_constraintTop_toBottomOf="@+id/name_3" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -293,7 +293,7 @@
                         app:layout_constraintEnd_toEndOf="parent">
 
                         <TextView
-                            android:id="@+id/fourth_txt"
+                            android:id="@+id/txt_4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -304,7 +304,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/fourth_name"
+                            android:id="@+id/name_4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
@@ -313,10 +313,10 @@
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/fourth_txt" />
+                            app:layout_constraintTop_toBottomOf="@+id/txt_4" />
 
                         <TextView
-                            android:id="@+id/fourth_vote_count"
+                            android:id="@+id/vote_count_4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
@@ -324,7 +324,7 @@
                             android:textColor="@color/w"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/fourth_name" />
+                            app:layout_constraintTop_toBottomOf="@+id/name_4" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <ImageView
@@ -352,7 +352,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="390dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:layout_marginBottom="30dp"
                     android:background="#F4E7E7">
@@ -395,8 +395,9 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
+                        android:id="@+id/ranking_layout"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/custom_background_all"
                         android:backgroundTint="@color/lg"
                         android:orientation="vertical"
@@ -406,7 +407,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/imageButton2">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/ct_rank_1"
+                            android:id="@+id/ct_rank_1to3"
                             android:layout_width="match_parent"
                             android:layout_height="170dp"
                             android:background="@drawable/custom_ranking_list">
@@ -577,7 +578,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/ct_rank_2"
+                            android:id="@+id/ct_rank_4"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
                             android:layout_marginTop="2dp"
@@ -587,30 +588,30 @@
                                 android:id="@+id/ranking_fourth"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="50dp"
+                                android:layout_marginEnd="41dp"
                                 android:text="4위"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_4th_img"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <ImageView
                                 android:id="@+id/raking_4th_img"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:layout_marginStart="40dp"
+                                android:layout_marginStart="115dp"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/profile"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/ranking_fourth"
+                                app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/ranking_4th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="32dp"
+                                android:layout_marginStart="35dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
@@ -631,7 +632,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/ct_rank_3"
+                            android:id="@+id/ct_rank_5"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
                             android:layout_marginTop="2dp"
@@ -641,30 +642,30 @@
                                 android:id="@+id/ranking_fifth"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="50dp"
+                                android:layout_marginEnd="40dp"
                                 android:text="5위"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_5th_img"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <ImageView
                                 android:id="@+id/raking_5th_img"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:layout_marginStart="40dp"
+                                android:layout_marginStart="115dp"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/profile"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/ranking_fifth"
+                                app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/ranking_5th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="32dp"
+                                android:layout_marginStart="35dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
@@ -685,49 +686,49 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/ct_rank_4"
+                            android:id="@+id/ct_rank_6"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
                             android:layout_marginTop="2dp"
                             android:background="@drawable/custom_ranking_list">
 
                             <TextView
-                                android:id="@+id/ranking_nth"
+                                android:id="@+id/ranking_6th"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="50dp"
-                                android:text="n위"
+                                android:layout_marginEnd="41dp"
+                                android:text="6위"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_6th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_6th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="115dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <ImageView
-                                android:id="@+id/raking_nth_img"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_marginStart="40dp"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/profile"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/ranking_nth"
-                                app:layout_constraintTop_toTopOf="parent" />
-
                             <TextView
-                                android:id="@+id/ranking_nth_name"
+                                android:id="@+id/ranking_6th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="32dp"
+                                android:layout_marginStart="35dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/raking_nth_img"
+                                app:layout_constraintStart_toEndOf="@+id/raking_6th_img"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/ranking_nth_count"
+                                android:id="@+id/ranking_6th_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="60dp"
@@ -739,50 +740,49 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/ct_rank_5"
+                            android:id="@+id/ct_rank_7"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
                             android:layout_marginTop="2dp"
-                            android:background="@drawable/custom_ranking_list"
-                            android:elevation="10dp">
+                            android:background="@drawable/custom_ranking_list">
 
                             <TextView
-                                android:id="@+id/ranking_mth"
+                                android:id="@+id/ranking_7th"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="48dp"
-                                android:text="m위"
+                                android:layout_marginEnd="41dp"
+                                android:text="7위"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_7th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_7th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="115dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <ImageView
-                                android:id="@+id/raking_mth_img"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_marginStart="40dp"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/profile"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/ranking_mth"
-                                app:layout_constraintTop_toTopOf="parent" />
-
                             <TextView
-                                android:id="@+id/ranking_mth_name"
+                                android:id="@+id/ranking_7th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="32dp"
+                                android:layout_marginStart="35dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textSize="16sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/raking_mth_img"
+                                app:layout_constraintStart_toEndOf="@+id/raking_7th_img"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/ranking_mth_count"
+                                android:id="@+id/ranking_7th_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="60dp"
@@ -791,6 +791,174 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_8"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:paddingBottom="5dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <TextView
+                                android:id="@+id/ranking_8th"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="41dp"
+                                android:text="8위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_8th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_8th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="115dp"
+                                android:layout_marginTop="4dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_8th_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_8th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_8th_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_9"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <TextView
+                                android:id="@+id/ranking_9th"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="41dp"
+                                android:text="9위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_9th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_9th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="115dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_9th_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_9th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_9th_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ct_rank_10"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/custom_ranking_list">
+
+                            <TextView
+                                android:id="@+id/ranking_10th"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="41dp"
+                                android:text="10위"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_10th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/raking_10th_img"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="115dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/profile"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_10th_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="name"
+                                android:textColor="@color/b"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/raking_10th_img"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/ranking_10th_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="60dp"
+                                android:text="count"
+                                android:textSize="15sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>

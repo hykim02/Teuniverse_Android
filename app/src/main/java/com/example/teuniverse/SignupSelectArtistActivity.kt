@@ -157,14 +157,12 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 editor.putString("$artistKey.imageUrl", imageUrl)
                 editor.putString("$artistKey.name", nametxt)
 
-                // 이미지뷰 ID
-                val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
                 // 이미지뷰 가져오기
+                val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
                 val imageView = findViewById<ImageView>(imageViewId)
 
-                // 텍스트뷰 ID
-                val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
                 // 텍스트뷰 가져오기
+                val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
                 val textView = findViewById<TextView>(textViewId)
 
                 // Glide를 사용하여 이미지 로딩

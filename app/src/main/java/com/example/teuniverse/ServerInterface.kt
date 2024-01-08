@@ -12,3 +12,10 @@ interface SelectArtistInterface {
     @Headers("accept: application/json")
     suspend fun getArtist(): Response<SelectArtistResponse>
 }
+
+// 월간 아티스트 투표수 조회
+interface MonthlyRankingInterface {
+    @GET("vote/monthly-artist")
+    @Headers("accept: application/json")
+    suspend fun getVoteCount(): Response<MonthlyRankingResponse>
+}

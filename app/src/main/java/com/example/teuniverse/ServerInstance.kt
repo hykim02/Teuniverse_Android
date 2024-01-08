@@ -1,6 +1,7 @@
 package com.example.teuniverse
 
 import androidx.annotation.RestrictTo
+import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -16,10 +17,15 @@ object SelectArtistInstance {
             .build()
             .create(SelectArtistInterface::class.java)
     }
-//    private val retrofit = Retrofit.Builder()
-//        .baseUrl(BASE_URL)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .build()
-//
-//    val apiService: SelectArtistInterface = retrofit.create(SelectArtistInterface::class.java)
+}
+
+// 월간 아티스트 투표수 조회
+object MonthlyVoteInstance {
+    fun getVoteCountService(): MonthlyRankingInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MonthlyRankingInterface::class.java)
+    }
 }
