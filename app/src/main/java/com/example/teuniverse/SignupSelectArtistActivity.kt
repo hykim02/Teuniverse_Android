@@ -7,7 +7,9 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -16,6 +18,7 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.gridlayout.widget.GridLayout
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -29,10 +32,11 @@ import retrofit2.Response
 class SignupSelectArtistActivity:AppCompatActivity() {
 
     private lateinit var gridLayout: GridLayout
+    private lateinit var filterSpinner: Spinner
+
 
     object SelectArtistDB {
         private lateinit var sharedPreferences: SharedPreferences
-
         // 초기화
         fun init(context: Context) {
             sharedPreferences = context.getSharedPreferences("SelectArtistData", Context.MODE_PRIVATE)
@@ -53,7 +57,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
         gridLayout = findViewById(R.id.artist_gridlayout)
         val backBtn = findViewById<ImageButton>(R.id.back_btn)
-        val filterSpinner = findViewById<Spinner>(R.id.select_spinner)
+        filterSpinner = findViewById(R.id.select_spinner)
         val searchTxt = findViewById<EditText>(R.id.search_txt)
 
         searchTxt.hint = "아티스트를 검색하세요"
@@ -64,7 +68,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             finish()
         }
 
-        var spinnerList = arrayOf("인기순", "가나다순")
+        var spinnerList = listOf("인기순", "가나다순")
         var spinnerAdapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerList)
         filterSpinner.adapter = spinnerAdapter
@@ -97,7 +101,24 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 val artistList: SelectArtistResponse? = response.body()
                 if (artistList != null) {
                     Log.d("artistList", "${artistList.statusCode} ${artistList.message}")
+                    // 정렬 기준에 따른 순서
                     handleResponse(artistList)
+                    filterSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            when(position){
+                                0 -> handleResponse(artistList) // 인기순(좋아요순) 정렬
+                                1 -> sortedResponse(artistList) // 가나다순 정렬
+                            }
+                        }
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                            handleResponse(artistList) // 인기순(좋아요순) 정렬
+                        }
+                    }
                 } else {
                     handleError("Response body is null.")
                 }
@@ -162,6 +183,61 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         }
     }
 
+    // 가나다순 정렬 함수
+    @SuppressLint("DiscouragedApi")
+    private fun sortedResponse(artistList: SelectArtistResponse?) {
+        val unsortedList: MutableList<String> = mutableListOf()
+        var sortedList: MutableList<String>
+
+        // 리스트에 이름 데이터만 추가
+        if(artistList != null) {
+            for (i in artistList.data.indices) {
+                val artistData = artistList.data[i]
+                val artistName = artistData.name
+                unsortedList.add(artistName)
+            }
+            Log.d("unsortedList",unsortedList.toString())
+            // 가나다순으로 정렬
+            sortedList = unsortedList.sorted().toMutableList()
+            Log.d("sortedList",sortedList.toString())
+
+            for (i in sortedList.indices) {
+                for (j in artistList.data.indices) {
+                    val artistData = artistList.data[j]
+                    if(artistData.name == sortedList[i]) {
+                        val imageUrl = artistData.thumbnailUrl
+                        val nametxt = artistData.name
+
+                        // 이미지뷰 ID
+                        val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
+                        // 이미지뷰 가져오기
+                        val imageView = findViewById<ImageView>(imageViewId)
+
+                        // 텍스트뷰 ID
+                        val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
+                        // 텍스트뷰 가져오기
+                        val textView = findViewById<TextView>(textViewId)
+
+                        // Glide를 사용하여 이미지 로딩
+                        Glide.with(this)
+                            .load(imageUrl)
+                            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                            .into(imageView)
+
+                        // 텍스트뷰에 아티스트 데이터 연결
+                        textView.text = nametxt
+
+                        // 이미지뷰에 아티스트 데이터 연결
+                        imageView.contentDescription = nametxt
+                        break
+                    } else {
+                        continue
+                    }
+                }
+            }
+        }
+    }
+
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("Error", errorMessage)
@@ -192,6 +268,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         val clickedName = childView.contentDescription?.toString()
         val finalArtistImg = findViewById<ImageView>(R.id.selected_artist)
         val finalArtistName = findViewById<TextView>(R.id.select_tv3)
+        val starImg = findViewById<ImageView>(R.id.select_img_star)
+        val removetxt = findViewById<TextView>(R.id.select_tv4)
+        val parentView = findViewById<ConstraintLayout>(R.id.select_constLayout)
         // 내부 저장소에 저장된 모든 키-값 쌍 가져오기
         val allEntries: Map<String, *> = artistDB.all
         var foundKey: String? = null
@@ -219,6 +298,16 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 .into(finalArtistImg)
 
             finalArtistName.text = clickedName
+
+            // 특정 텍스트 뷰 삭제
+            parentView.removeView(starImg)
+            parentView.removeView(removetxt)
+
+            // 텍스트 글씨의 색상 변경
+            finalArtistName.setTextColor(Color.parseColor("#5C21A4"))
+            // 텍스트 글씨의 크기 변경
+            val newSize = 28f
+            finalArtistName.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize)
 
         // 원하는 값과 일치하는 키를 찾지 못했을 때의 처리
         } else {

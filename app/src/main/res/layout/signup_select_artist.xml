@@ -98,15 +98,17 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/select_constLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <Spinner
                     android:id="@+id/select_spinner"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
+                    android:popupBackground="@color/w"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -136,8 +138,7 @@
                     android:id="@+id/select_tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="35dp"
                     android:text="당신의"
                     android:textColor="@color/ap"
                     android:textSize="20sp"
