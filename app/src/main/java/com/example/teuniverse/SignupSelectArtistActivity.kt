@@ -1,9 +1,10 @@
 package com.example.teuniverse
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,15 +28,30 @@ import retrofit2.Response
 
 class SignupSelectArtistActivity:AppCompatActivity() {
 
-//    private var gridLayout: GridLayout = findViewById(R.id.artist_gridlayout)
     private lateinit var gridLayout: GridLayout
+
+    object SelectArtistDB {
+        private lateinit var sharedPreferences: SharedPreferences
+
+        // 초기화
+        fun init(context: Context) {
+            sharedPreferences = context.getSharedPreferences("SelectArtistData", Context.MODE_PRIVATE)
+        }
+
+        // 객체 반환
+        fun getInstance(): SharedPreferences {
+            if(!this::sharedPreferences.isInitialized) {
+                throw IllegalStateException("SharedPreferencesSingleton is not initialized")
+            }
+            return sharedPreferences
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_select_artist)
 
         gridLayout = findViewById(R.id.artist_gridlayout)
-        val nextBtn = findViewById<Button>(R.id.next_btn)
         val backBtn = findViewById<ImageButton>(R.id.back_btn)
         val filterSpinner = findViewById<Spinner>(R.id.select_spinner)
         val searchTxt = findViewById<EditText>(R.id.search_txt)
@@ -98,14 +114,27 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     // 받아온 아티스트 목록을 반복문을 통해 출력
     @SuppressLint("DiscouragedApi")
     private fun handleResponse(artistList: SelectArtistResponse?) {
-        // artistList를 처리하는 코드
+        //SharedPreferences 초기화
+        SelectArtistDB.init(this)
+        val editor = SelectArtistDB.getInstance().edit()
+
+        // artistList를 처리 코드
         if (artistList != null) {
-            // 이미지뷰와 텍스트뷰의 인덱스를 반복문으로 순회
+            // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in artistList.data.indices) {
                 // 이미지 데이터 추출
                 val artistData = artistList.data[i]
                 val imageUrl = artistData.thumbnailUrl
                 val nametxt = artistData.name
+                val id = artistData.id
+
+                // 각 아티스트에 대한 고유한 키 생성
+                val artistKey = "artist$id"
+
+                // 내부 저장소에 데이터 저장
+                editor.putInt("$artistKey.id", id)
+                editor.putString("$artistKey.imageUrl", imageUrl)
+                editor.putString("$artistKey.name", nametxt)
 
                 // 이미지뷰 ID
                 val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
@@ -129,6 +158,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 // 이미지뷰에 아티스트 데이터 연결
                 imageView.contentDescription = nametxt
             }
+            editor.apply()
         }
     }
 
@@ -136,7 +166,6 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         // 에러를 처리하는 코드
         Log.d("Error", errorMessage)
     }
-
 
     // 클릭된 아이템 인식 함수
     private fun selectedArtist() {
@@ -147,11 +176,55 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             if (childView is ImageView) {
                 childView.setOnClickListener {
                     onImageViewClick(it) // 테두리 그리기
+                    finalSelected(childView)
                     // 클릭된 이미지뷰가 있을 때마다 버튼 상태 업데이트
                     updateButtonState()
                 }
             }
         }
+    }
+
+    private fun finalSelected(childView: ImageView) {
+        //SharedPreferences 초기화
+        SelectArtistDB.init(this)
+        val artistDB = SelectArtistDB.getInstance()
+        // 선택된 아티스트 이름 저장한 변수
+        val clickedName = childView.contentDescription?.toString()
+        val finalArtistImg = findViewById<ImageView>(R.id.selected_artist)
+        val finalArtistName = findViewById<TextView>(R.id.select_tv3)
+        // 내부 저장소에 저장된 모든 키-값 쌍 가져오기
+        val allEntries: Map<String, *> = artistDB.all
+        var foundKey: String? = null
+
+        // 원하는 값과 일치하는 키 찾기
+        for ((key, value) in allEntries) {
+            // 해당 키 찾은 경우
+            if (value == clickedName) {
+                foundKey = key
+                break
+            }
+        }
+        // 원하는 값과 일치하는 키를 찾았을 때의 처리
+        if (foundKey != null) {
+            //artist1.name에서 artist1만 추출
+            val extractedKey = foundKey.substringBefore(".name")
+            val resultKey = "$extractedKey.imageUrl"
+
+            // resultKey에 해당하는 value 찾기
+            val finalImgUrl = artistDB.getString(resultKey, "")
+
+            Glide.with(this)
+                .load(finalImgUrl)
+                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                .into(finalArtistImg)
+
+            finalArtistName.text = clickedName
+
+        // 원하는 값과 일치하는 키를 찾지 못했을 때의 처리
+        } else {
+            Log.d("failed","일치하는 키를 찾지 못함")
+        }
+
     }
 
     // 클릭된 아이템 테두리 그리는 함수
