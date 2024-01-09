@@ -57,6 +57,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
     implementation("com.github.bumptech.glide:glide:4.14.1")
+    implementation("com.google.ar.sceneform:filament-android:1.17.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     testImplementation("junit:junit:4.13.2")
