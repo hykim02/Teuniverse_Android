@@ -21,7 +21,7 @@
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/teniverse" />
+            app:srcCompat="@drawable/teniverse_logo_mp" />
 
         <ImageButton
             android:id="@+id/img_btn_vote"
