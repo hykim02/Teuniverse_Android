@@ -40,4 +40,26 @@ data class VoteData(
     val voteCount: String
 )
 
+// 로그인 토큰 전송 요청 & 응답
+data class LoginRequest(
+    val loginType: Int,
+    val accessToken: String
+)
+
+data class LoginResponse(
+    val accessToken: String,
+    val refreshToken: String,
+    val isExistUser: Boolean,
+    val userProfileData: UserProfileData
+)
+
+data class UserProfileData(
+    val id: Long,
+    val nickName: String,
+    val thumbnailUrl: String
+)
+
+
+
+
 

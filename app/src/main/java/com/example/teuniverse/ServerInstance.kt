@@ -20,12 +20,23 @@ object SelectArtistInstance {
 }
 
 // 월간 아티스트 투표수 조회
-object MonthlyVoteInstance {
+object MonthlyRankingInstance {
     fun getVoteCountService(): MonthlyRankingInterface {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MonthlyRankingInterface::class.java)
+    }
+}
+
+// 로그인 토큰 전송 요청 & 응답
+object LoginInstance {
+    fun userLoginService(): LoginInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(LoginInterface::class.java)
     }
 }
