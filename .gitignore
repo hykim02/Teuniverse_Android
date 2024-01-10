@@ -15,3 +15,5 @@ local.properties
 .externalNativeBuild
 .cxx
 local.properties
+# Ignore strings.xml file
+res/values/strings.xml
