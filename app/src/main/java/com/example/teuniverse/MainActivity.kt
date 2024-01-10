@@ -56,6 +56,14 @@ class MainActivity : AppCompatActivity() {
                     Log.e(TAG, "카카오계정으로 로그인 실패", error)
                 } else if (token != null) {
                     Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+                    // 코루틴을 사용하여 getArtistList 함수 호출
+                    lifecycleScope.launch {
+                        pushToken(0, token.accessToken)
+                    }
+                    // 화면 전환
+                    val intent = Intent(this, SignupProfileActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
             }
 
