@@ -413,7 +413,7 @@
                             android:background="@drawable/custom_ranking_list">
 
                             <ImageView
-                                android:id="@+id/raking_first_img"
+                                android:id="@+id/raking_1th_img"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
                                 android:background="@drawable/custom_circle_mp"
@@ -426,25 +426,25 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <ImageView
-                                android:id="@+id/raking_third_img"
+                                android:id="@+id/raking_3th_img"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
                                 android:layout_marginStart="16dp"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/profile"
-                                app:layout_constraintBottom_toBottomOf="@+id/raking_first_img"
+                                app:layout_constraintBottom_toBottomOf="@+id/raking_1th_img"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/raking_first_img" />
+                                app:layout_constraintStart_toEndOf="@+id/raking_1th_img" />
 
                             <ImageView
-                                android:id="@+id/raking_second_img"
+                                android:id="@+id/raking_2th_img"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
                                 android:layout_marginEnd="16dp"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/profile"
-                                app:layout_constraintBottom_toBottomOf="@+id/raking_first_img"
-                                app:layout_constraintEnd_toStartOf="@+id/raking_first_img"
+                                app:layout_constraintBottom_toBottomOf="@+id/raking_1th_img"
+                                app:layout_constraintEnd_toStartOf="@+id/raking_1th_img"
                                 app:layout_constraintStart_toStartOf="parent" />
 
                             <TextView
@@ -456,9 +456,9 @@
                                 android:textColor="@color/b"
                                 android:textSize="17sp"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/raking_first_img"
-                                app:layout_constraintEnd_toEndOf="@+id/raking_first_img"
-                                app:layout_constraintStart_toStartOf="@+id/raking_first_img" />
+                                app:layout_constraintBottom_toTopOf="@+id/raking_1th_img"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_1th_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_1th_img" />
 
                             <TextView
                                 android:id="@+id/ranking_third"
@@ -469,9 +469,9 @@
                                 android:textColor="@color/b"
                                 android:textSize="17sp"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/raking_third_img"
-                                app:layout_constraintEnd_toEndOf="@+id/raking_third_img"
-                                app:layout_constraintStart_toStartOf="@+id/raking_third_img" />
+                                app:layout_constraintBottom_toTopOf="@+id/raking_3th_img"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_3th_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_3th_img" />
 
                             <TextView
                                 android:id="@+id/ranking_second"
@@ -482,75 +482,75 @@
                                 android:textColor="@color/b"
                                 android:textSize="17sp"
                                 android:textStyle="bold"
-                                app:layout_constraintBottom_toTopOf="@+id/raking_second_img"
-                                app:layout_constraintEnd_toEndOf="@+id/raking_second_img"
-                                app:layout_constraintStart_toStartOf="@+id/raking_second_img" />
+                                app:layout_constraintBottom_toTopOf="@+id/raking_2th_img"
+                                app:layout_constraintEnd_toEndOf="@+id/raking_2th_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_2th_img" />
 
                             <TextView
-                                android:id="@+id/ranking_second_name"
+                                android:id="@+id/ranking_2th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="@+id/raking_second_img"
-                                app:layout_constraintStart_toStartOf="@+id/raking_second_img"
-                                app:layout_constraintTop_toBottomOf="@+id/raking_second_img" />
+                                app:layout_constraintEnd_toEndOf="@+id/raking_2th_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_2th_img"
+                                app:layout_constraintTop_toBottomOf="@+id/raking_2th_img" />
 
                             <TextView
-                                android:id="@+id/ranking_first_name"
+                                android:id="@+id/ranking_1th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="@+id/raking_first_img"
-                                app:layout_constraintStart_toStartOf="@+id/raking_first_img"
-                                app:layout_constraintTop_toBottomOf="@+id/raking_first_img" />
+                                app:layout_constraintEnd_toEndOf="@+id/raking_1th_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_1th_img"
+                                app:layout_constraintTop_toBottomOf="@+id/raking_1th_img" />
 
                             <TextView
-                                android:id="@+id/ranking_third_name"
+                                android:id="@+id/ranking_3th_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="name"
                                 android:textColor="@color/b"
                                 android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="@+id/raking_third_img"
-                                app:layout_constraintStart_toStartOf="@+id/raking_third_img"
-                                app:layout_constraintTop_toBottomOf="@+id/raking_third_img" />
+                                app:layout_constraintEnd_toEndOf="@+id/raking_3th_img"
+                                app:layout_constraintStart_toStartOf="@+id/raking_3th_img"
+                                app:layout_constraintTop_toBottomOf="@+id/raking_3th_img" />
 
                             <TextView
-                                android:id="@+id/ranking_second_count"
+                                android:id="@+id/ranking_2th_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="count"
-                                app:layout_constraintEnd_toEndOf="@+id/ranking_second_name"
-                                app:layout_constraintStart_toStartOf="@+id/ranking_second_name"
-                                app:layout_constraintTop_toBottomOf="@+id/ranking_second_name" />
+                                app:layout_constraintEnd_toEndOf="@+id/ranking_2th_name"
+                                app:layout_constraintStart_toStartOf="@+id/ranking_2th_name"
+                                app:layout_constraintTop_toBottomOf="@+id/ranking_2th_name" />
 
                             <TextView
-                                android:id="@+id/ranking_first_count"
+                                android:id="@+id/ranking_1th_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="count"
-                                app:layout_constraintEnd_toEndOf="@+id/ranking_first_name"
-                                app:layout_constraintStart_toStartOf="@+id/ranking_first_name"
-                                app:layout_constraintTop_toBottomOf="@+id/ranking_first_name" />
+                                app:layout_constraintEnd_toEndOf="@+id/ranking_1th_name"
+                                app:layout_constraintStart_toStartOf="@+id/ranking_1th_name"
+                                app:layout_constraintTop_toBottomOf="@+id/ranking_1th_name" />
 
                             <TextView
-                                android:id="@+id/ranking_third_count"
+                                android:id="@+id/ranking_3th_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="count"
-                                app:layout_constraintEnd_toEndOf="@+id/ranking_third_name"
-                                app:layout_constraintStart_toStartOf="@+id/ranking_third_name"
-                                app:layout_constraintTop_toBottomOf="@+id/ranking_third_name" />
+                                app:layout_constraintEnd_toEndOf="@+id/ranking_3th_name"
+                                app:layout_constraintStart_toStartOf="@+id/ranking_3th_name"
+                                app:layout_constraintTop_toBottomOf="@+id/ranking_3th_name" />
 
                             <TextView
                                 android:id="@+id/fan_tab_all"
