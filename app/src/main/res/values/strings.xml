@@ -3,4 +3,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="kakao_app_key">089f62d64ec4754486d13ca596562a7e</string>
+    <string name="serviceToken">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozMjYxNTI0Mzg4LCJpYXQiOjE3MDUwNzI4ODUsImV4cCI6MTcwNTE1OTI4NX0.G9wSheE3pFMdWEV9E1Gs72G0wNfTn1a8SqlSTAyMe-I</string>
 </resources>

@@ -357,43 +357,6 @@
                     android:layout_marginBottom="30dp"
                     android:background="#F4E7E7">
 
-                    <ImageButton
-                        android:id="@+id/imageButton2"
-                        android:layout_width="278dp"
-                        android:layout_height="36dp"
-                        android:layout_marginEnd="24dp"
-                        android:background="@android:color/transparent"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/artist_tab"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/fan_tab_off"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="35dp"
-                        android:layout_marginTop="4dp"
-                        android:text="팬 순위"
-                        android:textColor="@color/dg"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/imageButton2"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/artist_tab_on"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="전체 아티스트 순위"
-                        android:textColor="@color/mp"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/imageButton2"
-                        app:layout_constraintTop_toTopOf="parent" />
-
                     <LinearLayout
                         android:id="@+id/ranking_layout"
                         android:layout_width="0dp"
@@ -403,8 +366,34 @@
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageButton2">
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/fan_tab"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="팬 순위"
+                                android:layout_marginEnd="15dp"
+                                android:textColor="@color/dg"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/artist_tab"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="전체 아티스트 순위"
+                                android:layout_marginEnd="20dp"
+                                android:textColor="@color/mp"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/ct_rank_1to3"

@@ -1,6 +1,7 @@
 package com.example.teuniverse
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -28,41 +29,84 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class VoteFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var fanTab: TextView
+    private lateinit var fanAll: TextView
+    private lateinit var fanBest: TextView
+    private lateinit var artistTab: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
 
         // 코루틴을 사용하여 getArtistList 함수 호출
         lifecycleScope.launch {
-            getVoteCountList()
+            getRankingOfArtists()
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_vote, container, false)
+        val view = inflater.inflate(R.layout.fragment_vote, container, false)
+        // 아이템 선언
+        fanTab = view.findViewById(R.id.fan_tab)
+        artistTab = view.findViewById(R.id.artist_tab)
+        fanAll = view.findViewById(R.id.fan_tab_all)
+        fanBest = view.findViewById(R.id.fan_tab_best)
+
+        // 뷰 숨기기
+        fanAll.visibility = View.GONE
+        fanBest.visibility = View.GONE
+
+        // 팬 탭 클릭이벤트
+        fanTab.setOnClickListener {
+            // 기본 값: 전체
+            lifecycleScope.launch {
+                getRankingOfFan(0)
+            }
+            // 뷰 나타내기
+            fanAll.visibility = View.VISIBLE
+            fanBest.visibility = View.VISIBLE
+            // 색상 변경
+            fanTab.setTextColor(Color.parseColor("#5C21A4"))
+            artistTab.setTextColor(Color.parseColor("#7C7C7C"))
+            // 팬: 전체
+            fanAll.setOnClickListener {
+                lifecycleScope.launch {
+                    getRankingOfFan(0)
+                }
+                fanAll.setTextColor(Color.parseColor("#5C21A4"))
+                fanBest.setTextColor(Color.parseColor("#7C7C7C"))
+            }
+            // 팬: 최애
+            fanBest.setOnClickListener {
+                lifecycleScope.launch {
+                    getRankingOfFan(1)
+                }
+                fanAll.setTextColor(Color.parseColor("#7C7C7C"))
+                fanBest.setTextColor(Color.parseColor("#5C21A4"))
+            }
+
+            // 아티스트 탭 클릭이벤트
+            artistTab.setOnClickListener {
+                lifecycleScope.launch {
+                    getRankingOfArtists()
+                }
+                // 뷰 숨기기
+                fanAll.visibility = View.GONE
+                fanBest.visibility = View.GONE
+                // 색상 변경
+                fanTab.setTextColor(Color.parseColor("#7C7C7C"))
+                artistTab.setTextColor(Color.parseColor("#5C21A4"))
+            }
+        }
+
+        return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment VoteFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             VoteFragment().apply {
@@ -74,23 +118,57 @@ class VoteFragment : Fragment() {
     }
 
     // 서버에서 월간 아티스트 투표 데이터 가져오는 함수
-    private suspend fun getVoteCountList() {
-        Log.d("getVoteCountList 함수", "호출 성공")
+    private suspend fun getRankingOfArtists() {
+        Log.d("getRankingOfArtists 함수", "호출 성공")
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val serviceToken = getString(R.string.serviceToken)
             val response: Response<MonthlyRankingResponse> = withContext(Dispatchers.IO) {
-                MonthlyRankingInstance.getVoteCountService().getVoteCount()
+                MonthlyArtistRankingInstance.getVoteCountService().getVoteCount(serviceToken)
             }
             // Response를 처리하는 코드
             if (response.isSuccessful) {
-                val voteCountList: MonthlyRankingResponse? = response.body()
-                if (voteCountList != null) {
-                    Log.d("voteCountList", "${voteCountList.statusCode} ${voteCountList.message}")
+                val artistVoteCountList: MonthlyRankingResponse? = response.body()
+                if (artistVoteCountList != null) {
+                    Log.d("voteCountList", "${artistVoteCountList.statusCode} ${artistVoteCountList.message}")
                     // 정렬 기준에 따른 순서
-                    handleResponse(voteCountList)
-                    RankingOfArtists(voteCountList)
+                    handleResponse(artistVoteCountList)
+                    rankingData(artistVoteCountList)
+                } else {
+                    handleError("Response body is null.")
+                }
+            } else {
+                Log.d("error", "서버 연동 실패")
+                handleError("Error: ${response.code()} - ${response.message()}")
+            }
+        } catch (e: Exception) {
+            // 예외 처리 코드
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 팬 순위 가져오기
+    private suspend fun getRankingOfFan(type: Int) {
+        Log.d("getRankingOfFan 함수", "호출 성공")
+        try {
+            Log.d("try문","실행")
+            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
+            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
+            // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val serviceToken = getString(R.string.serviceToken)
+            val response: Response<MonthlyRankingResponse> = withContext(Dispatchers.IO) {
+                MonthlyFanRankingInstance.getVoteCountService().getVoteCount(serviceToken, type)
+            }
+            // Response를 처리하는 코드
+            if (response.isSuccessful) {
+                Log.d("팬랭킹 response","응답 성공")
+                val fanVoteCountList: MonthlyRankingResponse? = response.body()
+                if (fanVoteCountList != null) {
+                    Log.d("voteCountList", "${fanVoteCountList.statusCode} ${fanVoteCountList.message}")
+                    // 팬 순위 클릭 시 데이터 조회 (기본: 전체)
+                    rankingData(fanVoteCountList)
                 } else {
                     handleError("Response body is null.")
                 }
@@ -148,9 +226,9 @@ class VoteFragment : Fragment() {
         }
     }
 
-    // 월간 전체 아티스트 순위
+    // 월간 아티스트 & 팬 순위
     @SuppressLint("DiscouragedApi")
-    private fun RankingOfArtists(voteCountList: MonthlyRankingResponse?) {
+    private fun rankingData(voteCountList: MonthlyRankingResponse?) {
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in voteCountList.data.indices) {
@@ -160,7 +238,7 @@ class VoteFragment : Fragment() {
                 var numberOfVotes = voteCountData.voteCount
 
                 // 이미지뷰 가져오기
-                val imageViewId = resources.getIdentifier("ranking_${i+1}th_img", "id", requireContext().packageName)
+                val imageViewId = resources.getIdentifier("raking_${i+1}th_img", "id", requireContext().packageName)
                 val imageView = view?.findViewById<ImageView>(imageViewId)
 
                 // name 텍스트뷰 가져오기
@@ -169,6 +247,8 @@ class VoteFragment : Fragment() {
                 // Count 텍스트뷰 가져오기
                 val countTvId = resources.getIdentifier("ranking_${i+1}th_count","id",requireContext().packageName)
                 val countTv = view?.findViewById<TextView>(countTvId)
+
+                Log.d(nametxt, voteCountData.toString())
 
                 // 텍스트뷰에 데이터 연결
                 if (nameTv != null) {
@@ -180,7 +260,7 @@ class VoteFragment : Fragment() {
                 }
 
                 // Glide를 사용하여 이미지 로딩
-                if (i == 0 && imageView != null) {
+                if (imageView != null) {
                     Glide.with(this)
                         .load(imageUrl)
                         .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기

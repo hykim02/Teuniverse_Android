@@ -25,7 +25,23 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
+    // 서버에서 받은 서비스 access토큰 저장
+    object ServiceAccessTokenDB {
+        private lateinit var sharedPreferences: SharedPreferences
+        // 초기화
+        fun init(context: Context) {
+            sharedPreferences = context.getSharedPreferences("ServiceToken", Context.MODE_PRIVATE)
+        }
 
+        // 객체 반환
+        fun getInstance(): SharedPreferences {
+            if(!this::sharedPreferences.isInitialized) {
+                throw IllegalStateException("SharedPreferencesSingleton is not initialized")
+            }
+            return ServiceAccessTokenDB.sharedPreferences
+        }
+    }
+    // 로그인 후 서버에서 유저ID & 토큰 받아와서 저장
     object UserInfoDB {
         private lateinit var sharedPreferences: SharedPreferences
         // 초기화

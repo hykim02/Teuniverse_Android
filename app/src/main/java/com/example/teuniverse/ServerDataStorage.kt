@@ -34,7 +34,7 @@ data class MonthlyRankingResponse(
 )
 
 data class VoteData(
-    val id: Int,
+    val id: Long,
     val name: String,
     val thumbnailUrl: String,
     val voteCount: String

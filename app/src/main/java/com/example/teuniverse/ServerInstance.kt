@@ -20,15 +20,28 @@ object SelectArtistInstance {
 }
 
 // 월간 아티스트 투표수 조회
-object MonthlyRankingInstance {
-    fun getVoteCountService(): MonthlyRankingInterface {
+object MonthlyArtistRankingInstance {
+    fun getVoteCountService(): MonthlyArtistRankingInterface {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(MonthlyRankingInterface::class.java)
+            .create(MonthlyArtistRankingInterface::class.java)
     }
 }
+
+// 월간 팬 투표수 조회
+object MonthlyFanRankingInstance {
+    fun getVoteCountService(): MonthlyFanRankingInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MonthlyFanRankingInterface::class.java)
+    }
+}
+
+
 
 // 로그인 토큰 전송 요청 & 응답
 object LoginInstance {

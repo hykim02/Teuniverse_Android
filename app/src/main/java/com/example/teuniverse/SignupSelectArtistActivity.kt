@@ -92,8 +92,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val serviceToken = getString(R.string.serviceToken)
             val response: Response<SelectArtistResponse> = withContext(Dispatchers.IO) {
-                SelectArtistInstance.getArtistService().getArtist()
+                SelectArtistInstance.getArtistService().getArtist(serviceToken)
             }
 
             // Response를 처리하는 코드
