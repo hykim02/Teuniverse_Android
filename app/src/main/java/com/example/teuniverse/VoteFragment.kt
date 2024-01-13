@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +35,9 @@ class VoteFragment : Fragment() {
     private lateinit var fanAll: TextView
     private lateinit var fanBest: TextView
     private lateinit var artistTab: TextView
+    private lateinit var rvRanking: RecyclerView
+    private lateinit var rankingList: ArrayList<VoteRankingItem>
+    private lateinit var voteRankAdapter: VoteRankAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +48,7 @@ class VoteFragment : Fragment() {
         }
     }
 
-    @SuppressLint("MissingInflatedId")
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +60,17 @@ class VoteFragment : Fragment() {
         artistTab = view.findViewById(R.id.artist_tab)
         fanAll = view.findViewById(R.id.fan_tab_all)
         fanBest = view.findViewById(R.id.fan_tab_best)
+        rvRanking = view.findViewById(R.id.rv_ranking)
+        rankingList = ArrayList()
+
+        rankingList.add(VoteRankingItem("1위","https://example.com/thumbnail.jpg","박서진","540"))
+        rankingList.add(VoteRankingItem("1위","https://example.com/thumbnail.jpg","박서진","540"))
+
+        voteRankAdapter = VoteRankAdapter(rankingList)
+
+        // 리사이클러뷰 어댑터 연결
+        rvRanking.adapter = voteRankAdapter
+        rvRanking.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         // 뷰 숨기기
         fanAll.visibility = View.GONE
@@ -102,7 +118,6 @@ class VoteFragment : Fragment() {
                 artistTab.setTextColor(Color.parseColor("#5C21A4"))
             }
         }
-
         return view
     }
 
@@ -227,8 +242,9 @@ class VoteFragment : Fragment() {
     }
 
     // 월간 아티스트 & 팬 순위
-    @SuppressLint("DiscouragedApi")
+    @SuppressLint("DiscouragedApi", "SetTextI18n", "NotifyDataSetChanged")
     private fun rankingData(voteCountList: MonthlyRankingResponse?) {
+        rankingList.clear()
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in voteCountList.data.indices) {
@@ -237,40 +253,94 @@ class VoteFragment : Fragment() {
                 val nametxt = voteCountData.name
                 var numberOfVotes = voteCountData.voteCount
 
-                // 이미지뷰 가져오기
-                val imageViewId = resources.getIdentifier("raking_${i+1}th_img", "id", requireContext().packageName)
-                val imageView = view?.findViewById<ImageView>(imageViewId)
+                Log.d(nametxt,voteCountData.toString())
 
-                // name 텍스트뷰 가져오기
-                val nameTvId = resources.getIdentifier("ranking_${i+1}th_name", "id", requireContext().packageName)
-                val nameTv = view?.findViewById<TextView>(nameTvId)
-                // Count 텍스트뷰 가져오기
-                val countTvId = resources.getIdentifier("ranking_${i+1}th_count","id",requireContext().packageName)
-                val countTv = view?.findViewById<TextView>(countTvId)
+                if (i in 0 until 3) {
+                    Log.d("if문 $i",voteCountData.toString())
+                    // 이미지뷰 가져오기
+                    val imageViewId = resources.getIdentifier("raking_${i+1}th_img", "id", requireContext().packageName)
+                    val imageView = view?.findViewById<ImageView>(imageViewId)
 
-                Log.d(nametxt, voteCountData.toString())
+                    // name 텍스트뷰 가져오기
+                    val nameTvId = resources.getIdentifier("ranking_${i+1}th_name", "id", requireContext().packageName)
+                    val nameTv = view?.findViewById<TextView>(nameTvId)
+                    // Count 텍스트뷰 가져오기
+                    val countTvId = resources.getIdentifier("ranking_${i+1}th_count","id",requireContext().packageName)
+                    val countTv = view?.findViewById<TextView>(countTvId)
 
-                // 텍스트뷰에 데이터 연결
-                if (nameTv != null) {
-                    nameTv.text = nametxt
+                    // 텍스트뷰에 데이터 연결
+                    if (nameTv != null) {
+                        nameTv.text = nametxt
+                    }
+                    if (countTv != null) {
+                        numberOfVotes = addCommasToNumber(numberOfVotes)
+                        countTv.text = numberOfVotes
+                    }
+
+                    // Glide를 사용하여 이미지 로딩
+                    if (imageView != null) {
+                        Glide.with(this)
+                            .load(imageUrl)
+                            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                            .into(imageView)
+                    }
                 }
-                if (countTv != null) {
-                    numberOfVotes = addCommasToNumber(numberOfVotes)
-                    countTv.text = numberOfVotes
-                }
-
-                // Glide를 사용하여 이미지 로딩
-                if (imageView != null) {
-                    Glide.with(this)
-                        .load(imageUrl)
-                        .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
-                        .into(imageView)
-                } else {
-                    continue
-                }
+//                else {
+//                    Log.d("else문 $i",voteCountData.toString())
+//
+//                    rankingList.add(VoteRankingItem("${i+1}위",imageUrl,nametxt,numberOfVotes))
+//                }
             }
+            // 어댑터에 데이터가 변경되었음을 알리기
+//            voteRankAdapter.notifyDataSetChanged()
         }
     }
+
+    // 월간 아티스트 & 팬 순위
+//    @SuppressLint("DiscouragedApi")
+//    private fun rankingData(voteCountList: MonthlyRankingResponse?) {
+//        if (voteCountList != null) {
+//            // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
+//            for (i in voteCountList.data.indices) {
+//                val voteCountData = voteCountList.data[i]
+//                val imageUrl = voteCountData.thumbnailUrl
+//                val nametxt = voteCountData.name
+//                var numberOfVotes = voteCountData.voteCount
+//
+//                // 이미지뷰 가져오기
+//                val imageViewId = resources.getIdentifier("raking_${i+1}th_img", "id", requireContext().packageName)
+//                val imageView = view?.findViewById<ImageView>(imageViewId)
+//
+//                // name 텍스트뷰 가져오기
+//                val nameTvId = resources.getIdentifier("ranking_${i+1}th_name", "id", requireContext().packageName)
+//                val nameTv = view?.findViewById<TextView>(nameTvId)
+//                // Count 텍스트뷰 가져오기
+//                val countTvId = resources.getIdentifier("ranking_${i+1}th_count","id",requireContext().packageName)
+//                val countTv = view?.findViewById<TextView>(countTvId)
+//
+//                Log.d(nametxt, voteCountData.toString())
+//
+//                // 텍스트뷰에 데이터 연결
+//                if (nameTv != null) {
+//                    nameTv.text = nametxt
+//                }
+//                if (countTv != null) {
+//                    numberOfVotes = addCommasToNumber(numberOfVotes)
+//                    countTv.text = numberOfVotes
+//                }
+//
+//                // Glide를 사용하여 이미지 로딩
+//                if (imageView != null) {
+//                    Glide.with(this)
+//                        .load(imageUrl)
+//                        .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+//                        .into(imageView)
+//                } else {
+//                    continue
+//                }
+//            }
+//        }
+//    }
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드

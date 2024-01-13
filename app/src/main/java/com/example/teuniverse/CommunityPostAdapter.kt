@@ -7,11 +7,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 
-class CommunityPostAdapter(val itemList: ArrayList<CommunityPostItem>) :
+class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.community_recyclerview_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
         return CommunityPostViewHolder(view)
     }
 

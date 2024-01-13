@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         naverLogin.setOnClickListener{
-            val intent = Intent(this, SignupProfileActivity::class.java)
+            val intent = Intent(this, SignupSelectArtistActivity::class.java)
             startActivity(intent)
             finish()
         }

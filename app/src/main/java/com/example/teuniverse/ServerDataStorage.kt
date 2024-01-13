@@ -11,6 +11,14 @@ data class CommunityPostItem(
     val commentCount: String
 )
 
+// 투표 랭킹 리사이클러뷰 아이템 데이터
+data class VoteRankingItem(
+    val rank: String,
+    val img: String,
+    val name: String,
+    val count: String
+)
+
 // 최애 아티스트 조회
 data class SelectArtistResponse(
     val success: Boolean,
