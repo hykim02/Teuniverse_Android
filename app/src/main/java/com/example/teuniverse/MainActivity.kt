@@ -26,7 +26,7 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
-    // 서버에서 받은 서비스 access토큰 저장
+    // 서버에서 받은 서비스 access 토큰 저장
     object ServiceAccessTokenDB {
         private lateinit var sharedPreferences: SharedPreferences
         // 초기화
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             return ServiceAccessTokenDB.sharedPreferences
         }
     }
-    // 로그인 후 서버에서 유저ID & 토큰 받아와서 저장
+    // 로그인 후 서버에서 유저ID 받아와서 저장
     object UserInfoDB {
         private lateinit var sharedPreferences: SharedPreferences
         // 초기화
@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         val kakaoLogin = findViewById<ImageButton>(R.id.kakao_login)
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
+//        kakaoUnlink()
+
         kakaoLogin.setOnClickListener{
             // 카카오계정으로 로그인 공통 callback 구성
             // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                     Log.e(TAG, "카카오계정으로 로그인 실패", error)
                 } else if (token != null) {
                     Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
-                    // 코루틴을 사용하여 getArtistList 함수 호출
+                    // 코루틴을 사용하여 pushToken 함수 호출
                     lifecycleScope.launch {
                         pushToken(0, token.accessToken)
                     }
@@ -118,6 +120,20 @@ class MainActivity : AppCompatActivity() {
                     handleError("Exception during loginWithKakaoAccount: ${e.message}")
                 }
             }
+
+            // 사용자 정보 요청 (기본)
+            UserApiClient.instance.me { user, error ->
+                if (error != null) {
+                    Log.e(TAG, "사용자 정보 요청 실패", error)
+                }
+                else if (user != null) {
+                    Log.i(TAG, "사용자 정보 요청 성공" +
+                            "\n회원번호: ${user.id}" +
+                            "\n이메일: ${user.kakaoAccount?.email}" +
+                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+                }
+            }
         }
 
         naverLogin.setOnClickListener{
@@ -142,9 +158,9 @@ class MainActivity : AppCompatActivity() {
 
             // Response를 처리하는 코드
             if (response.isSuccessful) {
+                Log.d("서버 연동",response.message()+response.code())
                 val serverResponse: LoginResponse? = response.body()
                 if (serverResponse != null) {
-                    Log.d("200","서버 연동 성공")
                     Log.d("serverResponse", serverResponse.toString())
                     handleResponse(serverResponse)
 
@@ -165,28 +181,35 @@ class MainActivity : AppCompatActivity() {
         Log.d("handleResponse 함수","실행")
         //SharedPreferences 초기화
         UserInfoDB.init(this)
-        val editor = UserInfoDB.getInstance().edit()
+        val userEditor = UserInfoDB.getInstance().edit()
+        ServiceAccessTokenDB.init(this)
+        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
 
         if (userData != null) {
             Log.d("userData","null 아님")
             if (userData.isExistUser) {
-                Log.d("isExistUser","true")
-                editor.putString("accessToken", userData.accessToken)
-                editor.putString("refreshToken", userData.refreshToken)
+                Log.d("isExistUser", userData.isExistUser.toString())
+                Log.d("userData",userData.toString())
+                tokenEditor.putString("accessToken", userData.accessToken)
+                tokenEditor.putString("refreshToken", userData.refreshToken)
             } else {
-                Log.d("isExistUser","false")
-                editor.putString("accessToken", userData.accessToken)
-                editor.putString("refreshToken", userData.refreshToken)
-                editor.putLong("id", userData.userProfileData.id)
-                editor.putString("nickName", userData.userProfileData.nickName)
-                editor.putString("thumbnailUrl", userData.userProfileData.thumbnailUrl)
+                Log.d("isExistUser",userData.isExistUser.toString())
+                Log.d("userData",userData.toString())
+                tokenEditor.putString("accessToken", userData.accessToken)
+                tokenEditor.putString("refreshToken", userData.refreshToken)
+                userEditor.putLong("id", userData.userProfileData.id)
+                userEditor.putString("nickName", userData.userProfileData.nickName)
+                userEditor.putString("thumbnailUrl", userData.userProfileData.thumbnailUrl)
             }
-            editor.apply()
+            userEditor.apply()
+            tokenEditor.apply()
+        } else {
+            handleError("userData is null.")
         }
     }
 
+    // 연결 끊기
     private fun kakaoUnlink() {
-        // 연결 끊기
         UserApiClient.instance.unlink { error ->
             if (error != null) {
                 Log.e("Hello", "연결 끊기 실패", error)
