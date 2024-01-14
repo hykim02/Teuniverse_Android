@@ -58,7 +58,7 @@ data class LoginResponse(
     val accessToken: String,
     val refreshToken: String,
     val isExistUser: Boolean,
-    val userProfileData: UserProfileData?
+    val userProfileData: UserProfileData
 )
 
 data class UserProfileData(
