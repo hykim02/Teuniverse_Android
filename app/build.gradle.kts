@@ -58,8 +58,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
     implementation("com.github.bumptech.glide:glide:4.14.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
-    implementation ("com.kakao.sdk:v2-user:2.7.0") // 사용하는 SDK 버전에 맞게 변경
-    implementation ("com.kakao.sdk:v2-common:2.7.0")
+    implementation ("com.kakao.sdk:v2-user:2.19.0") // 사용하는 SDK 버전에 맞게 변경
+    implementation ("com.kakao.sdk:v2-common:2.19.0")
     implementation("com.android.identity:identity-credential-android:20231002") // 카카오 로그인
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")

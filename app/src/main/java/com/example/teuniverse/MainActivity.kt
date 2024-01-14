@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             } else {
+                Log.d("카카오계정 로그인","콜백")
                 UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
             }
         }
@@ -119,7 +120,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
     }
 
     // loginType -> 0: 카카오, 1: 네이버
@@ -178,6 +178,18 @@ class MainActivity : AppCompatActivity() {
             }
             editor.apply()
         }
+    }
+
+    private fun kakaoUnlink() {
+        // 연결 끊기
+        UserApiClient.instance.unlink { error ->
+            if (error != null) {
+                Log.e("Hello", "연결 끊기 실패", error)
+            } else {
+                Log.i("Hello", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+            }
+        }
+        finish()
     }
 
     private fun handleError(errorMessage: String) {

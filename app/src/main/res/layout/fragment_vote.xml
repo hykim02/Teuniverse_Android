@@ -143,6 +143,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="20dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/vote_chartbox_custom"
                     android:elevation="20dp">
 
@@ -353,14 +354,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
-                    android:layout_marginBottom="30dp"
-                    android:background="#F4E7E7">
+                    android:layout_marginBottom="30dp">
 
                     <LinearLayout
                         android:id="@+id/ranking_layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/custom_background_all"
                         android:backgroundTint="@color/lg"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -568,7 +567,10 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_ranking"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="27dp"
+                            android:background="@color/lg"
+                            android:elevation="10dp"/>
 
                     </LinearLayout>
 

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class VoteRankAdapter(private val itemList: ArrayList<VoteRankingItem>):
 RecyclerView.Adapter<VoteRankAdapter.VoteRankViewHolder>() {
@@ -27,6 +28,7 @@ RecyclerView.Adapter<VoteRankAdapter.VoteRankViewHolder>() {
         // 이미지 로딩
         Glide.with(holder.itemView.context)
             .load(currentItem.img) // currentItem.img가 이미지 URL인 경우
+            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.img)
     }
 
