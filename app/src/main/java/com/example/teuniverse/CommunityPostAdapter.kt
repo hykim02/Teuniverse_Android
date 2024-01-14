@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
@@ -18,28 +20,36 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
 
-        holder.fandom_name.text = currentItem.fandomName
-        holder.post_term.text = currentItem.postTerm.toString()
-        holder.post_summary.text = currentItem.postSummary
-//        holder.heart_count.text = currentItem.heartCount
-//        holder.comment_count.text = currentItem.commentCount
-        holder.post_img.setImageResource(currentItem.postImg)
+        holder.fandomName.text = currentItem.fandomName
+        holder.postTerm.text = currentItem.postTerm.toString()
+        holder.postSummary.text = currentItem.postSummary
+        holder.heartCount.text = currentItem.heartCount.toString()
+        holder.commentCount.text = currentItem.commentCount.toString()
 
-        // holder.user_img.setImageResource(R.drawable.user_placeholder)
+        // 이미지 로딩
+        Glide.with(holder.itemView.context)
+            .load(currentItem.postImg) // currentItem.img가 이미지 URL인 경우
+            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+            .into(holder.postImg)
+
+        // 이미지 로딩
+        Glide.with(holder.itemView.context)
+            .load(currentItem.userImg) // currentItem.img가 이미지 URL인 경우
+            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+            .into(holder.userImg)
     }
 
     override fun getItemCount(): Int {
         return itemList.count()
     }
 
-
     inner class CommunityPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val user_img = itemView.findViewById<ImageView>(R.id.user_profile)
-        val fandom_name = itemView.findViewById<TextView>(R.id.fandom_name)
-        val post_term = itemView.findViewById<TextView>(R.id.term)
-        val post_img = itemView.findViewById<ImageView>(R.id.post_img)
-        val post_summary = itemView.findViewById<TextView>(R.id.post_summary)
-        val heart_count = itemView.findViewById<ImageView>(R.id.heart_count)
-        val comment_count = itemView.findViewById<ImageView>(R.id.comment_count)
+        val userImg: ImageView = itemView.findViewById<ImageView>(R.id.user_profile)
+        val fandomName: TextView = itemView.findViewById<TextView>(R.id.fandom_name)
+        val postTerm: TextView = itemView.findViewById<TextView>(R.id.term)
+        val postImg: ImageView = itemView.findViewById<ImageView>(R.id.post_img)
+        val postSummary: TextView = itemView.findViewById<TextView>(R.id.post_summary)
+        var heartCount: TextView = itemView.findViewById<TextView>(R.id.heart_count)
+        val commentCount: TextView = itemView.findViewById<TextView>(R.id.comment_count)
     }
 }

@@ -570,6 +570,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="27dp"
                             android:background="@color/lg"
+                            tools:listitem="@layout/vote_rv_item"
                             android:elevation="10dp"/>
 
                     </LinearLayout>

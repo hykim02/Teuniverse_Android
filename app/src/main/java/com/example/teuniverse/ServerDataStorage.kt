@@ -5,10 +5,10 @@ data class CommunityPostItem(
     val userImg: String,
     val fandomName: String,
     val postTerm: Int,
-    val postImg: Int,
+    val postImg: String,
     val postSummary: String,
-    val heartCount: String,
-    val commentCount: String
+    val heartCount: Int,
+    val commentCount: Int
 )
 
 // 투표 랭킹 리사이클러뷰 아이템 데이터
