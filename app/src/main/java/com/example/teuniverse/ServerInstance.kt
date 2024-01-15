@@ -2,8 +2,11 @@ package com.example.teuniverse
 
 import androidx.annotation.RestrictTo
 import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.Type
 
 const val BASE_URL = BuildConfig.BASE_URL
 
