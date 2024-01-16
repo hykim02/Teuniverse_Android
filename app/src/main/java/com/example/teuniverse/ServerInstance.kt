@@ -60,3 +60,24 @@ object LoginInstance {
     }
 }
 
+// 투표권 개수 조회
+object VoteCountInstance {
+    fun getVotesService(): VoteCountInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(VoteCountInterface::class.java)
+    }
+}
+
+// 투표하기 팝업창 데이터
+object PopupVoteInstance {
+    fun getCurrentVoteInfoService(): PopupVoteInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(PopupVoteInterface::class.java)
+    }
+}

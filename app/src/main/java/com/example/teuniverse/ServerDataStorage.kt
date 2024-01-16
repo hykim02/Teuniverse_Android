@@ -26,7 +26,14 @@ data class ServerResponse<T>(
     val success: Boolean,
     val statusCode: Int,
     val message: String,
-    val data: ArrayList<T>
+    val data: T
+)
+
+data class ArtistServerResponse<T>(
+    val success: Boolean,
+    val statusCode: Int,
+    val message: String,
+    val data: List<T>
 )
 // 최애 아티스트 조회
 data class ArtistData(
@@ -60,6 +67,20 @@ data class UserProfileData(
     val id: Long,
     val nickName: String,
     val thumbnailUrl: String
+)
+
+// 투표권 개수 조회
+data class NumberOfVote(
+    val voteCount: Int
+)
+
+// 투표하기 현황 조회
+data class PopupVoteData(
+    val voteCount: Int,
+    val remainVoteCount: Int,
+    val month: Int,
+    val artistName: String,
+    val rank: Int
 )
 
 

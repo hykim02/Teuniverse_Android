@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
                     Log.d("카카오계정 로그인","콜백")
                     UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
                 } catch (e: Exception) {
-                    Log.e(TAG, "Exception during loginWithKakaoAccount", e)
                     handleError("Exception during loginWithKakaoAccount: ${e.message}")
                 }
             }
@@ -158,7 +157,6 @@ class MainActivity : AppCompatActivity() {
                 if (serverResponse != null) {
                     Log.d("serverResponse", serverResponse.toString())
                     handleResponse(serverResponse)
-
                 } else {
                     handleError("Response body is null.")
                 }
@@ -179,7 +177,7 @@ class MainActivity : AppCompatActivity() {
         val userEditor = UserInfoDB.getInstance().edit()
         ServiceAccessTokenDB.init(this)
         val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-        val userData = serverResponse?.data?.get(0)
+        val userData = serverResponse?.data
 
         if (userData != null) {
             // 이미 존재하는 회원 true

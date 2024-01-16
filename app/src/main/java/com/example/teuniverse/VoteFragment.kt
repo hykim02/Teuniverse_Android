@@ -28,6 +28,7 @@ class VoteFragment : Fragment() {
     private lateinit var rvRanking: RecyclerView
     private lateinit var rankingList: ArrayList<VoteRankingItem>
     private lateinit var voteRankAdapter: VoteRankAdapter
+    private lateinit var numberOfVote: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +36,9 @@ class VoteFragment : Fragment() {
         // 코루틴을 사용하여 getArtistList 함수 호출
         lifecycleScope.launch {
             getRankingOfArtists()
+            getNumberOfVotes()
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +53,7 @@ class VoteFragment : Fragment() {
         fanBest = view.findViewById(R.id.fan_tab_best)
         rvRanking = view.findViewById(R.id.rv_ranking)
         rankingList = ArrayList()
+        numberOfVote = view.findViewById(R.id.vote_count)
 
         voteRankAdapter = VoteRankAdapter(rankingList)
 
@@ -108,6 +110,30 @@ class VoteFragment : Fragment() {
         return view
     }
 
+    // 투표권 개수 가져오기
+    private suspend fun getNumberOfVotes() {
+        Log.d("getNumberOfVotes 함수", "호출 성공")
+        try {
+            val serviceToken = getString(R.string.serviceToken)
+            val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
+                VoteCountInstance.getVotesService().getVotes(serviceToken)
+            }
+            if (response.isSuccessful) {
+                val theVote: ServerResponse<NumberOfVote>? = response.body()
+                if (theVote != null) {
+                    Log.d("투표권 개수", "${theVote.statusCode} ${theVote.message}")
+                    handleTheVotes(theVote)
+                } else {
+                    handleError("Response body is null.")
+                }
+            } else {
+                handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+            }
+        } catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
     // 서버에서 월간 아티스트 투표 데이터 가져오는 함수
     private suspend fun getRankingOfArtists() {
         Log.d("getRankingOfArtists 함수", "호출 성공")
@@ -116,23 +142,23 @@ class VoteFragment : Fragment() {
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
             val serviceToken = getString(R.string.serviceToken)
-            val response: Response<ServerResponse<VoteData>> = withContext(Dispatchers.IO) {
+            val response: Response<ArtistServerResponse<VoteData>> = withContext(Dispatchers.IO) {
                 MonthlyArtistRankingInstance.getVoteCountService().getVoteCount(serviceToken)
             }
             // Response를 처리하는 코드
             if (response.isSuccessful) {
-                val artistVoteCountList: ServerResponse<VoteData>? = response.body()
+                val artistVoteCountList: ArtistServerResponse<VoteData>? = response.body()
                 if (artistVoteCountList != null) {
                     Log.d("voteCountList", "${artistVoteCountList.statusCode} ${artistVoteCountList.message}")
                     // 정렬 기준에 따른 순서
                     handleResponse(artistVoteCountList)
-                    rankingData(artistVoteCountList)
+                    handleRankingData(artistVoteCountList)
                 } else {
                     handleError("Response body is null.")
                 }
             } else {
                 Log.d("error", "서버 연동 실패")
-                handleError("Error: ${response.code()} - ${response.message()}")
+                handleError("getRankingOfArtists함수 Error: ${response.code()} - ${response.message()}")
             }
         } catch (e: Exception) {
             // 예외 처리 코드
@@ -149,23 +175,23 @@ class VoteFragment : Fragment() {
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
             val serviceToken = getString(R.string.serviceToken)
-            val response: Response<ServerResponse<VoteData>> = withContext(Dispatchers.IO) {
+            val response: Response<ArtistServerResponse<VoteData>> = withContext(Dispatchers.IO) {
                 MonthlyFanRankingInstance.getVoteCountService().getVoteCount(serviceToken, type)
             }
             // Response를 처리하는 코드
             if (response.isSuccessful) {
                 Log.d("팬랭킹 response","응답 성공")
-                val fanVoteCountList: ServerResponse<VoteData>? = response.body()
+                val fanVoteCountList: ArtistServerResponse<VoteData>? = response.body()
                 if (fanVoteCountList != null) {
                     Log.d("voteCountList", "${fanVoteCountList.statusCode} ${fanVoteCountList.message}")
                     // 팬 순위 클릭 시 데이터 조회 (기본: 전체)
-                    rankingData(fanVoteCountList)
+                    handleRankingData(fanVoteCountList)
                 } else {
                     handleError("Response body is null.")
                 }
             } else {
                 Log.d("error", "서버 연동 실패")
-                handleError("Error: ${response.code()} - ${response.message()}")
+                handleError("getRankingOfFan함수 Error: ${response.code()} - ${response.message()}")
             }
         } catch (e: Exception) {
             // 예외 처리 코드
@@ -173,9 +199,16 @@ class VoteFragment : Fragment() {
         }
     }
 
+    private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
+        if (votes != null) {
+            Log.d("투표권 개수", votes.data.voteCount.toString())
+            numberOfVote.text = votes.data.voteCount.toString()
+        }
+    }
+
     // 1~4위 까지
     @SuppressLint("DiscouragedApi")
-    private fun handleResponse(voteCountList: ServerResponse<VoteData>?) {
+    private fun handleResponse(voteCountList: ArtistServerResponse<VoteData>?) {
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in 0 until 4) {
@@ -219,7 +252,7 @@ class VoteFragment : Fragment() {
 
     // 월간 아티스트 & 팬 순위
     @SuppressLint("DiscouragedApi", "SetTextI18n", "NotifyDataSetChanged")
-    private fun rankingData(voteCountList: ServerResponse<VoteData>?) {
+    private fun handleRankingData(voteCountList: ArtistServerResponse<VoteData>?) {
         rankingList.clear()
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
@@ -229,10 +262,7 @@ class VoteFragment : Fragment() {
                 val nametxt = voteCountData.name
                 var numberOfVotes = voteCountData.voteCount
 
-                Log.d(nametxt,voteCountData.toString())
-
                 if (i in 0 until 3) {
-                    Log.d("if문 $i",voteCountData.toString())
                     // 이미지뷰 가져오기
                     val imageViewId = resources.getIdentifier("raking_${i+1}th_img", "id", requireContext().packageName)
                     val imageView = view?.findViewById<ImageView>(imageViewId)
@@ -262,8 +292,6 @@ class VoteFragment : Fragment() {
                     }
                 }
                 else {
-                    Log.d("else문 $i",voteCountData.toString())
-
                     numberOfVotes = addCommasToNumber(numberOfVotes)
                     rankingList.add(VoteRankingItem("${i+1}위",imageUrl,nametxt,numberOfVotes))
                 }
@@ -272,6 +300,8 @@ class VoteFragment : Fragment() {
             voteRankAdapter.notifyDataSetChanged()
         }
     }
+
+
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
