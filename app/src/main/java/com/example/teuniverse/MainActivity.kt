@@ -172,103 +172,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 객체 생성 (중첩 클래스)
-//    class OkHttpLoginInterface(private val client: OkHttpClient) {
-//        private val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
-//
-//        fun userLogin(request: LoginRequest): LoginResponse {
-//            val baseUrl = BASE_URL
-//            val endpoint = "user/login"
-//            val url = "$baseUrl$endpoint"
-//
-//            val json = """
-//            {
-//                "loginType": ${request.loginType},
-//                "accessToken": "${request.accessToken}"
-//            }
-//        """.trimIndent()
-//
-//            val requestBody = json.toRequestBody(mediaType)
-//
-//            val requestToServer = Request.Builder()
-//                .url(url)
-//                .post(requestBody)
-//                .addHeader("accept", "application/json")
-//                .addHeader("Content-Type", "application/json")
-//                .build()
-//
-//            return try {
-//                val response = client.newCall(requestToServer).execute()
-//
-//                if (response.isSuccessful) {
-//                    val responseBody = response.body?.string()
-//                    if (responseBody != null) {
-//                        Log.d("responseBody",responseBody)
-//                    }
-//                    return Gson().fromJson(responseBody, LoginResponse::class.java)
-//                } else {
-//                    throw IOException("Error: ${response.code} - ${response.message}")
-//                }
-//            } catch (e: IOException) {
-//                throw IOException("Network error: ${e.message}", e)
-//            }
-//        }
-//    }
-
-
-//    private suspend fun pushToken(loginType: Int, accessToken: String) {
-//        Log.d("pushToken 함수", "호출 성공")
-//
-//        try {
-//            val loginRequest = LoginRequest(loginType = loginType, accessToken = accessToken)
-//            val response: LoginResponse = withContext(Dispatchers.IO) {
-//                OkHttpLoginInstance.userLoginService().userLogin(loginRequest)
-//            }
-//
-//            Log.d("서버 연동", "성공")
-//            Log.d("serverResponse", response.toString())
-//            handleResponse(response)
-//
-//        } catch (e: HttpException) {
-//            handleError("Error: ${e.code()} - ${e.message()}")
-//        } catch (e: IOException) {
-//            handleError("Network error: ${e.message}")
-//        } catch (e: Exception) {
-//            handleError("Unknown error occurred.")
-//        }
-//    }
-
-    private fun handleResponse(userData: ServerResponse<LoginData>?) {
+    private fun handleResponse(serverResponse: ServerResponse<LoginData>?) {
         Log.d("handleResponse 함수","실행")
         //SharedPreferences 초기화
         UserInfoDB.init(this)
         val userEditor = UserInfoDB.getInstance().edit()
         ServiceAccessTokenDB.init(this)
         val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+        val userData = serverResponse?.data?.get(0)
 
         if (userData != null) {
-            Log.d("userData","null 아님")
             // 이미 존재하는 회원 true
-            if (userData.data) {
-                Log.d("isExistUser", userData.data.isExistUser.toString())
-                Log.d("userData",userData.toString())
-                tokenEditor.putString("accessToken", userData.data.accessToken)
-                tokenEditor.putString("refreshToken", userData.data.refreshToken)
-            }
-            // 신규 회원 false
-            else {
-                Log.d("isExistUser",userData.data.isExistUser.toString())
-                Log.d("userData",userData.toString())
-                tokenEditor.putString("accessToken", userData.data.accessToken)
-                tokenEditor.putString("refreshToken", userData.data.refreshToken)
-                userEditor.putLong("id", userData.data.userProfileData.id)
-                userEditor.putString("nickName", userData.data.userProfileData.nickName)
-                userEditor.putString("thumbnailUrl", userData.data.userProfileData.thumbnailUrl)
+            if (userData.isExistUser) {
+                Log.d("isExistUser", userData.isExistUser.toString())
+                tokenEditor.putString("accessToken", userData.accessToken)
+                tokenEditor.putString("refreshToken", userData.refreshToken)
+                // 신규 회원 false
+            } else {
+                Log.d("isExistUser",userData.isExistUser.toString())
+                tokenEditor.putString("accessToken", userData.accessToken)
+                tokenEditor.putString("refreshToken", userData.refreshToken)
+                userEditor.putLong("id", userData.userProfileData.id)
+                userEditor.putString("nickName", userData.userProfileData.nickName)
+                userEditor.putString("thumbnailUrl", userData.userProfileData.thumbnailUrl)
             }
             userEditor.apply()
             tokenEditor.apply()
-        } else {
-            handleError("userData is null.")
+            } else {
+                handleError("userData is null.")
+            }
         }
     }
 
@@ -281,11 +213,9 @@ class MainActivity : AppCompatActivity() {
                 Log.i("Hello", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
             }
         }
-        finish()
     }
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("Error", errorMessage)
     }
-}
