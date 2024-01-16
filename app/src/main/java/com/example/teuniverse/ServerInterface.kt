@@ -41,7 +41,7 @@ interface MonthlyFanRankingInterface {
 interface LoginInterface {
     @POST("user/login")
     @Headers("accept: application/json",
-        "content-type: application/json")
+        "Content-Type: application/json")
     suspend fun userLogin(
         @Body request: LoginRequest
     ): Response<LoginResponse>

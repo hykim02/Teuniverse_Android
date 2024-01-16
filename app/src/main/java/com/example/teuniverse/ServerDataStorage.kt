@@ -1,5 +1,7 @@
 package com.example.teuniverse
 
+import com.google.gson.annotations.SerializedName
+
 // 커뮤니티 리사이클러뷰 아이템 데이터
 data class CommunityPostItem(
     val userImg: String,
@@ -66,7 +68,6 @@ data class UserProfileData(
     val nickName: String,
     val thumbnailUrl: String
 )
-
 
 
 

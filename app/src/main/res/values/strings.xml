@@ -4,5 +4,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="kakao_app_key">1f495e515c2c26afa192c3b2a9ff5138</string>
     <string name="scheme_kakao_app_key">kakao1f495e515c2c26afa192c3b2a9ff5138</string>
-    <string name="serviceToken">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozMjYxNTI0Mzg4LCJpYXQiOjE3MDUxOTQxNTUsImV4cCI6MTcwNTI4MDU1NX0.EiptdE4Cql7fgFfZpNLQr9t4Dxv0dx4xWkYmjAp1upo</string>
+    <string name="serviceToken">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozMjg2Mjg3NTQ2LCJpYXQiOjE3MDUzMzQyMTcsImV4cCI6MTcwNTkzOTAxN30.M3K6E_w_p6jEg95ekVzo-lHMTE8K48TJSj3iwhdbevM</string>
 </resources>
