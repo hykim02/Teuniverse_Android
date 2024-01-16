@@ -93,13 +93,13 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
             val serviceToken = getString(R.string.serviceToken)
-            val response: Response<SelectArtistResponse> = withContext(Dispatchers.IO) {
+            val response: Response<ServerResponse<ArtistData>> = withContext(Dispatchers.IO) {
                 SelectArtistInstance.getArtistService().getArtist(serviceToken)
             }
 
             // Response를 처리하는 코드
             if (response.isSuccessful) {
-                val artistList: SelectArtistResponse? = response.body()
+                val artistList: ServerResponse<ArtistData>? = response.body()
                 if (artistList != null) {
                     Log.d("artistList", "${artistList.statusCode} ${artistList.message}")
                     // 정렬 기준에 따른 순서
@@ -135,7 +135,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
     // 받아온 아티스트 목록을 반복문을 통해 출력
     @SuppressLint("DiscouragedApi")
-    private fun handleResponse(artistList: SelectArtistResponse?) {
+    private fun handleResponse(artistList: ServerResponse<ArtistData>?) {
         //SharedPreferences 초기화
         SelectArtistDB.init(this)
         val editor = SelectArtistDB.getInstance().edit()
@@ -184,7 +184,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
     // 가나다순 정렬 함수
     @SuppressLint("DiscouragedApi")
-    private fun sortedResponse(artistList: SelectArtistResponse?) {
+    private fun sortedResponse(artistList: ServerResponse<ArtistData>?) {
         val unsortedList: MutableList<String> = mutableListOf()
         var sortedList: MutableList<String>
 

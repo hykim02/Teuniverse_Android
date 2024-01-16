@@ -116,12 +116,12 @@ class VoteFragment : Fragment() {
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
             val serviceToken = getString(R.string.serviceToken)
-            val response: Response<MonthlyRankingResponse> = withContext(Dispatchers.IO) {
+            val response: Response<ServerResponse<VoteData>> = withContext(Dispatchers.IO) {
                 MonthlyArtistRankingInstance.getVoteCountService().getVoteCount(serviceToken)
             }
             // Response를 처리하는 코드
             if (response.isSuccessful) {
-                val artistVoteCountList: MonthlyRankingResponse? = response.body()
+                val artistVoteCountList: ServerResponse<VoteData>? = response.body()
                 if (artistVoteCountList != null) {
                     Log.d("voteCountList", "${artistVoteCountList.statusCode} ${artistVoteCountList.message}")
                     // 정렬 기준에 따른 순서
@@ -149,13 +149,13 @@ class VoteFragment : Fragment() {
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
             val serviceToken = getString(R.string.serviceToken)
-            val response: Response<MonthlyRankingResponse> = withContext(Dispatchers.IO) {
+            val response: Response<ServerResponse<VoteData>> = withContext(Dispatchers.IO) {
                 MonthlyFanRankingInstance.getVoteCountService().getVoteCount(serviceToken, type)
             }
             // Response를 처리하는 코드
             if (response.isSuccessful) {
                 Log.d("팬랭킹 response","응답 성공")
-                val fanVoteCountList: MonthlyRankingResponse? = response.body()
+                val fanVoteCountList: ServerResponse<VoteData>? = response.body()
                 if (fanVoteCountList != null) {
                     Log.d("voteCountList", "${fanVoteCountList.statusCode} ${fanVoteCountList.message}")
                     // 팬 순위 클릭 시 데이터 조회 (기본: 전체)
@@ -175,7 +175,7 @@ class VoteFragment : Fragment() {
 
     // 1~4위 까지
     @SuppressLint("DiscouragedApi")
-    private fun handleResponse(voteCountList: MonthlyRankingResponse?) {
+    private fun handleResponse(voteCountList: ServerResponse<VoteData>?) {
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in 0 until 4) {
@@ -219,7 +219,7 @@ class VoteFragment : Fragment() {
 
     // 월간 아티스트 & 팬 순위
     @SuppressLint("DiscouragedApi", "SetTextI18n", "NotifyDataSetChanged")
-    private fun rankingData(voteCountList: MonthlyRankingResponse?) {
+    private fun rankingData(voteCountList: ServerResponse<VoteData>?) {
         rankingList.clear()
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회

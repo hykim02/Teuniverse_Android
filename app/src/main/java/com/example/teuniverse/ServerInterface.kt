@@ -16,7 +16,7 @@ interface SelectArtistInterface {
     @Headers("accept: application/json")
     suspend fun getArtist(
         @Header("Authorization") authorization: String
-    ): Response<SelectArtistResponse>
+    ): Response<ServerResponse<ArtistData>>
 }
 
 // 월간 아티스트 투표수 조회
@@ -25,7 +25,7 @@ interface MonthlyArtistRankingInterface {
     @Headers("accept: application/json")
     suspend fun getVoteCount(
         @Header("Authorization") authorization: String
-    ): Response<MonthlyRankingResponse>
+    ): Response<ServerResponse<VoteData>>
 }
 
 // 월간 팬 투표수 조회
@@ -35,7 +35,7 @@ interface MonthlyFanRankingInterface {
     suspend fun getVoteCount(
         @Header("Authorization") authorization: String,
         @Query("type") type: Int
-    ): Response<MonthlyRankingResponse>
+    ): Response<ServerResponse<VoteData>>
 }
 // 로그인 토큰 전송 요청 & 응답
 interface LoginInterface {
@@ -44,5 +44,5 @@ interface LoginInterface {
         "Content-Type: application/json")
     suspend fun userLogin(
         @Body request: LoginRequest
-    ): Response<LoginResponse>
+    ): Response<ServerResponse<LoginData>>
 }

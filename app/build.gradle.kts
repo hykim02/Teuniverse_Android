@@ -62,7 +62,10 @@ dependencies {
 
     implementation ("com.kakao.sdk:v2-user:2.19.0") // 사용하는 SDK 버전에 맞게 변경
     implementation ("com.kakao.sdk:v2-common:2.19.0")
-    
+
+    implementation ("com.squareup.okhttp3:okhttp:4.9.2")
+    implementation ("com.google.code.gson:gson:2.10")
+
     implementation("com.android.identity:identity-credential-android:20231002") // 카카오 로그인
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")

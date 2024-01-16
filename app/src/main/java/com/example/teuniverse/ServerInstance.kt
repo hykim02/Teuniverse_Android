@@ -54,17 +54,9 @@ object LoginInstance {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
+//            .client(client)
             .build()
             .create(LoginInterface::class.java)
     }
 }
-
-val loggingInterceptor = HttpLoggingInterceptor().apply {
-    level = HttpLoggingInterceptor.Level.BODY
-}
-
-val client = OkHttpClient.Builder()
-    .addInterceptor(loggingInterceptor)
-    .build()
 

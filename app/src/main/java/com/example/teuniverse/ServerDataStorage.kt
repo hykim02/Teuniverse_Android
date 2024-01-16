@@ -21,14 +21,14 @@ data class VoteRankingItem(
     val count: String
 )
 
-// 최애 아티스트 조회
-data class SelectArtistResponse(
+// 서버 응답 코드
+data class ServerResponse<T>(
     val success: Boolean,
     val statusCode: Int,
     val message: String,
-    val data: List<ArtistData>
+    val data: ArrayList<T>
 )
-
+// 최애 아티스트 조회
 data class ArtistData(
     val id: Int,
     val name: String,
@@ -36,13 +36,6 @@ data class ArtistData(
 )
 
 // 월간 아티스트 투표수 조회
-data class MonthlyRankingResponse(
-    val success: Boolean,
-    val statusCode: Int,
-    val message: String,
-    val data: List<VoteData>
-)
-
 data class VoteData(
     val id: Long,
     val name: String,
@@ -56,7 +49,7 @@ data class LoginRequest(
     val accessToken: String
 )
 
-data class LoginResponse(
+data class LoginData(
     val accessToken: String,
     val refreshToken: String,
     val isExistUser: Boolean,
