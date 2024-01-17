@@ -100,12 +100,13 @@
         style="@style/next_btn" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/set_name"
         android:layout_width="360dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/textview_stroke_mp"
         android:ems="10"
+        android:letterSpacing="0.1"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

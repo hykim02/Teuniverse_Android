@@ -109,27 +109,46 @@ class VoteFragment : Fragment() {
         }
         return view
     }
+    // db에서 토큰 가져오기
+    private fun getAccessToken(): String? {
+        val mainActivity = activity as MainActivity
+        MainActivity.ServiceAccessTokenDB.init(mainActivity)
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = value.toString()
+            }
+        }
+        return accessToken
+    }
 
     // 투표권 개수 가져오기
     private suspend fun getNumberOfVotes() {
         Log.d("getNumberOfVotes 함수", "호출 성공")
+
+        val accessToken = getAccessToken()
+
         try {
-            val serviceToken = getString(R.string.serviceToken)
-            val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
-                VoteCountInstance.getVotesService().getVotes(serviceToken)
-            }
-            if (response.isSuccessful) {
-                val theVote: ServerResponse<NumberOfVote>? = response.body()
-                if (theVote != null) {
-                    Log.d("투표권 개수", "${theVote.statusCode} ${theVote.message}")
-                    handleTheVotes(theVote)
-                } else {
-                    handleError("Response body is null.")
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
+                    VoteCountInstance.getVotesService().getVotes(accessToken)
                 }
-            } else {
-                handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+                if (response.isSuccessful) {
+                    val theVote: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVote != null) {
+                        Log.d("투표권 개수", "${theVote.statusCode} ${theVote.message}")
+                        handleTheVotes(theVote)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+                }
             }
-        } catch (e: Exception) {
+            }
+             catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.")
         }
     }
@@ -137,30 +156,34 @@ class VoteFragment : Fragment() {
     // 서버에서 월간 아티스트 투표 데이터 가져오는 함수
     private suspend fun getRankingOfArtists() {
         Log.d("getRankingOfArtists 함수", "호출 성공")
+        val accessToken = getAccessToken()
+
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val serviceToken = getString(R.string.serviceToken)
-            val response: Response<ArtistServerResponse<VoteData>> = withContext(Dispatchers.IO) {
-                MonthlyArtistRankingInstance.getVoteCountService().getVoteCount(serviceToken)
-            }
-            // Response를 처리하는 코드
-            if (response.isSuccessful) {
-                val artistVoteCountList: ArtistServerResponse<VoteData>? = response.body()
-                if (artistVoteCountList != null) {
-                    Log.d("voteCountList", "${artistVoteCountList.statusCode} ${artistVoteCountList.message}")
-                    // 정렬 기준에 따른 순서
-                    handleResponse(artistVoteCountList)
-                    handleRankingData(artistVoteCountList)
-                } else {
-                    handleError("Response body is null.")
+            if (accessToken != null) {
+                val response: Response<ArtistServerResponse<VoteData>> = withContext(Dispatchers.IO) {
+                    MonthlyArtistRankingInstance.getVoteCountService().getVoteCount(accessToken)
                 }
-            } else {
-                Log.d("error", "서버 연동 실패")
-                handleError("getRankingOfArtists함수 Error: ${response.code()} - ${response.message()}")
+                // Response를 처리하는 코드
+                if (response.isSuccessful) {
+                    val artistVoteCountList: ArtistServerResponse<VoteData>? = response.body()
+                    if (artistVoteCountList != null) {
+                        Log.d("voteCountList", "${artistVoteCountList.statusCode} ${artistVoteCountList.message}")
+                        // 정렬 기준에 따른 순서
+                        handleResponse(artistVoteCountList)
+                        handleRankingData(artistVoteCountList)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Log.d("error", "서버 연동 실패")
+                    handleError("getRankingOfArtists함수 Error: ${response.code()} - ${response.message()}")
+                }
+              }
             }
-        } catch (e: Exception) {
+             catch (e: Exception) {
             // 예외 처리 코드
             handleError(e.message ?: "Unknown error occurred.")
         }
@@ -169,36 +192,40 @@ class VoteFragment : Fragment() {
     // 팬 순위 가져오기
     private suspend fun getRankingOfFan(type: Int) {
         Log.d("getRankingOfFan 함수", "호출 성공")
+        val accessToken = getAccessToken()
+
         try {
-            Log.d("try문","실행")
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val serviceToken = getString(R.string.serviceToken)
-            val response: Response<ArtistServerResponse<VoteData>> = withContext(Dispatchers.IO) {
-                MonthlyFanRankingInstance.getVoteCountService().getVoteCount(serviceToken, type)
-            }
-            // Response를 처리하는 코드
-            if (response.isSuccessful) {
-                Log.d("팬랭킹 response","응답 성공")
-                val fanVoteCountList: ArtistServerResponse<VoteData>? = response.body()
-                if (fanVoteCountList != null) {
-                    Log.d("voteCountList", "${fanVoteCountList.statusCode} ${fanVoteCountList.message}")
-                    // 팬 순위 클릭 시 데이터 조회 (기본: 전체)
-                    handleRankingData(fanVoteCountList)
-                } else {
-                    handleError("Response body is null.")
+            if (accessToken != null) {
+                val response: Response<ArtistServerResponse<VoteData>> = withContext(Dispatchers.IO) {
+                    MonthlyFanRankingInstance.getVoteCountService().getVoteCount(accessToken, type)
                 }
-            } else {
-                Log.d("error", "서버 연동 실패")
-                handleError("getRankingOfFan함수 Error: ${response.code()} - ${response.message()}")
+                // Response를 처리하는 코드
+                if (response.isSuccessful) {
+                    Log.d("팬랭킹 response","응답 성공")
+                    val fanVoteCountList: ArtistServerResponse<VoteData>? = response.body()
+                    if (fanVoteCountList != null) {
+                        Log.d("voteCountList", "${fanVoteCountList.statusCode} ${fanVoteCountList.message}")
+                        // 팬 순위 클릭 시 데이터 조회 (기본: 전체)
+                        handleRankingData(fanVoteCountList)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Log.d("error", "서버 연동 실패")
+                    handleError("getRankingOfFan함수 Error: ${response.code()} - ${response.message()}")
+                }
             }
-        } catch (e: Exception) {
+        }
+            catch (e: Exception) {
             // 예외 처리 코드
             handleError(e.message ?: "Unknown error occurred.")
         }
     }
 
+    // 보유 투표권 개수 조회
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
         if (votes != null) {
             Log.d("투표권 개수", votes.data.voteCount.toString())

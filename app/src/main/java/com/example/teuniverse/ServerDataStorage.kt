@@ -29,6 +29,12 @@ data class ServerResponse<T>(
     val data: T
 )
 
+data class SignUpResponse(
+    val success: Boolean,
+    val statusCode: Int,
+    val message: String,
+)
+
 data class ArtistServerResponse<T>(
     val success: Boolean,
     val statusCode: Int,
@@ -83,6 +89,10 @@ data class PopupVoteData(
     val rank: Int
 )
 
-
-
-
+// 회원 가입 완료 요청
+data class SignUpRequest(
+    val id: Long,
+    val nickName: String,
+    val thumbnailUrl: String,
+    val favoriteArtistId: Int
+)

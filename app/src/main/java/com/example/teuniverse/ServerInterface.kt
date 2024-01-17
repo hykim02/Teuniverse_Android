@@ -47,6 +47,7 @@ interface LoginInterface {
     ): Response<ServerResponse<LoginData>>
 }
 
+// 보유 투표권 개수 조회
 interface VoteCountInterface {
     @GET("user/vote")
     @Headers("accept: application/json")
@@ -55,6 +56,7 @@ interface VoteCountInterface {
     ): Response<ServerResponse<NumberOfVote>>
 }
 
+// 투표하기 팝업창 데이터 조회
 interface PopupVoteInterface {
     @POST("vote/artist")
     @Headers("accept: application/json",
@@ -64,3 +66,14 @@ interface PopupVoteInterface {
         @Body request: NumberOfVote
     ): Response<ServerResponse<PopupVoteData>>
 }
+
+// 회원 가입 완료
+interface SignUpInterface {
+    @POST("user/register")
+    @Headers("accept: application/json",
+        "Content-Type: application/json")
+    suspend fun signUpSuccess(
+        @Body request: SignUpRequest
+    ): Response<SignUpResponse>
+}
+

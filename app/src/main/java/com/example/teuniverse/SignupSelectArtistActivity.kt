@@ -34,7 +34,6 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     private lateinit var gridLayout: GridLayout
     private lateinit var filterSpinner: Spinner
 
-
     object SelectArtistDB {
         private lateinit var sharedPreferences: SharedPreferences
         // 초기화
@@ -88,46 +87,60 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     // 서버에서 아티스트 데이터 가져오는 함수
     private suspend fun getArtistList() {
         Log.d("getArtistList 함수", "호출 성공")
+
+        MainActivity.ServiceAccessTokenDB.init(this)
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer" + value.toString()
+            }
+        }
+
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val serviceToken = getString(R.string.serviceToken)
-            val response: Response<ArtistServerResponse<ArtistData>> = withContext(Dispatchers.IO) {
-                SelectArtistInstance.getArtistService().getArtist(serviceToken)
-            }
+            if (accessToken != null) {
+                val response: Response<ArtistServerResponse<ArtistData>> = withContext(Dispatchers.IO) {
+                    SelectArtistInstance.getArtistService().getArtist(accessToken)
+                }
 
-            // Response를 처리하는 코드
-            if (response.isSuccessful) {
-                val artistList: ArtistServerResponse<ArtistData>? = response.body()
-                if (artistList != null) {
-                    Log.d("artistList", "${artistList.statusCode} ${artistList.message}")
-                    // 정렬 기준에 따른 순서
-                    handleResponse(artistList)
-                    filterSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            when(position){
-                                0 -> handleResponse(artistList) // 인기순(좋아요순) 정렬
-                                1 -> sortedResponse(artistList) // 가나다순 정렬
+                // Response를 처리하는 코드
+                if (response.isSuccessful) {
+                    val artistList: ArtistServerResponse<ArtistData>? = response.body()
+                    if (artistList != null) {
+                        Log.d("artistList", "${artistList.statusCode} ${artistList.message}")
+                        // 정렬 기준에 따른 순서
+                        handleResponse(artistList)
+                        filterSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                when(position){
+                                    0 -> handleResponse(artistList) // 인기순(좋아요순) 정렬
+                                    1 -> sortedResponse(artistList) // 가나다순 정렬
+                                }
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+                                handleResponse(artistList) // 인기순(좋아요순) 정렬
                             }
                         }
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-                            handleResponse(artistList) // 인기순(좋아요순) 정렬
-                        }
+                    } else {
+                        handleError("Response body is null.")
                     }
                 } else {
-                    handleError("Response body is null.")
+                    Log.d("error", "서버 연동 실패")
+                    handleError("Error: ${response.code()} - ${response.message()}")
                 }
-            } else {
-                Log.d("error", "서버 연동 실패")
-                handleError("Error: ${response.code()} - ${response.message()}")
+              } else {
+                  Log.d("accessToken", "null")
             }
-        } catch (e: Exception) {
+            } catch (e: Exception) {
             // 예외 처리 코드
             handleError(e.message ?: "Unknown error occurred.")
         }
@@ -263,6 +276,8 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         //SharedPreferences 초기화
         SelectArtistDB.init(this)
         val artistDB = SelectArtistDB.getInstance()
+        MainActivity.UserInfoDB.init(this)
+        val userEditor = MainActivity.UserInfoDB.getInstance().edit()
         // 선택된 아티스트 이름 저장한 변수
         val clickedName = childView.contentDescription?.toString()
         val finalArtistImg = findViewById<ImageView>(R.id.selected_artist)
@@ -278,7 +293,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         for ((key, value) in allEntries) {
             // 해당 키 찾은 경우
             if (value == clickedName) {
-                foundKey = key
+                foundKey = key // ex) artist2.name
                 break
             }
         }
@@ -287,9 +302,17 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             //artist1.name에서 artist1만 추출
             val extractedKey = foundKey.substringBefore(".name")
             val resultKey = "$extractedKey.imageUrl"
+            val resultID = "$extractedKey.id"
 
             // resultKey에 해당하는 value 찾기
             val finalImgUrl = artistDB.getString(resultKey, "")
+            // 최애 아티스트 ID
+            val finalArtistID = artistDB.getInt(resultID, 0)
+            Log.d("finalArtistID", finalArtistID.toString())
+
+            // DB에 저장
+            userEditor.putInt("favoriteArtistId", finalArtistID)
+            userEditor.apply()
 
             Glide.with(this)
                 .load(finalImgUrl)

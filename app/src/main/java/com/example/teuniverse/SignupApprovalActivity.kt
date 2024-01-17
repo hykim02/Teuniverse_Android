@@ -19,11 +19,10 @@ class SignupApprovalActivity:AppCompatActivity() {
         val backBtn = findViewById<ImageButton>(R.id.back_btn)
         val chk1 = findViewById<CheckBox>(R.id.checkBox)
         val chk2 = findViewById<CheckBox>(R.id.checkBox2)
-        val chk3 = findViewById<CheckBox>(R.id.checkBox3)
         val chk4 = findViewById<CheckBox>(R.id.checkBox4)
 
         nextBtn.setOnClickListener {
-            if(chk1.isChecked && chk2.isChecked && chk3.isChecked){
+            if(chk1.isChecked && chk2.isChecked){
                 val intent = Intent(this, SignupSelectArtistActivity::class.java)
                 startActivity(intent)
                 finish()

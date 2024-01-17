@@ -81,3 +81,14 @@ object PopupVoteInstance {
             .create(PopupVoteInterface::class.java)
     }
 }
+
+// 회원 가입 완료
+object SignUpInstance {
+    fun signUpSuccessService(): SignUpInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SignUpInterface::class.java)
+    }
+}

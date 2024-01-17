@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
     <CheckBox
-        android:id="@+id/checkBox3"
+        android:id="@+id/checkBox4"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="8dp"
@@ -78,17 +78,6 @@
         android:textColor="@color/mp"
         app:layout_constraintStart_toStartOf="@+id/checkBox2"
         app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
-
-    <CheckBox
-        android:id="@+id/checkBox4"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/custom_checkbox"
-        android:button="@android:color/transparent"
-        android:textColor="@color/mp"
-        app:layout_constraintStart_toStartOf="@+id/checkBox3"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
 
     <TextView
         android:id="@+id/name6"
@@ -104,21 +93,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/approval1"
         app:layout_constraintStart_toEndOf="@+id/approval1"
         app:layout_constraintTop_toTopOf="@+id/approval1" />
-
-    <TextView
-        android:id="@+id/name12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/textview_stroke_ap"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:text="보기"
-        android:textSize="12sp"
-        android:textColor="@color/ap"
-        app:layout_constraintBottom_toBottomOf="@+id/approval3"
-        app:layout_constraintStart_toEndOf="@+id/approval3"
-        app:layout_constraintTop_toTopOf="@+id/approval3" />
 
     <TextView
         android:id="@+id/name11"
@@ -193,14 +167,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/approval3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="유료 서비스 이용 약관 동의 (필수)"
-        android:textColor="@color/mp"
-        app:layout_constraintBottom_toBottomOf="@+id/checkBox3"
-        app:layout_constraintStart_toEndOf="@+id/checkBox3"
-        app:layout_constraintTop_toTopOf="@+id/checkBox3" />
 </androidx.constraintlayout.widget.ConstraintLayout>
