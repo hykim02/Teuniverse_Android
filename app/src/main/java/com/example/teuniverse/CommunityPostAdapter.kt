@@ -44,12 +44,12 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
     }
 
     inner class CommunityPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val userImg: ImageView = itemView.findViewById<ImageView>(R.id.user_profile)
-        val fandomName: TextView = itemView.findViewById<TextView>(R.id.fandom_name)
-        val postTerm: TextView = itemView.findViewById<TextView>(R.id.term)
-        val postImg: ImageView = itemView.findViewById<ImageView>(R.id.post_img)
-        val postSummary: TextView = itemView.findViewById<TextView>(R.id.post_summary)
-        var heartCount: TextView = itemView.findViewById<TextView>(R.id.heart_count)
-        val commentCount: TextView = itemView.findViewById<TextView>(R.id.comment_count)
+        val userImg: ImageView = itemView.findViewById(R.id.user_profile)
+        val fandomName: TextView = itemView.findViewById(R.id.fandom_name)
+        val postTerm: TextView = itemView.findViewById(R.id.term)
+        val postImg: ImageView = itemView.findViewById(R.id.post_img)
+        val postSummary: TextView = itemView.findViewById(R.id.post_summary)
+        var heartCount: TextView = itemView.findViewById(R.id.heart_count)
+        val commentCount: TextView = itemView.findViewById(R.id.comment_count)
     }
 }

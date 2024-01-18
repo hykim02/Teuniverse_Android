@@ -80,8 +80,6 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
                 okCallback
             )
             popupVoteCheck.show()
-
-            // Dismiss the current PopupVote dialog if needed
             dismiss()
         }
     }
@@ -116,10 +114,10 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
     private fun handlePopupVote(voteInfo: ServerResponse<PopupVoteData>) {
         Log.d("handlePopupVote 함수","호출 성공")
         binding.tvVotes.text = voteInfo.data.voteCount.toString() // 투표하는 개수
-//        binding.tvVoteCount2.text = voteInfo.data.voteCount.toString()
+        binding.tvVotes2.text = voteInfo.data.voteCount.toString()
         binding.tvArtistName.text = voteInfo.data.artistName // 아티스트 이름
-//        binding.tvArtistName2.text = voteInfo.data.artistName
-//        binding.tvArtistName3.text = voteInfo.data.artistName
+        binding.tvArtistName2.text = voteInfo.data.artistName
+        binding.tvArtistName3.text = voteInfo.data.artistName
         binding.remainVote.text = voteInfo.data.remainVoteCount.toString() // 보유 투표권
         binding.tvMonth.text = voteInfo.data.month.toString() // 월
         binding.tvPercent.text = voteInfo.data.rank.toString() // 비율

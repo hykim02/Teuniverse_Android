@@ -77,3 +77,10 @@ interface SignUpInterface {
     ): Response<SignUpResponse>
 }
 
+interface CommunityFeedsInterface {
+    @GET("community")
+    @Headers("accept: application/json")
+    suspend fun getFeeds(
+        @Header("Authorization") authorization: String
+    ): Response<ServerResponse<CommunityData>>
+}

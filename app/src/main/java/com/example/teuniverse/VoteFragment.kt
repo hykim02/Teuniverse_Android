@@ -30,6 +30,7 @@ class VoteFragment : Fragment() {
     private lateinit var rankingList: ArrayList<VoteRankingItem>
     private lateinit var voteRankAdapter: VoteRankAdapter
     private lateinit var numberOfVote: TextView
+    private lateinit var voteMission: ImageView
 
     companion object {
         const val REQUEST_CODE_POPUP_VOTE_CHECK = 123
@@ -59,6 +60,7 @@ class VoteFragment : Fragment() {
         rvRanking = view.findViewById(R.id.rv_ranking)
         rankingList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
+        voteMission = view.findViewById(R.id.img_btn_vote)
 
         voteRankAdapter = VoteRankAdapter(rankingList)
 
@@ -79,6 +81,11 @@ class VoteFragment : Fragment() {
         votingBtn.setOnClickListener {
             // 여기에서 투표하기 버튼을 눌렀을 때, PopupVote 다이얼로그를 띄움
             showPopupVoteDialog()
+        }
+
+        voteMission.setOnClickListener {
+            // 미션창 다이얼로그 띄우기
+            showPopupMissionDialog()
         }
         return view
     }
@@ -376,6 +383,15 @@ class VoteFragment : Fragment() {
 
         popupVote.setOnDismissListener {
             Log.d("VoteFragment", "PopupVote dialog dismissed.")
+        }
+    }
+
+    private fun showPopupMissionDialog() {
+        val popupVoteMission = PopupVoteMission(requireContext()) { /* Callback if needed */ }
+        popupVoteMission.show()
+
+        popupVoteMission.setOnDismissListener {
+            Log.d("popupVoteMission", "PopupVote dialog dismissed.")
         }
     }
 

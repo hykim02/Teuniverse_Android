@@ -21,7 +21,7 @@ data class VoteRankingItem(
     val count: String
 )
 
-// 서버 응답 코드
+// 서버 응답 코드(data가 객체인 경우)
 data class ServerResponse<T>(
     val success: Boolean,
     val statusCode: Int,
@@ -34,7 +34,7 @@ data class SignUpResponse(
     val statusCode: Int,
     val message: String,
 )
-
+// 서버 응답 코드(data가 리스트인 경우)
 data class ArtistServerResponse<T>(
     val success: Boolean,
     val statusCode: Int,
@@ -95,4 +95,25 @@ data class SignUpRequest(
     val nickName: String,
     val thumbnailUrl: String,
     val favoriteArtistId: Int
+)
+
+data class ArtistProfile(
+    val id: Int,
+    val name: String,
+    val thumbnailUrl: String
+)
+
+data class Feeds(
+    val id: Int,
+    val content: String,
+    val thumbnailUrl: String,
+    val likeCount: Int,
+    val createdAt: String,
+    val updatedAt: String,
+    val userProfile: UserProfileData
+)
+
+data class CommunityData(
+    val artistProfile: ArtistProfile,
+    val feeds: List<Feeds>
 )

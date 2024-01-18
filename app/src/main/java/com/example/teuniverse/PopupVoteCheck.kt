@@ -26,8 +26,8 @@ class PopupVoteCheck(
         binding.tvVotes.text = voteCount
         binding.tvMonth.text = month
         binding.tvArtistName.text = artistName
-//        binding.tvVoteCount2.text = voteCount
-//        binding.tvArtistName2.text = artistName
+        binding.tvVotes2.text = voteCount
+        binding.tvArtistName2.text = artistName
         binding.tvPercent.text = rank
 
         binding.bntOk.setOnClickListener {

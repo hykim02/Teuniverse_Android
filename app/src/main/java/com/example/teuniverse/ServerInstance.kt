@@ -92,3 +92,13 @@ object SignUpInstance {
             .create(SignUpInterface::class.java)
     }
 }
+
+object CommunityFeedsInstance {
+    fun communityFeedsService(): CommunityFeedsInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CommunityFeedsInterface::class.java)
+    }
+}
