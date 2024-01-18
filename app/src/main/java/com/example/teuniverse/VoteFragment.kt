@@ -118,7 +118,7 @@ class VoteFragment : Fragment() {
 
         for ((key, value) in serviceTokenDB.all) {
             if (key == "accessToken") {
-                accessToken = value.toString()
+                accessToken = "Bearer " + value.toString()
             }
         }
         return accessToken

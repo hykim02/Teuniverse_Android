@@ -94,7 +94,8 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
         for ((key, value) in serviceTokenDB.all) {
             if (key == "accessToken") {
-                accessToken = "Bearer" + value.toString()
+                accessToken = "Bearer " + value.toString()
+//                Log.d("accessToken",accessToken)
             }
         }
 
@@ -102,6 +103,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val serviceToken = R.string.serviceToken
             if (accessToken != null) {
                 val response: Response<ArtistServerResponse<ArtistData>> = withContext(Dispatchers.IO) {
                     SelectArtistInstance.getArtistService().getArtist(accessToken)
