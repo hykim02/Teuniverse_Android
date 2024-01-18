@@ -44,8 +44,8 @@ class VoteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_vote, container, false)
+        val votingBtn = view.findViewById<TextView>(R.id.vote_btn)
         // 아이템 선언
         fanTab = view.findViewById(R.id.fan_tab)
         artistTab = view.findViewById(R.id.artist_tab)
@@ -71,48 +71,58 @@ class VoteFragment : Fragment() {
             lifecycleScope.launch {
                 getRankingOfFan(0)
             }
-            // 뷰 나타내기
-            fanAll.visibility = View.VISIBLE
-            fanBest.visibility = View.VISIBLE
-            // 색상 변경
-            fanTab.setTextColor(Color.parseColor("#5C21A4"))
-            artistTab.setTextColor(Color.parseColor("#7C7C7C"))
-            // 팬: 전체
-            fanAll.setOnClickListener {
-                lifecycleScope.launch {
-                    getRankingOfFan(0)
-                }
-                fanAll.setTextColor(Color.parseColor("#5C21A4"))
-                fanBest.setTextColor(Color.parseColor("#7C7C7C"))
-            }
-            // 팬: 최애
-            fanBest.setOnClickListener {
-                lifecycleScope.launch {
-                    getRankingOfFan(1)
-                }
-                fanAll.setTextColor(Color.parseColor("#7C7C7C"))
-                fanBest.setTextColor(Color.parseColor("#5C21A4"))
-            }
+            fanTabSetting() // 클릭 시 동작 구현 함수
+        }
 
-            // 아티스트 탭 클릭이벤트
-            artistTab.setOnClickListener {
-                lifecycleScope.launch {
-                    getRankingOfArtists()
-                }
-                // 뷰 숨기기
-                fanAll.visibility = View.GONE
-                fanBest.visibility = View.GONE
-                // 색상 변경
-                fanTab.setTextColor(Color.parseColor("#7C7C7C"))
-                artistTab.setTextColor(Color.parseColor("#5C21A4"))
-            }
+        // 투표하기 버튼 클릭 이벤트
+        votingBtn.setOnClickListener {
+            // 여기에서 투표하기 버튼을 눌렀을 때, PopupVote 다이얼로그를 띄움
+            showPopupVoteDialog()
         }
         return view
     }
+
+    private fun fanTabSetting() {
+        // 뷰 나타내기
+        fanAll.visibility = View.VISIBLE
+        fanBest.visibility = View.VISIBLE
+        // 색상 변경
+        fanTab.setTextColor(Color.parseColor("#5C21A4"))
+        artistTab.setTextColor(Color.parseColor("#7C7C7C"))
+        // 팬: 전체
+        fanAll.setOnClickListener {
+            lifecycleScope.launch {
+                getRankingOfFan(0)
+            }
+            fanAll.setTextColor(Color.parseColor("#5C21A4"))
+            fanBest.setTextColor(Color.parseColor("#7C7C7C"))
+        }
+        // 팬: 최애
+        fanBest.setOnClickListener {
+            lifecycleScope.launch {
+                getRankingOfFan(1)
+            }
+            fanAll.setTextColor(Color.parseColor("#7C7C7C"))
+            fanBest.setTextColor(Color.parseColor("#5C21A4"))
+        }
+
+        // 아티스트 탭 클릭이벤트
+        artistTab.setOnClickListener {
+            lifecycleScope.launch {
+                getRankingOfArtists()
+            }
+            // 뷰 숨기기
+            fanAll.visibility = View.GONE
+            fanBest.visibility = View.GONE
+            // 색상 변경
+            fanTab.setTextColor(Color.parseColor("#7C7C7C"))
+            artistTab.setTextColor(Color.parseColor("#5C21A4"))
+        }
+    }
+
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        val mainActivity = activity as MainActivity
-        MainActivity.ServiceAccessTokenDB.init(mainActivity)
+        MainActivity.ServiceAccessTokenDB.init(requireContext())
         val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
@@ -127,9 +137,7 @@ class VoteFragment : Fragment() {
     // 투표권 개수 가져오기
     private suspend fun getNumberOfVotes() {
         Log.d("getNumberOfVotes 함수", "호출 성공")
-
         val accessToken = getAccessToken()
-
         try {
             if (accessToken != null) {
                 val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
@@ -227,10 +235,9 @@ class VoteFragment : Fragment() {
 
     // 보유 투표권 개수 조회
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
-        if (votes != null) {
-            Log.d("투표권 개수", votes.data.voteCount.toString())
-            numberOfVote.text = votes.data.voteCount.toString()
-        }
+        Log.d("handleTheVotes 함수","호출 성공" )
+        Log.d("투표권 개수", votes.data.voteCount.toString())
+        numberOfVote.text = votes.data.voteCount.toString()
     }
 
     // 1~4위 까지
@@ -328,8 +335,6 @@ class VoteFragment : Fragment() {
         }
     }
 
-
-
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("Error", errorMessage)
@@ -349,6 +354,18 @@ class VoteFragment : Fragment() {
             }
         }
         return formattedNumber.toString()
+    }
+
+    // 투표하기 다이얼로그를 생성
+    private fun showPopupVoteDialog() {
+        // Step 1: Show PopupVote Dialog
+        val popupVote = PopupVote(requireContext()) { /* Callback if needed */ }
+        popupVote.show()
+
+        // Optional: Set a listener to handle the result (if needed)
+        popupVote.setOnDismissListener {
+            Log.d("VoteFragment", "PopupVote dialog dismissed.")
+        }
     }
 
 }
