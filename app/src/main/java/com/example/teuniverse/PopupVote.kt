@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import PopupVoteCheck
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -9,7 +10,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.startActivity
+import com.example.teuniverse.VoteFragment.Companion.REQUEST_CODE_POPUP_VOTE_CHECK
 import com.example.teuniverse.databinding.PopupVoteBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,12 +27,14 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
     private lateinit var binding : PopupVoteBinding
 
-
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 만들어놓은 팝업창 띄움
         binding = PopupVoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        initViews()
 
         // 화면에 다이얼로그가 나타난 후에 투표 정보 가져오기
         GlobalScope.launch {
@@ -38,14 +46,6 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
         binding.btnRevoke.setOnClickListener{
             dismiss()
         }
-
-        // Step 3: Handle "확인" button click to start PopupVoteCheck activity
-        binding.bntVoting.setOnClickListener {
-            val intent = Intent(context, PopupVoteCheck::class.java)
-            // Pass any necessary data using intent extras
-            // intent.putExtra("key", value)
-            (context as? Activity)?.startActivityForResult(intent, REQUEST_CODE_POPUP_VOTE_CHECK)
-        }
     }
 
     private fun initViews() = with(binding) {
@@ -56,6 +56,35 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
         // (중요) Dialog는 내부적으로 뒤에 흰 사각형 배경이 존재하므로, 배경을 투명하게 만들지 않으면
         // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // OK 버튼 클릭 시
+//        binding.bntVoting.setOnClickListener {
+//            // 데이터를 Intent에 담아서 PopupVoteCheck 액티비티 시작
+//            val intent = Intent(context, PopupVoteCheck::class.java)
+//            intent.putExtra("voteCount", binding.tvVoteCount.text.toString())
+//            intent.putExtra("artistName", binding.tvArtistName.text.toString())
+//            intent.putExtra("month", binding.tvMonth.text.toString())
+//            intent.putExtra("rank", binding.tvPercent.text.toString())
+//
+//            context.startActivity(intent)
+//        }
+
+        // 투표 버튼
+        binding.bntVoting.setOnClickListener {
+            // 데이터를 Intent에 담아서 PopupVoteCheck 다이얼로그 시작
+            val popupVoteCheck = PopupVoteCheck(
+                context,
+                binding.tvVoteCount.text.toString(),
+                binding.tvArtistName.text.toString(),
+                binding.tvMonth.text.toString(),
+                binding.tvPercent.text.toString(),
+                okCallback
+            )
+            popupVoteCheck.show()
+
+            // Dismiss the current PopupVote dialog if needed
+            dismiss()
+        }
     }
 
     private suspend fun getPopupVoteApi(voteCount: Int) {
@@ -76,7 +105,7 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
                         handleError("Response body is null.")
                     }
                 } else {
-                    handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+                    handleError("getPopupVoteApi 함수 Error: ${response.code()} - ${response.message()}")
                 }
             }
         }
