@@ -86,7 +86,7 @@ data class PopupVoteData(
     val remainVoteCount: Int,
     val month: Int,
     val artistName: String,
-    val rank: Int
+    val rank: Float
 )
 
 // 회원 가입 완료 요청

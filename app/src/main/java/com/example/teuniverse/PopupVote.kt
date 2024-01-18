@@ -36,12 +36,23 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
         initViews()
 
+        MainActivity.UserInfoDB.init(context)
+        val keysOfDB = MainActivity.UserInfoDB.getInstance()
+        var currentVote: Int? = null
+
+        for ((key, value) in keysOfDB.all) {
+            if (key == "voteCount") {
+                currentVote = value as Int
+                Log.d("currentVote", currentVote.toString())
+            }
+        }
         // 화면에 다이얼로그가 나타난 후에 투표 정보 가져오기
         GlobalScope.launch {
             // 투표 정보 가져오기
-            getPopupVoteApi(3) // 여기에 실제로 사용할 투표 정보의 개수를 넣어야 합니다.
+            if (currentVote != null) {
+                getPopupVoteApi(currentVote)
+            }
         }
-
         // 취소 버튼
         binding.btnRevoke.setOnClickListener{
             dismiss()
@@ -57,24 +68,12 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
         // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        // OK 버튼 클릭 시
-//        binding.bntVoting.setOnClickListener {
-//            // 데이터를 Intent에 담아서 PopupVoteCheck 액티비티 시작
-//            val intent = Intent(context, PopupVoteCheck::class.java)
-//            intent.putExtra("voteCount", binding.tvVoteCount.text.toString())
-//            intent.putExtra("artistName", binding.tvArtistName.text.toString())
-//            intent.putExtra("month", binding.tvMonth.text.toString())
-//            intent.putExtra("rank", binding.tvPercent.text.toString())
-//
-//            context.startActivity(intent)
-//        }
-
         // 투표 버튼
         binding.bntVoting.setOnClickListener {
-            // 데이터를 Intent에 담아서 PopupVoteCheck 다이얼로그 시작
+            // 객체 생성(매개변수로 데이터 전달)
             val popupVoteCheck = PopupVoteCheck(
                 context,
-                binding.tvVoteCount.text.toString(),
+                binding.tvVotes.text.toString(),
                 binding.tvArtistName.text.toString(),
                 binding.tvMonth.text.toString(),
                 binding.tvPercent.text.toString(),
@@ -116,14 +115,17 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
     private fun handlePopupVote(voteInfo: ServerResponse<PopupVoteData>) {
         Log.d("handlePopupVote 함수","호출 성공")
-        binding.tvVoteCount.text = voteInfo.data.voteCount.toString()
-        binding.tvArtistName.text = voteInfo.data.artistName
-        binding.remainVote.text = voteInfo.data.remainVoteCount.toString()
-        binding.tvMonth.text = voteInfo.data.month.toString()
-        binding.tvPercent.text = voteInfo.data.rank.toString()
-        binding.tvArtistName2.text = voteInfo.data.artistName
-        binding.tvVoteCount2.text = voteInfo.data.voteCount.toString()
-        binding.tvArtistName3.text = voteInfo.data.artistName
+        binding.tvVotes.text = voteInfo.data.voteCount.toString() // 투표하는 개수
+//        binding.tvVoteCount2.text = voteInfo.data.voteCount.toString()
+        binding.tvArtistName.text = voteInfo.data.artistName // 아티스트 이름
+//        binding.tvArtistName2.text = voteInfo.data.artistName
+//        binding.tvArtistName3.text = voteInfo.data.artistName
+        binding.remainVote.text = voteInfo.data.remainVoteCount.toString() // 보유 투표권
+        binding.tvMonth.text = voteInfo.data.month.toString() // 월
+        binding.tvPercent.text = voteInfo.data.rank.toString() // 비율
+
+
+
     }
 
     private fun getAccessToken(): String? {
@@ -141,6 +143,6 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
-        Log.d("Error", errorMessage)
+        Log.d("getPopupVoteApi 함수 Error", errorMessage)
     }
 }

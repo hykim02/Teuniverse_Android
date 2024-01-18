@@ -23,14 +23,13 @@ class PopupVoteCheck(
         setContentView(binding.root)
 
         okCallback("$voteCount $artistName $month $rank")
-        binding.tvVoteCount.text = voteCount
+        binding.tvVotes.text = voteCount
         binding.tvMonth.text = month
         binding.tvArtistName.text = artistName
-        binding.tvVoteCount2.text = voteCount
-        binding.tvArtistName2.text = artistName
+//        binding.tvVoteCount2.text = voteCount
+//        binding.tvArtistName2.text = artistName
         binding.tvPercent.text = rank
 
-        // Now you can use the data directly
         binding.bntOk.setOnClickListener {
             dismiss()
         }

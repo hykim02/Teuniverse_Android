@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -60,10 +61,6 @@ class VoteFragment : Fragment() {
         numberOfVote = view.findViewById(R.id.vote_count)
 
         voteRankAdapter = VoteRankAdapter(rankingList)
-
-        // 리사이클러뷰 어댑터 연결
-        rvRanking.adapter = voteRankAdapter
-        rvRanking.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         // 뷰 숨기기
         fanAll.visibility = View.GONE
@@ -150,7 +147,7 @@ class VoteFragment : Fragment() {
                 if (response.isSuccessful) {
                     val theVote: ServerResponse<NumberOfVote>? = response.body()
                     if (theVote != null) {
-                        Log.d("투표권 개수", "${theVote.statusCode} ${theVote.message}")
+                        Log.d("response", "${theVote.statusCode} ${theVote.message}")
                         handleTheVotes(theVote)
                     } else {
                         handleError("Response body is null.")
@@ -241,7 +238,13 @@ class VoteFragment : Fragment() {
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
         Log.d("handleTheVotes 함수","호출 성공" )
         Log.d("투표권 개수", votes.data.voteCount.toString())
+        val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
+
+        MainActivity.UserInfoDB.init(requireContext())
+        val editDB = MainActivity.UserInfoDB.getInstance().edit()
+        editDB.putInt("voteCount",voteCount)
+        editDB.apply()
     }
 
     // 1~4위 까지
@@ -334,6 +337,12 @@ class VoteFragment : Fragment() {
                     rankingList.add(VoteRankingItem("${i+1}위",imageUrl,nametxt,numberOfVotes))
                 }
             }
+            // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
+            val spanCount = rankingList.size
+            rvRanking.adapter = voteRankAdapter
+            val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+            rvRanking.layoutManager = layoutManager
+
             // 어댑터에 데이터가 변경되었음을 알리기
             voteRankAdapter.notifyDataSetChanged()
         }
@@ -362,11 +371,9 @@ class VoteFragment : Fragment() {
 
     // 투표하기 다이얼로그를 생성
     private fun showPopupVoteDialog() {
-        // Step 1: Show PopupVote Dialog
         val popupVote = PopupVote(requireContext()) { /* Callback if needed */ }
         popupVote.show()
 
-        // Optional: Set a listener to handle the result (if needed)
         popupVote.setOnDismissListener {
             Log.d("VoteFragment", "PopupVote dialog dismissed.")
         }
