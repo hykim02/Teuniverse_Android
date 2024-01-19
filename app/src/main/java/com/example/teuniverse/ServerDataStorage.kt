@@ -1,7 +1,5 @@
 package com.example.teuniverse
 
-import com.google.gson.annotations.SerializedName
-
 // 커뮤니티 리사이클러뷰 아이템 데이터
 data class CommunityPostItem(
     val userImg: String,
@@ -77,7 +75,7 @@ data class UserProfileData(
 
 // 투표권 개수 조회
 data class NumberOfVote(
-    val voteCount: Int
+    val voteCount: String
 )
 
 // 투표하기 현황 조회

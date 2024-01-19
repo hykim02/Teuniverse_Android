@@ -59,6 +59,12 @@ class MainActivity : AppCompatActivity() {
         val kakaoLogin = findViewById<ImageButton>(R.id.kakao_login)
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
+//        ServiceAccessTokenDB.init(this)
+//        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+//
+//        tokenEditor.clear()
+//        tokenEditor.apply()
+
 //        kakaoUnlink()
 
         kakaoLogin.setOnClickListener{
@@ -209,6 +215,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("Hello", "연결 끊기 실패", error)
             } else {
                 Log.i("Hello", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+
             }
         }
     }

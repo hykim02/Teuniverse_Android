@@ -151,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="만 14세 이용 약관 동의"
+        android:text="만 14세 이용 약관 동의 (필수)"
         android:textColor="@color/mp"
         app:layout_constraintBottom_toBottomOf="@+id/checkBox4"
         app:layout_constraintStart_toEndOf="@+id/checkBox4"

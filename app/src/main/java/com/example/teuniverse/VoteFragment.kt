@@ -247,11 +247,6 @@ class VoteFragment : Fragment() {
         Log.d("투표권 개수", votes.data.voteCount.toString())
         val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
-
-        MainActivity.UserInfoDB.init(requireContext())
-        val editDB = MainActivity.UserInfoDB.getInstance().edit()
-        editDB.putInt("voteCount",voteCount)
-        editDB.apply()
     }
 
     // 1~4위 까지

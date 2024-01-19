@@ -1,19 +1,13 @@
 package com.example.teuniverse
 
 import PopupVoteCheck
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat.startActivity
-import com.example.teuniverse.VoteFragment.Companion.REQUEST_CODE_POPUP_VOTE_CHECK
+import androidx.core.widget.addTextChangedListener
 import com.example.teuniverse.databinding.PopupVoteBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -36,23 +30,17 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
         initViews()
 
-        MainActivity.UserInfoDB.init(context)
-        val keysOfDB = MainActivity.UserInfoDB.getInstance()
-        var currentVote: Int? = null
+        // editText의 변화가 감지되면
+        binding.votes.addTextChangedListener {
+            val votes = binding.votes.text.toString()
+            Log.d("votes", votes)
 
-        for ((key, value) in keysOfDB.all) {
-            if (key == "voteCount") {
-                currentVote = value as Int
-                Log.d("currentVote", currentVote.toString())
+            // 화면에 다이얼로그가 나타난 후에 투표 정보 가져오기
+            GlobalScope.launch {
+                getPopupVoteApi(votes)
             }
         }
-        // 화면에 다이얼로그가 나타난 후에 투표 정보 가져오기
-        GlobalScope.launch {
-            // 투표 정보 가져오기
-            if (currentVote != null) {
-                getPopupVoteApi(currentVote)
-            }
-        }
+
         // 취소 버튼
         binding.btnRevoke.setOnClickListener{
             dismiss()
@@ -73,7 +61,7 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
             // 객체 생성(매개변수로 데이터 전달)
             val popupVoteCheck = PopupVoteCheck(
                 context,
-                binding.tvVotes.text.toString(),
+                binding.votes.text.toString(),
                 binding.tvArtistName.text.toString(),
                 binding.tvMonth.text.toString(),
                 binding.tvPercent.text.toString(),
@@ -84,7 +72,8 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
         }
     }
 
-    private suspend fun getPopupVoteApi(voteCount: Int) {
+    // voteCount 는 투표할 투표권 개수를 뜻함
+    private suspend fun getPopupVoteApi(voteCount: String) {
         Log.d("getPopupVoteApi 함수", "호출 성공")
         val accessToken = getAccessToken()
         val voteRequest = NumberOfVote(voteCount = voteCount)
@@ -113,17 +102,13 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
     private fun handlePopupVote(voteInfo: ServerResponse<PopupVoteData>) {
         Log.d("handlePopupVote 함수","호출 성공")
-        binding.tvVotes.text = voteInfo.data.voteCount.toString() // 투표하는 개수
         binding.tvVotes2.text = voteInfo.data.voteCount.toString()
         binding.tvArtistName.text = voteInfo.data.artistName // 아티스트 이름
         binding.tvArtistName2.text = voteInfo.data.artistName
         binding.tvArtistName3.text = voteInfo.data.artistName
         binding.remainVote.text = voteInfo.data.remainVoteCount.toString() // 보유 투표권
         binding.tvMonth.text = voteInfo.data.month.toString() // 월
-        binding.tvPercent.text = voteInfo.data.rank.toString() // 비율
-
-
-
+        binding.tvPercent.text = voteInfo.data.rank.toString() + "%" // 비율
     }
 
     private fun getAccessToken(): String? {
