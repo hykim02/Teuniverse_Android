@@ -72,7 +72,7 @@ data class ServerResponse<T>(
     val message: String,
     val data: T
 )
-
+// 서버 응답 코드(회원 가입)
 data class SignUpResponse(
     val success: Boolean,
     val statusCode: Int,
@@ -119,6 +119,8 @@ data class UserProfileData(
     val thumbnailUrl: String
 )
 
+
+
 // 투표권 개수 조회
 data class NumberOfVote(
     val voteCount: Int?
@@ -141,6 +143,9 @@ data class SignUpRequest(
     val favoriteArtistId: Int
 )
 
+
+
+// 피드 조회
 data class ArtistProfile(
     val id: Int,
     val name: String,

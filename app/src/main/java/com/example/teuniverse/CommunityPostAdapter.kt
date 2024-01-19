@@ -1,18 +1,30 @@
 package com.example.teuniverse
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
-                           private var onItemClick: (CommunityPostItem) -> Unit) :
+class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
+
+    //커스텀 리스너
+    interface OnItemClickListener{
+        fun onItemClick(view: View, position: Int) // 추상 메소드
+    }
+    //객체 저장 변수
+    private lateinit var mOnItemClickListener: OnItemClickListener
+    //객체 전달 메서드
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener){
+        mOnItemClickListener = onItemClickListener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
@@ -31,9 +43,9 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
 //        }
     }
 
-    fun setOnItemClickListener(listener: (CommunityPostItem) -> Unit) {
-        onItemClick = listener
-    }
+//    fun setOnItemClickListener(listener: (CommunityPostItem) -> Unit) {
+//        onItemClick = listener
+//    }
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
 
@@ -55,9 +67,9 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.userImg)
 
-        holder.itemView.setOnClickListener {
-            onItemClick.invoke(currentItem)
-        }
+//        holder.itemView.setOnClickListener {
+//            onItemClick.invoke(currentItem)
+//        }
     }
 
     override fun getItemCount(): Int {
@@ -72,5 +84,14 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         val postSummary: TextView = itemView.findViewById(R.id.post_summary)
         var heartCount: TextView = itemView.findViewById(R.id.heart_count)
         val commentCount: TextView = itemView.findViewById(R.id.comment_count)
+
+        init {
+            itemView.setOnClickListener {
+                val pos = adapterPosition
+                if(pos != RecyclerView.NO_POSITION){
+                    mOnItemClickListener.onItemClick(itemView, pos)
+                }
+            }
+        }
     }
 }

@@ -113,6 +113,7 @@
                     tools:listitem="@layout/community_rv_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_marginBottom="60dp"/>
 
             </LinearLayout>

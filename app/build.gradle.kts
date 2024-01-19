@@ -3,6 +3,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-android-extensions")
 }
 
 fun getApiKey(propertyKey: String): String {
@@ -55,8 +56,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.14.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
+
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6") // 네비게이션
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+
     implementation("com.github.bumptech.glide:glide:4.14.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
 

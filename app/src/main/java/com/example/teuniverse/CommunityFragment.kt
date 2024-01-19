@@ -1,16 +1,15 @@
 package com.example.teuniverse
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+
 
 class CommunityFragment : Fragment() {
 
@@ -53,17 +53,27 @@ class CommunityFragment : Fragment() {
         communityAdapter = CommunityPostAdapter(feedList)
 
         // 리사이클러뷰 어댑터 연결
-        rvCommunity.adapter = communityAdapter
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-        // Click listener for RecyclerView item
-        communityAdapter.setOnItemClickListener { item ->
-            // Navigate to CommunityDetailFragment
-            val action = CommunityFragmentDirections.actionCommunityToCommunityDetail(item)
-            findNavController().navigate(action)
-        }
+//        val navHostFragment = parentFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val navController = navHostFragment.navController
 
 
+        communityAdapter.setOnItemClickListener(object: CommunityPostAdapter.OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                Log.d("onItemClick 함수","실행")
+                Log.d("position",position.toString())
+
+                findNavController().navigate(R.id.action_navigation_community_to_communityDetailFragment)
+            }
+        })
+        rvCommunity.adapter = communityAdapter
+
+//        adapter.setOnItemClickListener(object : BookAdapter.OnItemClickListener {
+//            override fun onItemClick(book: String) {
+//                val bundle = bundleOf("bookTitle" to book)
+//                findNavController().navigate(R.id.action_first_to_detail, bundle)
+//            }
+//        })
         return view
     }
 
