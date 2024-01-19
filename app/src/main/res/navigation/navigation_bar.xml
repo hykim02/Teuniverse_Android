@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_bar">
+    android:id="@+id/navigation_bar"
+    app:startDestination="@id/navigation_communityDetail">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -18,7 +19,11 @@
         android:id="@+id/navigation_community"
         android:name="com.example.teuniverse.CommunityFragment"
         android:label="커뮤니티"
-        tools:layout="@layout/fragment_community" />
+        tools:layout="@layout/fragment_community" >
+        <action
+            android:id="@+id/action_navigation_community_to_communityDetailFragment"
+            app:destination="@id/navigation_communityDetail" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="com.example.teuniverse.CalendarFragment"
@@ -29,5 +34,10 @@
         android:name="com.example.teuniverse.MediaFragment"
         android:label="미디어"
         tools:layout="@layout/fragment_media" />
+    <fragment
+        android:id="@+id/navigation_communityDetail"
+        android:name="com.example.teuniverse.CommunityDetailFragment"
+        android:label="fragment_community_detail"
+        tools:layout="@layout/fragment_community_detail" />
 
 </navigation>

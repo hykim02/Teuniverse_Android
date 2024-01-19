@@ -10,29 +10,30 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
+class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
+                           private var onItemClick: (CommunityPostItem) -> Unit) :
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
-
-    interface OnItemClickListener {
-        fun onItemClick(item: CommunityPostItem)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
-        return CommunityPostViewHolder(view).apply {
-            // 리사이클러뷰 아이템 인식 클릭이벤트
-            itemView.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val clickedItem = itemList[position]
-                    val intent = Intent(parent.context, CommunityDetailActivity::class.java)
-                    intent.putExtra("communityItem", clickedItem)
-                    parent.context.startActivity(intent)
-                }
-            }
-        }
+        return CommunityPostViewHolder(view)
+//            .apply {
+//            // 리사이클러뷰 아이템 인식 클릭이벤트
+//            itemView.setOnClickListener {
+//                val position = adapterPosition
+//                if (position != RecyclerView.NO_POSITION) {
+//                    val clickedItem = itemList[position]
+//                    val intent = Intent(parent.context, CommunityDetailActivity::class.java)
+//                    intent.putExtra("communityItem", clickedItem)
+//                    parent.context.startActivity(intent)
+//                }
+//            }
+//        }
     }
 
+    fun setOnItemClickListener(listener: (CommunityPostItem) -> Unit) {
+        onItemClick = listener
+    }
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
 
@@ -53,6 +54,10 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
             .load(currentItem.userImg) // currentItem.img가 이미지 URL인 경우
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.userImg)
+
+        holder.itemView.setOnClickListener {
+            onItemClick.invoke(currentItem)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -67,15 +72,5 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
         val postSummary: TextView = itemView.findViewById(R.id.post_summary)
         var heartCount: TextView = itemView.findViewById(R.id.heart_count)
         val commentCount: TextView = itemView.findViewById(R.id.comment_count)
-
-//        init {
-//            itemView.setOnClickListener {
-//                val position = adapterPosition
-//                if (position != RecyclerView.NO_POSITION) {
-//                    val clickedItem = itemList[position]
-//                    listener.onItemClick(clickedItem)
-//                }
-//            }
-//        }
     }
 }
