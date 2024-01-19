@@ -1,15 +1,53 @@
 package com.example.teuniverse
 
+import android.os.Parcel
+import android.os.Parcelable
+
 // 커뮤니티 리사이클러뷰 아이템 데이터
 data class CommunityPostItem(
-    val userImg: String,
-    val fandomName: String,
-    val postTerm: String,
-    val postImg: String,
-    val postSummary: String,
+    val userImg: String?,
+    val fandomName: String?,
+    val postTerm: String?,
+    val postImg: String?,
+    val postSummary: String?,
     val heartCount: Int,
     val commentCount: Int
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readInt()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(userImg)
+        parcel.writeString(fandomName)
+        parcel.writeString(postTerm)
+        parcel.writeString(postImg)
+        parcel.writeString(postSummary)
+        parcel.writeInt(heartCount)
+        parcel.writeInt(commentCount)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CommunityPostItem> {
+        override fun createFromParcel(parcel: Parcel): CommunityPostItem {
+            return CommunityPostItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CommunityPostItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 // 투표 랭킹 리사이클러뷰 아이템 데이터
 data class VoteRankingItem(
@@ -17,6 +55,14 @@ data class VoteRankingItem(
     val img: String,
     val name: String,
     val count: String
+)
+
+// 커뮤니티 게시물 댓글 리사이클러뷰 아이템 데이터
+data class CommentItem(
+    val userImg: String,
+    val nickName: String,
+    val postTime: String,
+    val comment: String
 )
 
 // 서버 응답 코드(data가 객체인 경우)

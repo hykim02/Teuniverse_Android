@@ -3,7 +3,6 @@ package com.example.teuniverse
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -20,7 +19,7 @@ class SignupProfileActivity:AppCompatActivity() {
         setContentView(R.layout.signup_profile)
 
         val nextBtn = findViewById<Button>(R.id.next_btn)
-        val backBtn = findViewById<ImageButton>(R.id.back_btn)
+        val backBtn = findViewById<ImageButton>(R.id.back_btn_detail)
         val galleryBtn = findViewById<ImageButton>(R.id.gallery_btn)
         val profileImg = findViewById<ImageView>(R.id.profile_image)
         val name = findViewById<EditText>(R.id.set_name)

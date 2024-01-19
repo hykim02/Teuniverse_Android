@@ -8,7 +8,7 @@
     tools:context=".SignupApprovalActivity">
 
     <ImageButton
-        android:id="@+id/back_btn"
+        android:id="@+id/back_btn_detail"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
@@ -28,9 +28,9 @@
         android:textColor="@color/b"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
-        app:layout_constraintStart_toEndOf="@+id/back_btn"
-        app:layout_constraintTop_toTopOf="@+id/back_btn" />
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn_detail"
+        app:layout_constraintStart_toEndOf="@+id/back_btn_detail"
+        app:layout_constraintTop_toTopOf="@+id/back_btn_detail" />
 
     <TextView
         android:id="@+id/name5"

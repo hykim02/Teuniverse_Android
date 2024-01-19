@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -48,6 +49,13 @@ class CommunityFragment : Fragment() {
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
         communityAdapter = CommunityPostAdapter(feedList)
+
+//        communityAdapter = CommunityPostAdapter(feedList, object : CommunityPostAdapter.OnItemClickListener {
+//            override fun onItemClick(item: CommunityPostItem) {
+//                // 클릭한 아이템의 정보를 전달하면서 상세 페이지로 이동
+//                navigateToDetailPage(item)
+//            }
+//        })
 
         return view
     }
@@ -173,5 +181,13 @@ class CommunityFragment : Fragment() {
         Log.d("투표권 개수", votes.data.voteCount.toString())
         val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
+    }
+
+    private fun navigateToDetailPage(item: CommunityPostItem) {
+        // 상세 페이지로 이동하는 코드 작성
+        // 데이터 전달을 위해 Intent를 사용하여 정보를 넘길 수 있음
+        val intent = Intent(context, CommunityDetailActivity::class.java)
+        intent.putExtra("selectedItem", item)
+        startActivity(intent)
     }
 }

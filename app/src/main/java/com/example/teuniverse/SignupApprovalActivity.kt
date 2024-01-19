@@ -2,12 +2,10 @@ package com.example.teuniverse
 
 import android.content.Intent
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -24,7 +22,7 @@ class SignupApprovalActivity:AppCompatActivity() {
         setContentView(R.layout.signup_approval)
 
         nextBtn = findViewById(R.id.next_btn)
-        backBtn = findViewById(R.id.back_btn)
+        backBtn = findViewById(R.id.back_btn_detail)
         chk1 = findViewById(R.id.checkBox)
         chk2 = findViewById(R.id.checkBox2)
         chk4 = findViewById(R.id.checkBox4)

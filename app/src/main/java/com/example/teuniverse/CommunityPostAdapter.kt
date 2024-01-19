@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -12,9 +13,24 @@ import com.bumptech.glide.request.RequestOptions
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
+    interface OnItemClickListener {
+        fun onItemClick(item: CommunityPostItem)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
-        return CommunityPostViewHolder(view)
+        return CommunityPostViewHolder(view).apply {
+            // 리사이클러뷰 아이템 인식 클릭이벤트
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val clickedItem = itemList[position]
+                    val intent = Intent(parent.context, CommunityDetailActivity::class.java)
+                    intent.putExtra("communityItem", clickedItem)
+                    parent.context.startActivity(intent)
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
@@ -51,5 +67,15 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>) :
         val postSummary: TextView = itemView.findViewById(R.id.post_summary)
         var heartCount: TextView = itemView.findViewById(R.id.heart_count)
         val commentCount: TextView = itemView.findViewById(R.id.comment_count)
+
+//        init {
+//            itemView.setOnClickListener {
+//                val position = adapterPosition
+//                if (position != RecyclerView.NO_POSITION) {
+//                    val clickedItem = itemList[position]
+//                    listener.onItemClick(clickedItem)
+//                }
+//            }
+//        }
     }
 }

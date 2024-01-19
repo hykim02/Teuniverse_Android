@@ -55,7 +55,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         setContentView(R.layout.signup_select_artist)
 
         gridLayout = findViewById(R.id.artist_gridlayout)
-        val backBtn = findViewById<ImageButton>(R.id.back_btn)
+        val backBtn = findViewById<ImageButton>(R.id.back_btn_detail)
         filterSpinner = findViewById(R.id.select_spinner)
         val searchTxt = findViewById<EditText>(R.id.search_txt)
 
