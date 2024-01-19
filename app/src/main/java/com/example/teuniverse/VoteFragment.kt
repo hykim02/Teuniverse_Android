@@ -32,10 +32,6 @@ class VoteFragment : Fragment() {
     private lateinit var numberOfVote: TextView
     private lateinit var voteMission: ImageView
 
-    companion object {
-        const val REQUEST_CODE_POPUP_VOTE_CHECK = 123
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

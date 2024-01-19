@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.widget.addTextChangedListener
 import com.example.teuniverse.databinding.PopupVoteBinding
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,7 +20,6 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
     private lateinit var binding : PopupVoteBinding
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 만들어놓은 팝업창 띄움
@@ -32,12 +30,15 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
         // editText의 변화가 감지되면
         binding.votes.addTextChangedListener {
-            val votes = binding.votes.text.toString()
-            Log.d("votes", votes)
+            val votes = binding.votes.text.toString().toIntOrNull()
+            Log.d("votes", votes.toString())
 
-            // 화면에 다이얼로그가 나타난 후에 투표 정보 가져오기
-            GlobalScope.launch {
-                getPopupVoteApi(votes)
+            if (votes != null) {
+                GlobalScope.launch {
+                    getPopupVoteApi(votes)
+                }
+            } else {
+                Log.d("Error", "Invalid votes format")
             }
         }
 
@@ -73,7 +74,7 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
     }
 
     // voteCount 는 투표할 투표권 개수를 뜻함
-    private suspend fun getPopupVoteApi(voteCount: String) {
+    private suspend fun getPopupVoteApi(voteCount: Int?) {
         Log.d("getPopupVoteApi 함수", "호출 성공")
         val accessToken = getAccessToken()
         val voteRequest = NumberOfVote(voteCount = voteCount)
@@ -86,12 +87,15 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
                     val voteInfo: ServerResponse<PopupVoteData>? = response.body()
                     if (voteInfo != null) {
                         Log.d("getPopupVoteApi 함수", "${voteInfo.statusCode} ${voteInfo.message}")
-                        handlePopupVote(voteInfo)
+                        // UI 업데이트는 Main 스레드에서 진행
+                        withContext(Dispatchers.Main) {
+                            handlePopupVote(voteInfo)
+                        }
                     } else {
                         handleError("Response body is null.")
                     }
                 } else {
-                    handleError("getPopupVoteApi 함수 Error: ${response.code()} - ${response.message()}")
+                    handleError("getPopupVoteApi 함수 Error: ${response.code()}-${response.message()}")
                 }
             }
         }

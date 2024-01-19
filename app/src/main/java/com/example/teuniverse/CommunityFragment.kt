@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.teuniverse.databinding.PopupVoteCheckBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,6 +25,7 @@ class CommunityFragment : Fragment() {
     private lateinit var communityAdapter: CommunityPostAdapter
     private lateinit var artistProfile: ImageView
     private lateinit var artistName: TextView
+    private lateinit var numberOfVote: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +33,7 @@ class CommunityFragment : Fragment() {
         // 코루틴을 사용하여 getArtistList 함수 호출
         lifecycleScope.launch {
             communityFeedsApi()
+            getNumberOfVotes()
         }
     }
 
@@ -43,9 +44,9 @@ class CommunityFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community, container, false)
         artistProfile = view.findViewById(R.id.img_best_artist)
         artistName = view.findViewById(R.id.tv_best_artist_name)
-
         rvCommunity = view.findViewById(R.id.rv_post)
         feedList = ArrayList()
+        numberOfVote = view.findViewById(R.id.vote_count)
         communityAdapter = CommunityPostAdapter(feedList)
 
         return view
@@ -105,10 +106,13 @@ class CommunityFragment : Fragment() {
             val feedImg = feed.thumbnailUrl
             val feedContent = feed.content
             val heartCount = feed.likeCount
-            val time = 11
+            val time = "11분 전"
             val commentCount = 10
 
-            feedList.add(CommunityPostItem(userImg,userName,time,feedImg,feedContent,heartCount,commentCount))
+            feedList.add(
+                CommunityPostItem(
+                    userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
+            Log.d("feedList",feedList.toString())
         }
         Log.d("for문 후","ok")
         // 리사이클러뷰 어댑터 연결
@@ -135,5 +139,39 @@ class CommunityFragment : Fragment() {
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("communityFeedsApi 함수 Error", errorMessage)
+    }
+
+    private suspend fun getNumberOfVotes() {
+        Log.d("getNumberOfVotes 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
+                    VoteCountInstance.getVotesService().getVotes(accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theVote: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVote != null) {
+                        Log.d("response", "${theVote.statusCode} ${theVote.message}")
+                        handleTheVotes(theVote)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 보유 투표권 개수 조회
+    private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
+        Log.d("handleTheVotes 함수","호출 성공" )
+        Log.d("투표권 개수", votes.data.voteCount.toString())
+        val voteCount = votes.data.voteCount
+        numberOfVote.text = votes.data.voteCount.toString()
     }
 }

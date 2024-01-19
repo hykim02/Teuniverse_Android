@@ -4,7 +4,7 @@ package com.example.teuniverse
 data class CommunityPostItem(
     val userImg: String,
     val fandomName: String,
-    val postTerm: Int,
+    val postTerm: String,
     val postImg: String,
     val postSummary: String,
     val heartCount: Int,
@@ -75,7 +75,7 @@ data class UserProfileData(
 
 // 투표권 개수 조회
 data class NumberOfVote(
-    val voteCount: String
+    val voteCount: Int?
 )
 
 // 투표하기 현황 조회
