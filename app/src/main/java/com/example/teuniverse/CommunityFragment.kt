@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,11 +53,22 @@ class CommunityFragment : Fragment() {
         numberOfVote = view.findViewById(R.id.vote_count)
         communityAdapter = CommunityPostAdapter(feedList)
 
+        // Find the NavHostFragment
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        // Get the NavController from the NavHostFragment
+        val navController = navHostFragment.navController
+        // Obtain the NavGraph from the NavController
+        val navGraph = navController.navInflater.inflate(R.navigation.navigation_bar)
+        // Set the NavController to the View
+        view.findNavController().setGraph(navGraph)
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        val navHostFragment = parentFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 //        val navController = navHostFragment.navController
 
+//        val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val navController = navHostFragment.findNavController()
 
         communityAdapter.setOnItemClickListener(object: CommunityPostAdapter.OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
@@ -64,6 +76,9 @@ class CommunityFragment : Fragment() {
                 Log.d("position",position.toString())
 
                 findNavController().navigate(R.id.action_navigation_community_to_communityDetailFragment)
+//                val navController = findNavController()
+//                Log.d("navController", navController.toString())
+//                navController.navigate(R.id.action_navigation_community_to_communityDetailFragment)
             }
         })
         rvCommunity.adapter = communityAdapter
