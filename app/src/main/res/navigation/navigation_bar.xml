@@ -9,42 +9,39 @@
         android:id="@+id/navigation_home"
         android:name="com.example.teuniverse.HomeFragment"
         android:label="홈"
-        app:popUpToSaveState="true"
-        tools:layout="@layout/fragment_home" >
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/navigation_vote"
         android:name="com.example.teuniverse.VoteFragment"
         android:label="투표"
-        app:popUpToSaveState="true"
         tools:layout="@layout/fragment_vote" />
     <fragment
         android:id="@+id/navigation_community"
         android:name="com.example.teuniverse.CommunityFragment"
         android:label="커뮤니티"
-        app:popUpToSaveState="true"
         tools:layout="@layout/fragment_community" >
         <action
-            android:id="@+id/action_navigation_community_to_communityDetailFragment"
+            android:id="@+id/action_navigation_community_to_navigation_communityDetail"
             app:destination="@id/navigation_communityDetail" />
     </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="com.example.teuniverse.CalendarFragment"
         android:label="일정"
-        app:popUpToSaveState="true"
         tools:layout="@layout/fragment_calendar" />
     <fragment
         android:id="@+id/navigation_media"
         android:name="com.example.teuniverse.MediaFragment"
         android:label="미디어"
-        app:popUpToSaveState="true"
         tools:layout="@layout/fragment_media" />
     <fragment
         android:id="@+id/navigation_communityDetail"
         android:name="com.example.teuniverse.CommunityDetailFragment"
         android:label="커뮤니티 상세 화면"
-        app:popUpToSaveState="true"
-        tools:layout="@layout/fragment_community_detail" />
+        tools:layout="@layout/fragment_community_detail" >
+        <action
+            android:id="@+id/action_navigation_communityDetail_to_navigation_community"
+            app:destination="@id/navigation_community" />
+    </fragment>
 
 </navigation>

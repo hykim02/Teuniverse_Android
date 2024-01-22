@@ -16,17 +16,6 @@ import com.bumptech.glide.request.RequestOptions
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
-//    private var mrecyclerview : RecyclerView? = null
-//
-//    override fun onAttachedToRecyclerView(recyclerview: RecyclerView) {
-//        super.onAttachedToRecyclerView(recyclerview)
-//        mrecyclerview = recyclerview
-//    }
-//
-//    override fun onDetachedFromRecyclerView(recyclerview: RecyclerView) {
-//        super.onDetachedFromRecyclerView(recyclerview)
-//        mrecyclerview = null// to avoid memory leak
-//    }
     //커스텀 리스너
     interface OnItemClickListener{
         fun onItemClick(view: View, position: Int) // 추상 메소드
@@ -63,13 +52,6 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
             .load(currentItem.userImg) // currentItem.img가 이미지 URL인 경우
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.userImg)
-
-//        holder.itemView.setOnClickListener {
-//            val action = CommunityFragmentDirections.actionNavigationCommunityToCommunityDetailFragment()
-//            val navController = Navigation.findNavController(mrecyclerview!!)
-//            navController.navigate(action)
-//        }
-
 }
 
     override fun getItemCount(): Int {

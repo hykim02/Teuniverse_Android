@@ -69,10 +69,10 @@ class MenuActivity: AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        menuNavController = findNavController(R.id.nav_host_fragment)
-        return menuNavController.navigateUp() || super.onSupportNavigateUp()
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        menuNavController = findNavController(R.id.nav_host_fragment)
+//        return menuNavController.navigateUp() || super.onSupportNavigateUp()
+//    }
 
 }
 

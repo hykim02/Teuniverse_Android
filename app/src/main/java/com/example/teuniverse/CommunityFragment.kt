@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.IdRes
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,36 +56,12 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         rvCommunity = view.findViewById(R.id.rv_post)
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
-        communityAdapter = CommunityPostAdapter(feedList)
+        navController = findNavController() // 초기화
 
+        communityAdapter = CommunityPostAdapter(feedList)
+        communityAdapter.setOnItemClickListener(this) // 어댑터에 리스너 설정
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-
-//        val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
-//        if (navHostFragment != null) {
-//            navController = navHostFragment.navController
-//            Log.d("navHostFragment",navHostFragment.toString())
-//            Log.d("navController",navController.toString())
-//            // navController를 사용하여 필요한 작업 수행
-//        } else {
-//            // NavHostFragment를 찾지 못한 경우에 대한 처리
-//            Log.e("YourFragment", "NavHostFragment not found.")
-//        }
-
-//        communityAdapter.setOnItemClickListener(object: CommunityPostAdapter.OnItemClickListener{
-//            override fun onItemClick(view: View, position: Int) {
-//                Log.d("onItemClick 함수","실행")
-//                Log.d("position",position.toString())
-//
-//                // 명시적으로 뷰에 연결된 NavController를 찾아서 사용
-//                navController.navigate(R.id.action_navigation_community_to_communityDetailFragment, null)
-////                val navController = findNavController()
-////                Log.d("navController", navController.toString())
-////                navController.navigate(R.id.action_navigation_community_to_communityDetailFragment)
-//            }
-//        })
-        communityAdapter.setOnItemClickListener(this)
         rvCommunity.adapter = communityAdapter
 
         return view
@@ -156,18 +135,6 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         communityAdapter.notifyDataSetChanged()
     }
 
-//    private var context: Context? = null
-//
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        this.context = context
-//    }
-//
-//    override fun onDetach() {
-//        super.onDetach()
-//        this.context = null
-//    }
-
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
         MainActivity.ServiceAccessTokenDB.init(requireContext())
@@ -222,10 +189,37 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(view: View, position: Int) {
-        Log.d("onItemClick 함수","실행")
-        Log.d("position",position.toString())
+        Log.d("onItemClick 함수", "실행")
+        Log.d("position", position.toString())
 
+        try {
+            if (::navController.isInitialized) {
+                navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
+            } else {
+                Log.e("CommunityFragment", "NavController is not initialized.")
+            }
+        } catch (e: Exception) {
+            Log.e("CommunityFragment", "Error navigating to CommunityDetailFragment: ${e.message}")
+        }
+
+//        if (findNavController().currentDestination?.id == R.id.fragment_community) {
+//            Log.d("findNavController", findNavController().toString())
+//            // Navigate from AFragment to CFragment using the generated action
+//            findNavController().navigate(
+//                CommunityFragmentDirections.actionNavigationCommunityToNavigationCommunityDetail()
+//            )
+//        }
         // 명시적으로 뷰에 연결된 NavController를 찾아서 사용
-        findNavController().navigate(R.id.action_navigation_community_to_communityDetailFragment)
+//        findNavController().navigate(R.id.action_navigation_community_to_navigation_communityDetail)
+    }
+
+    private fun NavController.safeNavigate(direction: NavDirections) {
+        currentDestination?.getAction(direction.actionId)?.let {
+            if (currentDestination?.id != it.destinationId) {
+                // Check if the current destination is not the same as the destination of the action
+                navigate(direction)
+            }
+        }
     }
 }
+
