@@ -24,7 +24,6 @@
         <activity android:name=".SignupProfileActivity"/>
         <activity android:name=".SignupSelectArtistActivity"/>
         <activity android:name=".MenuActivity"/>
-        <activity android:name=".CommunityDetailActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

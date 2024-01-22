@@ -66,11 +66,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
             .load(currentItem.userImg) // currentItem.img가 이미지 URL인 경우
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.userImg)
-
-//        holder.itemView.setOnClickListener {
-//            onItemClick.invoke(currentItem)
-//        }
-    }
+}
 
     override fun getItemCount(): Int {
         return itemList.count()

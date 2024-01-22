@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.NavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +21,8 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 
-class CommunityFragment : Fragment() {
+
+class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
 
     private lateinit var rvCommunity: RecyclerView
     private lateinit var feedList: ArrayList<CommunityPostItem>
@@ -30,6 +30,7 @@ class CommunityFragment : Fragment() {
     private lateinit var artistProfile: ImageView
     private lateinit var artistName: TextView
     private lateinit var numberOfVote: TextView
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,42 +54,36 @@ class CommunityFragment : Fragment() {
         numberOfVote = view.findViewById(R.id.vote_count)
         communityAdapter = CommunityPostAdapter(feedList)
 
-        // Find the NavHostFragment
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        // Get the NavController from the NavHostFragment
-        val navController = navHostFragment.navController
-        // Obtain the NavGraph from the NavController
-        val navGraph = navController.navInflater.inflate(R.navigation.navigation_bar)
-        // Set the NavController to the View
-        view.findNavController().setGraph(navGraph)
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-//        val navController = navHostFragment.navController
 
-//        val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-//        val navController = navHostFragment.findNavController()
 
-        communityAdapter.setOnItemClickListener(object: CommunityPostAdapter.OnItemClickListener{
-            override fun onItemClick(view: View, position: Int) {
-                Log.d("onItemClick 함수","실행")
-                Log.d("position",position.toString())
+//        val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+//        if (navHostFragment != null) {
+//            navController = navHostFragment.navController
+//            Log.d("navHostFragment",navHostFragment.toString())
+//            Log.d("navController",navController.toString())
+//            // navController를 사용하여 필요한 작업 수행
+//        } else {
+//            // NavHostFragment를 찾지 못한 경우에 대한 처리
+//            Log.e("YourFragment", "NavHostFragment not found.")
+//        }
 
-                findNavController().navigate(R.id.action_navigation_community_to_communityDetailFragment)
-//                val navController = findNavController()
-//                Log.d("navController", navController.toString())
-//                navController.navigate(R.id.action_navigation_community_to_communityDetailFragment)
-            }
-        })
-        rvCommunity.adapter = communityAdapter
-
-//        adapter.setOnItemClickListener(object : BookAdapter.OnItemClickListener {
-//            override fun onItemClick(book: String) {
-//                val bundle = bundleOf("bookTitle" to book)
-//                findNavController().navigate(R.id.action_first_to_detail, bundle)
+//        communityAdapter.setOnItemClickListener(object: CommunityPostAdapter.OnItemClickListener{
+//            override fun onItemClick(view: View, position: Int) {
+//                Log.d("onItemClick 함수","실행")
+//                Log.d("position",position.toString())
+//
+//                // 명시적으로 뷰에 연결된 NavController를 찾아서 사용
+//                navController.navigate(R.id.action_navigation_community_to_communityDetailFragment, null)
+////                val navController = findNavController()
+////                Log.d("navController", navController.toString())
+////                navController.navigate(R.id.action_navigation_community_to_communityDetailFragment)
 //            }
 //        })
+        communityAdapter.setOnItemClickListener(this)
+        rvCommunity.adapter = communityAdapter
+
         return view
     }
 
@@ -223,5 +218,13 @@ class CommunityFragment : Fragment() {
         Log.d("투표권 개수", votes.data.voteCount.toString())
         val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
+    }
+
+    override fun onItemClick(view: View, position: Int) {
+        Log.d("onItemClick 함수","실행")
+        Log.d("position",position.toString())
+
+        // 명시적으로 뷰에 연결된 NavController를 찾아서 사용
+        findNavController().navigate(R.id.action_navigation_community_to_communityDetailFragment)
     }
 }
