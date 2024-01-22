@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

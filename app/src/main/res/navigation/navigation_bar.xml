@@ -10,7 +10,8 @@
         android:name="com.example.teuniverse.HomeFragment"
         android:label="홈"
         app:popUpToSaveState="true"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+    </fragment>
     <fragment
         android:id="@+id/navigation_vote"
         android:name="com.example.teuniverse.VoteFragment"

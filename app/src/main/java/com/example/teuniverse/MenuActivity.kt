@@ -3,24 +3,31 @@ package com.example.teuniverse
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MenuActivity: AppCompatActivity() {
 
     // 메뉴 액티비티의 NavController
-    lateinit var menuNavController: NavController
+    private lateinit var menuNavController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
 
         // NavHostFragment 초기화
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         // NavController 가져오기
-        menuNavController = navHostFragment.navController
+//        menuNavController = navHostFragment.navController
 
+//        menuNavController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+//            ?.findNavController()!!
+//        NavigationUI.setupActionBarWithNavController(this,menuNavController)
+
+        // 하단 네비게이션 뷰 초기화
         val navigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
-
         supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, HomeFragment())
             .commit()
 
@@ -61,5 +68,11 @@ class MenuActivity: AppCompatActivity() {
             true
         }
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        menuNavController = findNavController(R.id.nav_host_fragment)
+        return menuNavController.navigateUp() || super.onSupportNavigateUp()
+    }
+
 }
 

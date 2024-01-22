@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -15,6 +16,17 @@ import com.bumptech.glide.request.RequestOptions
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
+//    private var mrecyclerview : RecyclerView? = null
+//
+//    override fun onAttachedToRecyclerView(recyclerview: RecyclerView) {
+//        super.onAttachedToRecyclerView(recyclerview)
+//        mrecyclerview = recyclerview
+//    }
+//
+//    override fun onDetachedFromRecyclerView(recyclerview: RecyclerView) {
+//        super.onDetachedFromRecyclerView(recyclerview)
+//        mrecyclerview = null// to avoid memory leak
+//    }
     //커스텀 리스너
     interface OnItemClickListener{
         fun onItemClick(view: View, position: Int) // 추상 메소드
@@ -29,23 +41,8 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
         return CommunityPostViewHolder(view)
-//            .apply {
-//            // 리사이클러뷰 아이템 인식 클릭이벤트
-//            itemView.setOnClickListener {
-//                val position = adapterPosition
-//                if (position != RecyclerView.NO_POSITION) {
-//                    val clickedItem = itemList[position]
-//                    val intent = Intent(parent.context, CommunityDetailActivity::class.java)
-//                    intent.putExtra("communityItem", clickedItem)
-//                    parent.context.startActivity(intent)
-//                }
-//            }
-//        }
     }
 
-//    fun setOnItemClickListener(listener: (CommunityPostItem) -> Unit) {
-//        onItemClick = listener
-//    }
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
 
@@ -66,6 +63,13 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
             .load(currentItem.userImg) // currentItem.img가 이미지 URL인 경우
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.userImg)
+
+//        holder.itemView.setOnClickListener {
+//            val action = CommunityFragmentDirections.actionNavigationCommunityToCommunityDetailFragment()
+//            val navController = Navigation.findNavController(mrecyclerview!!)
+//            navController.navigate(action)
+//        }
+
 }
 
     override fun getItemCount(): Int {
