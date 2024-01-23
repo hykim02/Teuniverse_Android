@@ -189,18 +189,40 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(view: View, position: Int) {
-        Log.d("onItemClick 함수", "실행")
-        Log.d("position", position.toString())
+        Log.d("recyclerView", "Item clicked at position: $position")
 
-        try {
-            if (::navController.isInitialized) {
+        val currentNavController = view.findNavController()
+//        Log.d("CommunityFragment 현재 프래그먼트 위치1",currentNavController.toString())
+        currentNavController.navigate(R.id.navigation_community)
+        Log.d("CommunityFragment 현재 프래그먼트 위치2",currentNavController.toString())
+        if (currentNavController.currentDestination?.id == R.id.navigation_community) {
+            Log.d("CommunityFragment 현재 프래그먼트 위치3",currentNavController.toString())
+            Log.d("CommunityFragment 현재 프래그먼트 위치4", currentNavController.currentDestination?.id.toString())
+            try {
                 navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
-            } else {
-                Log.e("CommunityFragment", "NavController is not initialized.")
+            } catch (e: Exception) {
+                Log.e("CommunityFragment", "Error in navigation: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e("CommunityFragment", "Error navigating to CommunityDetailFragment: ${e.message}")
+        } else {
+            Log.e("CommunityFragment", "NavController not initialized or wrong current destination")
         }
+    }
+
+
+
+//    override fun onItemClick(view: View, position: Int) {
+//        Log.d("onItemClick 함수", "실행")
+//        Log.d("position", position.toString())
+//
+//        try {
+//            if (::navController.isInitialized) {
+//                navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
+//            } else {
+//                Log.e("CommunityFragment", "NavController is not initialized.")
+//            }
+//        } catch (e: Exception) {
+//            Log.e("CommunityFragment", "Error navigating to CommunityDetailFragment: ${e.message}")
+//        }
 
 //        if (findNavController().currentDestination?.id == R.id.fragment_community) {
 //            Log.d("findNavController", findNavController().toString())
@@ -221,5 +243,5 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
             }
         }
     }
-}
+
 

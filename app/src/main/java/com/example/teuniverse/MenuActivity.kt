@@ -47,16 +47,20 @@ class MenuActivity: AppCompatActivity() {
                 R.id.fragment_community -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment, CommunityFragment()).commit()
+                    //val currentNavController = findNavController()
+                    //currentNavController.navigate(R.id.navigation_community)
                 }
 
                 R.id.fragment_home -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment, HomeFragment()).commit()
+
                 }
 
                 R.id.fragment_media -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment, MediaFragment()).commit()
+
                 }
 
                 R.id.fragment_vote -> {
