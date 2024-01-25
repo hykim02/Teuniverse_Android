@@ -56,7 +56,7 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         rvCommunity = view.findViewById(R.id.rv_post)
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
-        navController = findNavController() // 초기화
+//        navController = findNavController() // 초기화
 
         communityAdapter = CommunityPostAdapter(feedList)
         communityAdapter.setOnItemClickListener(this) // 어댑터에 리스너 설정
@@ -199,7 +199,7 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
             Log.d("CommunityFragment 현재 프래그먼트 위치3",currentNavController.toString())
             Log.d("CommunityFragment 현재 프래그먼트 위치4", currentNavController.currentDestination?.id.toString())
             try {
-                navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
+                currentNavController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
             } catch (e: Exception) {
                 Log.e("CommunityFragment", "Error in navigation: ${e.message}")
             }

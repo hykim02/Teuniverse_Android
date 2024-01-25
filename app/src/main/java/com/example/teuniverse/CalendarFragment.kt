@@ -20,9 +20,9 @@ class CalendarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val navController = findNavController()
-        Log.d("CalendarFragment 현재 위치", navController.toString())
-        Log.d("CalendarFragment 현재 위치2", navController.currentDestination?.id.toString())
+//        val navController = findNavController()
+//        Log.d("CalendarFragment 현재 위치", navController.toString())
+//        Log.d("CalendarFragment 현재 위치2", navController.currentDestination?.id.toString())
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false)
     }

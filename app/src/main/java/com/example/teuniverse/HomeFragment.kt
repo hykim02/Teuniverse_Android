@@ -18,17 +18,25 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding =  FragmentHomeBinding.inflate(inflater, container, false)
 
-//        binding.homeBtn.setOnClickListener {
-//            NavHostFragment.findNavController(this).navigate(R.id.action_navigation_home_to_navigation_vote2)
-//        }
+        binding.homeBtn.setOnClickListener {
+            try {
+                val navController = findNavController()
+                navController.navigate(R.id.action_navigation_home_to_navigation_vote)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
-        val navController = findNavController()
-        Log.d("HomeFragment 현재 위치",navController.toString())
-        Log.d("HomeFragment 현재 위치2", navController.currentDestination?.id.toString())
+
+//
+//        val navController = findNavController()
+//        Log.d("HomeFragment 현재 위치",navController.toString())
+//        Log.d("HomeFragment 현재 위치2", navController.currentDestination?.id.toString())
+
         return binding.root
     }
 
