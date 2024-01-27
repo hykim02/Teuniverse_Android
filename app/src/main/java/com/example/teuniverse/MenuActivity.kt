@@ -3,6 +3,7 @@ package com.example.teuniverse
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -17,79 +18,34 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MenuActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityMenuBinding
-    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
+        replaceFragment(HomeFragment())
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when(it.itemId) {
+                R.id.fragment_home -> replaceFragment(HomeFragment())
+                R.id.fragment_community -> replaceFragment(CommunityFragment())
+                R.id.fragment_vote -> replaceFragment(VoteFragment())
+                R.id.fragment_calendar -> replaceFragment(CalendarFragment())
+                R.id.fragment_media -> replaceFragment(MediaFragment())
 
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.fragment_home,
-                R.id.fragment_calendar,
-                R.id.fragment_community,
-                R.id.fragment_vote,
-                R.id.fragment_media
-            )
-        )
+                else ->{
 
-        binding.bottomNavigationView.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+                }
+            }
+            true
+        }
     }
 
-    override fun onNavigateUp(): Boolean = navController.navigateUp() || super.onNavigateUp()
-
-
-    // 메뉴 액티비티의 NavController
-//    private lateinit var menuNavController: NavController
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_menu)
-//
-//        // 하단 네비게이션 뷰 초기화
-//        val navigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
-//        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, HomeFragment())
-//            .commit()
-//
-//        navigationView.setOnItemSelectedListener {
-//            when (it.itemId) {
-//                R.id.fragment_calendar -> {
-//                    supportFragmentManager.beginTransaction()
-//                        .replace(R.id.nav_host_fragment, CalendarFragment()).commit()
-//                }
-//
-//                R.id.fragment_community -> {
-//                    supportFragmentManager.beginTransaction()
-//                        .replace(R.id.nav_host_fragment, CommunityFragment()).commit()
-//                    //val currentNavController = findNavController()
-//                    //currentNavController.navigate(R.id.navigation_community)
-//                }
-//
-//                R.id.fragment_home -> {
-//                    supportFragmentManager.beginTransaction()
-//                        .replace(R.id.nav_host_fragment, HomeFragment()).commit()
-//
-//                }
-//
-//                R.id.fragment_media -> {
-//                    supportFragmentManager.beginTransaction()
-//                        .replace(R.id.nav_host_fragment, MediaFragment()).commit()
-//
-//                }
-//
-//                R.id.fragment_vote -> {
-//                    supportFragmentManager.beginTransaction()
-//                        .replace(R.id.nav_host_fragment, VoteFragment()).commit()
-//                }
-//            }
-//
-//            true
-//        }
-//    }
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
+        fragmentTransaction.commit()
+    }
 }
 
