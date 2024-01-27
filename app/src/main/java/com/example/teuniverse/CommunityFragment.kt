@@ -56,7 +56,6 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         rvCommunity = view.findViewById(R.id.rv_post)
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
-//        navController = findNavController() // 초기화
 
         communityAdapter = CommunityPostAdapter(feedList)
         communityAdapter.setOnItemClickListener(this) // 어댑터에 리스너 설정
@@ -192,12 +191,8 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         Log.d("recyclerView", "Item clicked at position: $position")
 
         val currentNavController = view.findNavController()
-//        Log.d("CommunityFragment 현재 프래그먼트 위치1",currentNavController.toString())
         currentNavController.navigate(R.id.navigation_community)
-        Log.d("CommunityFragment 현재 프래그먼트 위치2",currentNavController.toString())
         if (currentNavController.currentDestination?.id == R.id.navigation_community) {
-            Log.d("CommunityFragment 현재 프래그먼트 위치3",currentNavController.toString())
-            Log.d("CommunityFragment 현재 프래그먼트 위치4", currentNavController.currentDestination?.id.toString())
             try {
                 currentNavController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
             } catch (e: Exception) {
@@ -207,41 +202,6 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
             Log.e("CommunityFragment", "NavController not initialized or wrong current destination")
         }
     }
-
-
-
-//    override fun onItemClick(view: View, position: Int) {
-//        Log.d("onItemClick 함수", "실행")
-//        Log.d("position", position.toString())
-//
-//        try {
-//            if (::navController.isInitialized) {
-//                navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
-//            } else {
-//                Log.e("CommunityFragment", "NavController is not initialized.")
-//            }
-//        } catch (e: Exception) {
-//            Log.e("CommunityFragment", "Error navigating to CommunityDetailFragment: ${e.message}")
-//        }
-
-//        if (findNavController().currentDestination?.id == R.id.fragment_community) {
-//            Log.d("findNavController", findNavController().toString())
-//            // Navigate from AFragment to CFragment using the generated action
-//            findNavController().navigate(
-//                CommunityFragmentDirections.actionNavigationCommunityToNavigationCommunityDetail()
-//            )
-//        }
-        // 명시적으로 뷰에 연결된 NavController를 찾아서 사용
-//        findNavController().navigate(R.id.action_navigation_community_to_navigation_communityDetail)
-    }
-
-    private fun NavController.safeNavigate(direction: NavDirections) {
-        currentDestination?.getAction(direction.actionId)?.let {
-            if (currentDestination?.id != it.destinationId) {
-                // Check if the current destination is not the same as the destination of the action
-                navigate(direction)
-            }
-        }
-    }
+}
 
 
