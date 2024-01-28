@@ -240,8 +240,6 @@ class VoteFragment : Fragment() {
     // 보유 투표권 개수 조회
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
         Log.d("handleTheVotes 함수","호출 성공" )
-        Log.d("투표권 개수", votes.data.voteCount.toString())
-        val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
     }
 

@@ -31,6 +31,8 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         holder.heartCount.text = currentItem.heartCount.toString()
         holder.commentCount.text = currentItem.commentCount.toString()
 
+        holder.feedId.visibility = View.GONE
+
         // 이미지 로딩
         Glide.with(holder.itemView.context)
             .load(currentItem.postImg) // currentItem.img가 이미지 URL인 경우

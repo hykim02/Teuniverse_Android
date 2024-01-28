@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHost
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -44,8 +45,6 @@ class CommunityDetailFragment : Fragment() {
         Log.d("bundle",bundle.toString())
         if (bundle != null) {
             val feedId = bundle.getString("feedId")
-            Log.d("feedID", feedId.toString())
-            binding.detailFeedId.text = feedId.toString()
             lifecycleScope.launch {
                 detailFeedApi(feedId.toString())
             }
@@ -55,8 +54,8 @@ class CommunityDetailFragment : Fragment() {
 
         // 댓글 리사이클러뷰 어댑터 연결
         commentAdapter = CommentAdapter(commentList)
-        binding.rvComment.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.rvComment.adapter = commentAdapter
+//        binding.rvComment.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//        binding.rvComment.adapter = commentAdapter
 
         return binding.root
     }
@@ -117,6 +116,13 @@ class CommunityDetailFragment : Fragment() {
             val time = "7분 전"
             commentList.add(CommentItem(userImg, nickname, time, content))
         }
+        // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
+        val spanCount = commentList.size
+        Log.d("댓글 개수", spanCount.toString())
+        val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+        binding.rvComment.adapter = commentAdapter
+        binding.rvComment.layoutManager = layoutManager
+
         // 어댑터에 데이터가 변경되었음을 알리기
         commentAdapter.notifyDataSetChanged()
     }
