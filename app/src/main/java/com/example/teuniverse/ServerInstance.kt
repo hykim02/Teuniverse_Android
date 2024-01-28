@@ -93,6 +93,7 @@ object SignUpInstance {
     }
 }
 
+// 커뮤니티 피드 조회
 object CommunityFeedsInstance {
     fun communityFeedsService(): CommunityFeedsInterface {
         return Retrofit.Builder()
@@ -100,5 +101,16 @@ object CommunityFeedsInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(CommunityFeedsInterface::class.java)
+    }
+}
+
+// 커뮤니티 상세 페이지 조회
+object CommunityDetailInstance {
+    fun communityDetailService(): CommunityDetailInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CommunityDetailInterface::class.java)
     }
 }

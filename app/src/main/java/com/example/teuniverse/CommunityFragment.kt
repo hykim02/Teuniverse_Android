@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +27,7 @@ import retrofit2.Response
 
 
 
-class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
+class CommunityFragment : Fragment() {
 
     private lateinit var rvCommunity: RecyclerView
     private lateinit var feedList: ArrayList<CommunityPostItem>
@@ -34,7 +35,7 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
     private lateinit var artistProfile: ImageView
     private lateinit var artistName: TextView
     private lateinit var numberOfVote: TextView
-    private lateinit var navController: NavController
+    private lateinit var intent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         // 코루틴을 사용하여 getArtistList 함수 호출
         lifecycleScope.launch {
             communityFeedsApi()
-            getNumberOfVotes()
+            getNumberOfVotesApi()
         }
     }
 
@@ -51,14 +52,17 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community, container, false)
+        intent = Intent(context, CommunityDetailFragment::class.java)
+
         artistProfile = view.findViewById(R.id.img_best_artist)
         artistName = view.findViewById(R.id.tv_best_artist_name)
         rvCommunity = view.findViewById(R.id.rv_post)
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
 
-        communityAdapter = CommunityPostAdapter(feedList)
-        communityAdapter.setOnItemClickListener(this) // 어댑터에 리스너 설정
+        // 어댑터에 NavController 전달
+        val navController = findNavController()
+        communityAdapter = CommunityPostAdapter(feedList, navController)
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvCommunity.adapter = communityAdapter
@@ -78,7 +82,6 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
                     val theFeeds: ServerResponse<CommunityData>? = response.body()
                     if (theFeeds != null) {
                         Log.d("communityFeedsApi 함수 response", "${theFeeds.statusCode} ${theFeeds.message}")
-                        Log.d("response",theFeeds.toString())
                         handleGetFeeds(theFeeds)
                     } else {
                         handleError("Response body is null.")
@@ -98,7 +101,6 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         val artistProfileData = theFeeds.data.artistProfile
         val feedsData = theFeeds.data.feeds
 
-        Log.d("artistProfile",artistProfileData.toString())
         // 아티스트 데이터
         Glide.with(this)
             .load(artistProfileData.thumbnailUrl)
@@ -107,16 +109,14 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
 
         artistName.text = artistProfileData.name
 
-        Log.d("for문 전","ok")
         for (i in feedsData.indices) {
-            Log.d("for문","실행")
             val feed = feedsData[i]
-            Log.d("feed",feed.toString())
             // user
             val userProfileData = feed.userProfile
             val userName = userProfileData.nickName
             val userImg = userProfileData.thumbnailUrl
             // feed
+            val feedId = feed.id
             val feedImg = feed.thumbnailUrl
             val feedContent = feed.content
             val heartCount = feed.likeCount
@@ -125,11 +125,8 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
 
             feedList.add(
                 CommunityPostItem(
-                    userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
-            Log.d("feedList",feedList.toString())
+                     feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
         }
-        Log.d("for문 후","ok")
-
         // 어댑터에 데이터가 변경되었음을 알리기
         communityAdapter.notifyDataSetChanged()
     }
@@ -153,7 +150,8 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         Log.d("communityFeedsApi 함수 Error", errorMessage)
     }
 
-    private suspend fun getNumberOfVotes() {
+    // 보유 투표권 조회 api
+    private suspend fun getNumberOfVotesApi() {
         Log.d("getNumberOfVotes 함수", "호출 성공")
         val accessToken = getAccessToken()
         try {
@@ -185,22 +183,6 @@ class CommunityFragment : Fragment(), CommunityPostAdapter.OnItemClickListener {
         Log.d("투표권 개수", votes.data.voteCount.toString())
         val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
-    }
-
-    override fun onItemClick(view: View, position: Int) {
-        Log.d("recyclerView", "Item clicked at position: $position")
-
-        val currentNavController = view.findNavController()
-        currentNavController.navigate(R.id.navigation_community)
-        if (currentNavController.currentDestination?.id == R.id.navigation_community) {
-            try {
-                currentNavController.navigate(R.id.action_navigation_community_to_navigation_communityDetail)
-            } catch (e: Exception) {
-                Log.e("CommunityFragment", "Error in navigation: ${e.message}")
-            }
-        } else {
-            Log.e("CommunityFragment", "NavController not initialized or wrong current destination")
-        }
     }
 }
 

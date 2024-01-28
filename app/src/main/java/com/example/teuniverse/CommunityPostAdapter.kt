@@ -1,31 +1,19 @@
 package com.example.teuniverse
 
-import android.content.Intent
-import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
+import androidx.navigation.NavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
+class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
+                           private val navController: NavController):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
-
-    //커스텀 리스너
-    interface OnItemClickListener{
-        fun onItemClick(view: View, position: Int) // 추상 메소드
-    }
-    //객체 저장 변수
-    private lateinit var mOnItemClickListener: OnItemClickListener
-    //객체 전달 메서드
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener){
-        mOnItemClickListener = onItemClickListener
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
@@ -35,6 +23,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
 
+        holder.feedId.text = currentItem.feedId.toString()
         holder.fandomName.text = currentItem.fandomName
         holder.postTerm.text = currentItem.postTerm.toString()
         holder.postSummary.text = currentItem.postSummary
@@ -63,15 +52,21 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>):
         val fandomName: TextView = itemView.findViewById(R.id.fandom_name)
         val postTerm: TextView = itemView.findViewById(R.id.term)
         val postImg: ImageView = itemView.findViewById(R.id.post_img)
-        val postSummary: TextView = itemView.findViewById(R.id.post_summary)
+        val postSummary: TextView = itemView.findViewById(R.id.post_content)
         var heartCount: TextView = itemView.findViewById(R.id.heart_count)
         val commentCount: TextView = itemView.findViewById(R.id.comment_count)
+        val feedId: TextView = itemView.findViewById(R.id.feed_id)
 
         init {
             itemView.setOnClickListener {
                 val pos = adapterPosition
                 if(pos != RecyclerView.NO_POSITION){
-                    mOnItemClickListener.onItemClick(itemView, pos)
+                    // Bundle에 데이터를 담아서 NavController를 통해 전달
+                    val feedId = itemList[pos].feedId
+                    val bundle = Bundle().apply {
+                        putString("feedId", feedId.toString())
+                    }
+                    navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail, bundle)
                 }
             }
         }

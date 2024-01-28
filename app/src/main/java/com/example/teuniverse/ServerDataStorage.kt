@@ -5,6 +5,7 @@ import android.os.Parcelable
 
 // 커뮤니티 리사이클러뷰 아이템 데이터
 data class CommunityPostItem(
+    val feedId: Int,
     val userImg: String?,
     val fandomName: String?,
     val postTerm: String?,
@@ -14,6 +15,7 @@ data class CommunityPostItem(
     val commentCount: Int
 ): Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readInt(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -25,6 +27,7 @@ data class CommunityPostItem(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(feedId)
         parcel.writeString(userImg)
         parcel.writeString(fandomName)
         parcel.writeString(postTerm)
@@ -57,7 +60,7 @@ data class VoteRankingItem(
     val count: String
 )
 
-// 커뮤니티 게시물 댓글 리사이클러뷰 아이템 데이터
+// 커뮤니티 상세 페이지 댓글 리사이클러뷰 아이템 데이터
 data class CommentItem(
     val userImg: String,
     val nickName: String,
@@ -145,7 +148,7 @@ data class SignUpRequest(
 
 
 
-// 피드 조회
+// 커뮤니티 피드 조회
 data class ArtistProfile(
     val id: Int,
     val name: String,
@@ -165,4 +168,31 @@ data class Feeds(
 data class CommunityData(
     val artistProfile: ArtistProfile,
     val feeds: List<Feeds>
+)
+
+
+
+// 상세 피드 조회
+data class CommunityDetailData(
+    val id: Int,
+    val content: String,
+    val thumbnailUrl: String,
+    val likeCount: Int,
+    val createdAt: String,
+    val updatedAt: String,
+    val userProfile: UserProfileData,
+    val comments: List<DetailComments>
+)
+
+data class CommunityFeedId(
+    val feedId: Int
+)
+
+// 댓글 조회
+data class DetailComments(
+    val id: Int,
+    val content: String,
+    val createdAt: String,
+    val updatedAt: String,
+    val userProfile: UserProfileData
 )

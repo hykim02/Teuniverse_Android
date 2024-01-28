@@ -67,7 +67,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/post_summary"
+        android:id="@+id/post_content"
         android:layout_width="360dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:text="더보기"
         app:layout_constraintEnd_toEndOf="@+id/cardview_member"
-        app:layout_constraintTop_toBottomOf="@+id/post_summary" />
+        app:layout_constraintTop_toBottomOf="@+id/post_content" />
 
     <ImageButton
         android:id="@+id/imageButton3"
@@ -92,7 +92,7 @@
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/post_summary"
+        app:layout_constraintStart_toStartOf="@+id/post_content"
         app:layout_constraintTop_toBottomOf="@+id/post_summary_more"
         app:srcCompat="@drawable/icon_heart_off" />
 
@@ -131,5 +131,14 @@
         app:layout_constraintStart_toEndOf="@+id/heart_count"
         app:layout_constraintTop_toTopOf="@+id/heart_count"
         app:srcCompat="@drawable/icon_comment" />
+
+    <TextView
+        android:id="@+id/feed_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="id"
+        app:layout_constraintEnd_toStartOf="@+id/btn_help"
+        app:layout_constraintTop_toTopOf="@+id/btn_help" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

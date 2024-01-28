@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 // suspend 함수-> 비동기 작업 수행, UI 스레드 차단 X, 비동기 코드 효율적으로 작성
@@ -77,10 +78,21 @@ interface SignUpInterface {
     ): Response<SignUpResponse>
 }
 
+// 피드 조회
 interface CommunityFeedsInterface {
     @GET("community")
     @Headers("accept: application/json")
     suspend fun getFeeds(
         @Header("Authorization") authorization: String
     ): Response<ServerResponse<CommunityData>>
+}
+
+// 상세 피드 조회
+interface CommunityDetailInterface {
+    @GET("community/{feedId}")
+    @Headers("accept: application/json")
+    suspend fun getDetailFeeds(
+        @Path("feedId") feedId: CommunityFeedId,
+        @Header("Authorization") authorization: String
+    ): Response<ServerResponse<CommunityDetailData>>
 }
