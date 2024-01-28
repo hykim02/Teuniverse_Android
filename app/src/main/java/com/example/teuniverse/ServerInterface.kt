@@ -92,7 +92,7 @@ interface CommunityDetailInterface {
     @GET("community/{feedId}")
     @Headers("accept: application/json")
     suspend fun getDetailFeeds(
-        @Path("feedId") feedId: CommunityFeedId,
+        @Path("feedId") feedId: String,
         @Header("Authorization") authorization: String
     ): Response<ServerResponse<CommunityDetailData>>
 }

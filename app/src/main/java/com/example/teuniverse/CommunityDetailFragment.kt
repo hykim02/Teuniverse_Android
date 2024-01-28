@@ -17,16 +17,17 @@ import com.example.teuniverse.databinding.FragmentCommunityDetailBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentCommunityDetailBinding
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var commentList: ArrayList<CommentItem>
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +41,13 @@ class CommunityDetailFragment : Fragment() {
         commentList = ArrayList()
         // getArguments()를 통해 Bundle을 받아옴
         val bundle = arguments
+        Log.d("bundle",bundle.toString())
         if (bundle != null) {
-            val feedId = bundle.getInt("feedId")
+            val feedId = bundle.getString("feedId")
+            Log.d("feedID", feedId.toString())
             binding.detailFeedId.text = feedId.toString()
             lifecycleScope.launch {
-                detailFeedApi(feedId)
+                detailFeedApi(feedId.toString())
             }
         } else {
             Log.d("feedId","null")
@@ -58,11 +61,10 @@ class CommunityDetailFragment : Fragment() {
         return binding.root
     }
 
-    private suspend fun detailFeedApi(feedId: Int) {
+    private suspend fun detailFeedApi(feedId: String) {
         Log.d("detailFeedsApi 함수", "호출 성공")
         val accessToken = getAccessToken()
         try {
-            val feedId = CommunityFeedId(feedId = feedId)
             if (accessToken != null) {
                 val response: Response<ServerResponse<CommunityDetailData>> = withContext(Dispatchers.IO) {
                     CommunityDetailInstance.communityDetailService().getDetailFeeds(feedId, accessToken)

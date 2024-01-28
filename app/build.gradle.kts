@@ -70,6 +70,8 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.2")
     implementation ("com.google.code.gson:gson:2.10")
 
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
+
     implementation("com.android.identity:identity-credential-android:20231002") // 카카오 로그인
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")

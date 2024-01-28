@@ -113,4 +113,31 @@ object CommunityDetailInstance {
             .build()
             .create(CommunityDetailInterface::class.java)
     }
+
+//    private val retrofit: Retrofit = provideRetrofit(BASE_URL)
+
+//    fun communityDetailService(): CommunityDetailInterface {
+//        return retrofit.create(CommunityDetailInterface::class.java)
+//    }
+
+    private fun provideRetrofit(baseUrl: String): Retrofit {
+        val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                // HTTP 요청 로그를 출력
+                println("OkHttp: $message")
+            }
+        }).apply {
+            level = HttpLoggingInterceptor.Level.BODY // 로그 수준 설정
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor) // 인터셉터 추가
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 }

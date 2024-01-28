@@ -184,10 +184,6 @@ data class CommunityDetailData(
     val comments: List<DetailComments>
 )
 
-data class CommunityFeedId(
-    val feedId: Int
-)
-
 // 댓글 조회
 data class DetailComments(
     val id: Int,
