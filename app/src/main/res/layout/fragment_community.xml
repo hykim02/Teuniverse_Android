@@ -7,6 +7,19 @@
     android:background="@color/w"
     tools:context=".CommunityFragment">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:clickable="true"
+        app:borderWidth="0dp"
+        app:tint="@null"
+        app:maxImageSize="40dp"
+        android:backgroundTint="@color/w"
+        android:layout_margin="16dp"
+        android:src="@drawable/plus" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -110,14 +123,15 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_post"
-                    tools:listitem="@layout/community_rv_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="60dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    android:layout_marginBottom="60dp"/>
+                    tools:listitem="@layout/community_rv_item" />
 
             </LinearLayout>
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
