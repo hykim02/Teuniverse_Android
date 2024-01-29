@@ -1,12 +1,16 @@
 package com.example.teuniverse
 
 import android.telecom.Call
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -95,4 +99,16 @@ interface CommunityDetailInterface {
         @Path("feedId") feedId: String,
         @Header("Authorization") authorization: String
     ): Response<ServerResponse<CommunityDetailData>>
+}
+
+// 게시물 작성
+interface CommunityPostInterface {
+    @Multipart
+    @POST("community")
+    @Headers("accept: */*")
+    suspend fun postContent(
+        @Header("Authorization") authorization: String?,
+        @Part("content") content: RequestBody,
+        @Part imageFile: MultipartBody.Part?
+    ): Response<SignUpResponse>
 }

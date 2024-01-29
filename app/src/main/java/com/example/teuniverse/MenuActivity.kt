@@ -33,8 +33,6 @@ class MenuActivity: AppCompatActivity() {
         // 하단바와 navController 연결
         binding.bottomNavigationView.setupWithNavController(navController)
 
-//        replaceFragment(HomeFragment())
-
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.fragment_home -> navController.navigate(R.id.navigation_home)
@@ -45,19 +43,6 @@ class MenuActivity: AppCompatActivity() {
             }
             true
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
-        fragmentTransaction.commit()
-    }
-
-    private fun navigateToFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, fragment)
-            .commit()
     }
 }
 
