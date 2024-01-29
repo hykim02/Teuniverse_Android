@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,6 +38,7 @@ class CommunityFragment : Fragment() {
     private lateinit var artistName: TextView
     private lateinit var numberOfVote: TextView
     private lateinit var intent: Intent
+    private lateinit var postBtn: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +55,14 @@ class CommunityFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community, container, false)
-        intent = Intent(context, CommunityDetailFragment::class.java)
+//        intent = Intent(context, CommunityDetailFragment::class.java)
 
         artistProfile = view.findViewById(R.id.img_best_artist)
         artistName = view.findViewById(R.id.tv_best_artist_name)
         rvCommunity = view.findViewById(R.id.rv_post)
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
+        postBtn = view.findViewById(R.id.add_btn)
 
         // 어댑터에 NavController 전달
         val navController = findNavController()
@@ -67,6 +70,13 @@ class CommunityFragment : Fragment() {
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvCommunity.adapter = communityAdapter
+
+        postBtn.setOnClickListener {
+            activity?.let{
+                intent = Intent(context, CommunityPostActivity::class.java)
+                startActivity(intent)
+            }
+        }
 
         return view
     }
@@ -181,8 +191,6 @@ class CommunityFragment : Fragment() {
     // 보유 투표권 개수 조회
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
         Log.d("handleTheVotes 함수","호출 성공" )
-        Log.d("투표권 개수", votes.data.voteCount.toString())
-        val voteCount = votes.data.voteCount
         numberOfVote.text = votes.data.voteCount.toString()
     }
 }
