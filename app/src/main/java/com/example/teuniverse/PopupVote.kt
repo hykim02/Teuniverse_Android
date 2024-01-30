@@ -76,7 +76,7 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
     // voteCount 는 투표할 투표권 개수를 뜻함
     private suspend fun getPopupVoteApi(voteCount: Int?) {
         Log.d("getPopupVoteApi 함수", "호출 성공")
-        val accessToken = CommunityFragment().getAccessToken()
+        val accessToken = getAccessToken()
         val voteRequest = NumberOfVote(voteCount = voteCount)
         try {
             if (accessToken != null) {
@@ -118,5 +118,19 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("getPopupVoteApi 함수 Error", errorMessage)
+    }
+
+    // db에서 토큰 가져오기
+    private fun getAccessToken(): String? {
+        MainActivity.ServiceAccessTokenDB.init(context)
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer " + value.toString()
+            }
+        }
+        return accessToken
     }
 }

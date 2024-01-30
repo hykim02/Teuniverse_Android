@@ -62,7 +62,7 @@ class CommunityDetailFragment : Fragment() {
 
     private suspend fun detailFeedApi(feedId: String) {
         Log.d("detailFeedsApi 함수", "호출 성공")
-        val accessToken = CommunityFragment().getAccessToken()
+        val accessToken = getAccessToken()
         try {
             if (accessToken != null) {
                 val response: Response<ServerResponse<CommunityDetailData>> = withContext(Dispatchers.IO) {
@@ -130,5 +130,19 @@ class CommunityDetailFragment : Fragment() {
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("communityFeedsApi 함수 Error", errorMessage)
+    }
+
+    // db에서 토큰 가져오기
+    private fun getAccessToken(): String? {
+        MainActivity.ServiceAccessTokenDB.init(requireContext())
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer " + value.toString()
+            }
+        }
+        return accessToken
     }
 }

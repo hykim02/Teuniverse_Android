@@ -105,7 +105,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                     // 삭제 버튼 클릭 시 처리
                     Log.d("삭제할 피드id",item.feedId.toString())
                     lifecycleOwner.lifecycleScope.launch {
-                        deleteFeedApi(item.feedId.toString())
+                        deleteFeedApi(item.feedId.toString(), view)
                     }
                     true
                 }
@@ -121,8 +121,9 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
     }
 
     private fun editEvent(item: CommunityPostItem, view: View) {
-        val intent = Intent(view.context, CommunityPostActivity::class.java)
+        val intent = Intent(view.context, CommunityEditActivity::class.java)
         val bundle = Bundle().apply {
+            putInt("feedId", item.feedId)
             putString("postImg", item.postImg.toString())
             putString("postSummary", item.postSummary.toString())
         }
@@ -130,9 +131,9 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         view.context.startActivity(intent)
     }
 
-    private suspend fun deleteFeedApi(feedId: String) {
+    private suspend fun deleteFeedApi(feedId: String, view: View) {
         Log.d("deleteFeedsApi 함수", "호출 성공")
-        val accessToken = CommunityFragment().getAccessToken()
+        val accessToken = getAccessToken(view)
         try {
             if (accessToken != null) {
                 val response: Response<SignUpResponse> = withContext(
@@ -158,5 +159,19 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
 
     private fun handleError(errorMessage: String) {
         Log.d("deleteFeedApi 함수 Error", errorMessage)
+    }
+
+    // db에서 토큰 가져오기
+    private fun getAccessToken(view: View): String? {
+        MainActivity.ServiceAccessTokenDB.init(view.context)
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer " + value.toString()
+            }
+        }
+        return accessToken
     }
 }

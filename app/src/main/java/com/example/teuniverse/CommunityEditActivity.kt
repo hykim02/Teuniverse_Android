@@ -12,7 +12,9 @@ import android.text.TextWatcher
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.teuniverse.databinding.CommunityPostItemBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.example.teuniverse.databinding.CommunityEditItemBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,22 +28,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-class CommunityPostActivity: AppCompatActivity() {
-
-    private lateinit var binding: CommunityPostItemBinding
+class CommunityEditActivity: AppCompatActivity() {
+    private lateinit var binding: CommunityEditItemBinding
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
     private lateinit var bitmap: Bitmap
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-        binding = CommunityPostItemBinding.inflate(layoutInflater)
+        binding = CommunityEditItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // 갤러리에서 이미지를 선택하기 위한 버튼 클릭 이벤트 등록
-        binding.galleryBtn.setOnClickListener {
-            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
-        }
 
         binding.closeBtn.setOnClickListener {
             val intent = Intent(this, CommunityFragment::class.java)
@@ -49,17 +44,24 @@ class CommunityPostActivity: AppCompatActivity() {
             finish()
         }
 
-        countPostContent() // 글자수 세기 및 500자 제한
+        // 갤러리에서 이미지를 선택하기 위한 버튼 클릭 이벤트 등록
+        binding.galleryBtn.setOnClickListener {
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
+        }
+
+        editEvent()
+        countPostContent() // 글자수 세기
     }
 
     // 갤러리에서 선택한 이미지를 처리하는 메서드
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         // 이미지 첨부한 경우
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             putImage(data)
-
-        } else { // 이미지 첨부 안하는 경우
+        } else { // 이미지 첨부 안한 경우
             noneImage()
         }
     }
@@ -79,17 +81,22 @@ class CommunityPostActivity: AppCompatActivity() {
         val content = binding.postContent.text.toString() // 게시글 내용
         val contentBody = RequestBody.create("text/plain".toMediaType(), content)
 
-        binding.applyBtn.setOnClickListener {
+        val bundle = intent.extras
+        val feedId = bundle?.getInt("feedId")
+        binding.editBtn.setOnClickListener {
+            Log.d("edit;feeId", feedId.toString())
             // 서버로 데이터 전송
             lifecycleScope.launch {
-                postToServerApi(contentBody, imageFile)
+                if (feedId != null) {
+                    editFeedApi(contentBody, imageFile, feedId)
+                }
             }
             navigateToCommunityFragment()
             finish()
         }
     }
 
-    // 이미지 첨부 안하는 경우 처리
+    // 이미지 첨부 안한 경우 처리
     private fun noneImage() {
         val content = binding.postContent.text.toString() // 게시글 내용
         val contentBody = RequestBody.create("text/plain".toMediaType(), content)
@@ -98,16 +105,82 @@ class CommunityPostActivity: AppCompatActivity() {
         val emptyImageFile = createEmptyImageFile()
         val imageFilePart = createMultipartBodyFile(emptyImageFile)
 
-        binding.applyBtn.setOnClickListener {
+        val bundle = intent.extras
+        val feedId = bundle?.getInt("feedId")
+
+        binding.editBtn.setOnClickListener {
+            Log.d("edit;feeId", feedId.toString())
             // 서버로 데이터 전송
             lifecycleScope.launch {
-                postToServerApi(contentBody, imageFilePart)
+                if (feedId != null) {
+                    editFeedApi(contentBody, imageFilePart, feedId)
+                }
             }
             navigateToCommunityFragment()
             finish()
         }
     }
 
+    // 게시물 수정 시 넘겨 받은 데이터 처리
+    private fun editEvent() {
+        Log.d("editEvent함수", "실행")
+        val bundle = intent.extras
+        if (bundle != null) {
+            val postImg = bundle.getString("postImg")
+            val postSummary = bundle.getString("postSummary")
+            // 이미지 로딩
+            Glide.with(this)
+                .load(postImg)
+                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                .into(binding.postImg)
+            // 게시글 내용 넣기
+            binding.postContent.setText(postSummary)
+            Log.d("bundle;postImg", postImg.toString())
+            Log.d("bundle;postSummary", postSummary.toString())
+        } else {
+            Log.e("CommunityPostActivity", "Bundle is null")
+        }
+    }
+
+    private suspend fun editFeedApi(content: RequestBody, imageFile: MultipartBody.Part, feedId:Int) {
+        Log.d("editFeedApi 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
+            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
+            // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
+                EditFeedInstance.editFeedService().editFeed(feedId, accessToken, content, imageFile )
+            }
+            // Response를 처리하는 코드
+            if (response.isSuccessful) {
+                val editFeedSuccess: SignUpResponse? = response.body()
+                if (editFeedSuccess != null) {
+                    Log.d("artistList", "${editFeedSuccess.statusCode} ${editFeedSuccess.message}")
+                    handleResponse(editFeedSuccess)
+                } else {
+                    handleError("Response body is null.")
+                }
+            } else {
+                Log.d("error", "서버 연동 실패")
+                handleError("Error: ${response.code()} - ${response.message()}")
+            }
+        } catch (e: Exception) {
+            // 예외 처리 코드
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleResponse(postSuccess: SignUpResponse) {
+        if (postSuccess != null) {
+            Log.d("게시물 수정", postSuccess.toString())
+        }
+    }
+
+    private fun handleError(errorMessage: String) {
+        // 에러를 처리하는 코드
+        Log.d("Error", errorMessage)
+    }
 
     // 빈 이미지 파일 생성
     private fun createEmptyImageFile(): File {
@@ -162,7 +235,8 @@ class CommunityPostActivity: AppCompatActivity() {
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not used in this example
+                // 현재 글자수 세서 넣기
+                binding.textCount.text = "${s?.length ?: 0}"
             }
             override fun afterTextChanged(s: Editable?) {
                 // Not used in this example
@@ -179,47 +253,6 @@ class CommunityPostActivity: AppCompatActivity() {
         val path = cursor.getString(columnIndex)
         cursor.close()
         return path
-    }
-
-    // 게시글 데이터 서버로 전송
-    private suspend fun postToServerApi(content: RequestBody, imageFile:MultipartBody.Part) {
-        Log.d("postToServerApi 함수", "호출 성공")
-        val accessToken = getAccessToken()
-        try {
-            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
-            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
-            // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
-                CommunityPostInstance.communityPostService().postContent(accessToken, content, imageFile)
-            }
-            // Response를 처리하는 코드
-            if (response.isSuccessful) {
-                val postSuccess: SignUpResponse? = response.body()
-                if (postSuccess != null) {
-                    Log.d("artistList", "${postSuccess.statusCode} ${postSuccess.message}")
-                    handleResponse(postSuccess)
-                } else {
-                    handleError("Response body is null.")
-                }
-            } else {
-                Log.d("error", "서버 연동 실패")
-                handleError("Error: ${response.code()} - ${response.message()}")
-            }
-        } catch (e: Exception) {
-            // 예외 처리 코드
-            handleError(e.message ?: "Unknown error occurred.")
-        }
-    }
-
-    private fun handleResponse(postSuccess: SignUpResponse) {
-        if (postSuccess != null) {
-            Log.d("게시물 작성", postSuccess.toString())
-        }
-    }
-
-    private fun handleError(errorMessage: String) {
-        // 에러를 처리하는 코드
-        Log.d("Error", errorMessage)
     }
 
     // close 버튼 클릭 시 호출되는 함수

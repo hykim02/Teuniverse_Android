@@ -143,7 +143,7 @@ class CommunityFragment : Fragment() {
     }
 
     // db에서 토큰 가져오기
-    fun getAccessToken(): String? {
+    private fun getAccessToken(): String? {
         MainActivity.ServiceAccessTokenDB.init(requireContext())
         val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
