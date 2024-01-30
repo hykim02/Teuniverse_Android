@@ -44,7 +44,8 @@ class CommunityPostActivity: AppCompatActivity() {
         }
 
         binding.closeBtn.setOnClickListener {
-            navigateToCommunityFragment()
+            val intent = Intent(this, CommunityFragment::class.java)
+            startActivity(intent)
             finish()
         }
 
@@ -60,29 +61,58 @@ class CommunityPostActivity: AppCompatActivity() {
             selectedImagePath = getPathFromUri(selectedImageUri)
             binding.postImg.setImageURI(selectedImageUri)
 
-            binding.applyBtn.setOnClickListener {
-                // 이미지뷰에서 Drawable 얻기
-                val drawable: Drawable? = binding.postImg.drawable
-                // Drawable에서 Bitmap으로 변환
-                bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-                val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
-                Log.d("이미지", imageFile.toString())
+            applyBtnAction()
+        } else {
+            val content = binding.postContent.text.toString() // 게시글 내용
+            val contentBody = RequestBody.create("text/plain".toMediaType(), content)
 
-                val content = binding.postContent.text.toString() // 게시글 내용
-                Log.d("게시물 내용",content)
-                val contentBody = RequestBody.create("text/plain".toMediaType(), content)
+            // 이미지를 선택하지 않은 경우 빈 파일 생성
+            val emptyImageFile = createEmptyImageFile()
+            val imageFilePart = createMultipartBodyFile(emptyImageFile)
 
-                // 서버로 데이터 전송
-                lifecycleScope.launch {
-                    postToServerApi(contentBody, imageFile)
-                }
-                navigateToCommunityFragment()
-                finish()
+            // 서버로 데이터 전송
+            lifecycleScope.launch {
+                postToServerApi(contentBody, imageFilePart)
             }
+            navigateToCommunityFragment()
+            finish()
         }
     }
 
-    fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
+    // 빈 이미지 파일 생성
+    private fun createEmptyImageFile(): File {
+        val emptyBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        return bitmapToFile(emptyBitmap)
+    }
+
+    private fun applyBtnAction() {
+        binding.applyBtn.setOnClickListener {
+            // 이미지뷰에서 Drawable 얻기
+            val drawable: Drawable? = binding.postImg.drawable
+            // Drawable에서 Bitmap으로 변환
+            bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
+            val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
+
+            val content = binding.postContent.text.toString() // 게시글 내용
+            val contentBody = RequestBody.create("text/plain".toMediaType(), content)
+
+            // 서버로 데이터 전송
+            lifecycleScope.launch {
+                postToServerApi(contentBody, imageFile)
+            }
+            navigateToCommunityFragment()
+            finish()
+        }
+    }
+
+    fun createMultipartBodyFile(file: File): MultipartBody.Part {
+        // 이미지 파일을 RequestBody로 변환
+        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        // MultipartBody.Part 생성
+        return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+    }
+
+    private fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
         val file = bitmapToFile(bitmap) // Bitmap을 File로 변환하는 함수
         // 이미지 파일을 RequestBody로 변환
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
@@ -145,7 +175,7 @@ class CommunityPostActivity: AppCompatActivity() {
     // 게시글 데이터 서버로 전송
     private suspend fun postToServerApi(content: RequestBody, imageFile:MultipartBody.Part) {
         Log.d("postToServerApi 함수", "호출 성공")
-        val accessToken = getAccessToken()
+        val accessToken = CommunityFragment().getAccessToken()
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
@@ -183,31 +213,16 @@ class CommunityPostActivity: AppCompatActivity() {
         Log.d("Error", errorMessage)
     }
 
-    // db에서 토큰 가져오기
-    private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(this)
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
-        var accessToken: String? = null
-
-        for ((key, value) in serviceTokenDB.all) {
-            if (key == "accessToken") {
-                accessToken = "Bearer " + value.toString()
-            }
-        }
-        return accessToken
-    }
-
     // close 버튼 클릭 시 호출되는 함수
     private fun navigateToCommunityFragment() {
         // MenuActivity로 이동하여 CommunityFragment로 이동하는 코드
-//        val menuIntent = Intent(this, MenuActivity::class.java)
-//        menuIntent.putExtra("destinationFragment", R.id.navigation_community)
-//        startActivity(menuIntent)
-        val communityFragment = CommunityFragment() // CommunityFragment 인스턴스 생성
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.nav_host_fragment, communityFragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
+        val menuIntent = Intent(this, MenuActivity::class.java)
+        menuIntent.putExtra("destinationFragment", R.id.navigation_community)
+        startActivity(menuIntent)
+//        val communityFragment = CommunityFragment() // CommunityFragment 인스턴스 생성
+//        val transaction = supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.nav_host_fragment, communityFragment)
+//        transaction.addToBackStack(null)
+//        transaction.commit()
     }
-
 }

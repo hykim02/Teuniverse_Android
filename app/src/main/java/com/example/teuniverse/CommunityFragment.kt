@@ -66,7 +66,7 @@ class CommunityFragment : Fragment() {
 
         // 어댑터에 NavController 전달
         val navController = findNavController()
-        communityAdapter = CommunityPostAdapter(feedList, navController)
+        communityAdapter = CommunityPostAdapter(feedList, navController, viewLifecycleOwner)
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvCommunity.adapter = communityAdapter
@@ -143,7 +143,7 @@ class CommunityFragment : Fragment() {
     }
 
     // db에서 토큰 가져오기
-    private fun getAccessToken(): String? {
+    fun getAccessToken(): String? {
         MainActivity.ServiceAccessTokenDB.init(requireContext())
         val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null

@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="@+id/fandom_name" />
 
     <ImageButton
-        android:id="@+id/btn_help"
+        android:id="@+id/btn_option"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="24dp"
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="id"
-        app:layout_constraintEnd_toStartOf="@+id/btn_help"
-        app:layout_constraintTop_toTopOf="@+id/btn_help" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_option"
+        app:layout_constraintTop_toTopOf="@+id/btn_option" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

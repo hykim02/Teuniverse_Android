@@ -75,7 +75,7 @@
                         app:layout_constraintStart_toStartOf="@+id/fandom_name" />
 
                     <ImageButton
-                        android:id="@+id/btn_help"
+                        android:id="@+id/btn_option"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginTop="24dp"

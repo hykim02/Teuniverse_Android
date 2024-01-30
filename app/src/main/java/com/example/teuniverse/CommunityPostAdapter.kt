@@ -6,14 +6,24 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
-                           private val navController: NavController):
+                           private val navController: NavController,
+                           private val lifecycleOwner: LifecycleOwner):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
@@ -44,6 +54,11 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             .load(currentItem.userImg) // currentItem.img가 이미지 URL인 경우
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.userImg)
+
+        // 게시물 삭제 및 수정
+        holder.optionBtn.setOnClickListener { view ->
+            showPopupMenu(view, currentItem)
+        }
 }
 
     override fun getItemCount(): Int {
@@ -59,6 +74,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         var heartCount: TextView = itemView.findViewById(R.id.heart_count)
         val commentCount: TextView = itemView.findViewById(R.id.comment_count)
         val feedId: TextView = itemView.findViewById(R.id.feed_id)
+        val optionBtn: ImageButton = itemView.findViewById(R.id.btn_option)
 
         init {
             itemView.setOnClickListener {
@@ -73,5 +89,60 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                 }
             }
         }
+    }
+
+    // 피드 삭제 및 수정 옵션
+    private fun showPopupMenu(view: View, item: CommunityPostItem) {
+        val popupMenu = PopupMenu(view.context, view)
+        popupMenu.inflate(R.menu.option_menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.delete -> {
+                    // 삭제 버튼 클릭 시 처리
+                    Log.d("삭제할 피드id",item.feedId.toString())
+                    lifecycleOwner.lifecycleScope.launch {
+                        deleteFeedApi(item.feedId.toString())
+                    }
+                    true
+                }
+                R.id.edit -> {
+                    // 수정 버튼 클릭 시 처리
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+
+    private suspend fun deleteFeedApi(feedId: String) {
+        Log.d("deleteFeedsApi 함수", "호출 성공")
+        val accessToken = CommunityFragment().getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<SignUpResponse> = withContext(
+                    Dispatchers.IO) {
+                    DeleteFeedInstance.deleteFeedService().deleteFeed(feedId, accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theDeleteFeed: SignUpResponse? = response.body()
+                    if (theDeleteFeed != null) {
+                        Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleError(errorMessage: String) {
+        Log.d("deleteFeedApi 함수 Error", errorMessage)
     }
 }
