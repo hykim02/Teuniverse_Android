@@ -105,7 +105,7 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
-    fun createMultipartBodyFile(file: File): MultipartBody.Part {
+    private fun createMultipartBodyFile(file: File): MultipartBody.Part {
         // 이미지 파일을 RequestBody로 변환
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
         // MultipartBody.Part 생성
@@ -121,7 +121,7 @@ class CommunityPostActivity: AppCompatActivity() {
     }
 
     // Bitmap을 File로 변환하는 함수
-    fun bitmapToFile(bitmap: Bitmap): File {
+    private fun bitmapToFile(bitmap: Bitmap): File {
         val filesDir = applicationContext.filesDir
         val imageFile = File(filesDir, "imageFile.jpg")
 
@@ -159,7 +159,6 @@ class CommunityPostActivity: AppCompatActivity() {
             }
         })
     }
-
 
     // Uri에서 실제 파일 경로 가져오기
     private fun getPathFromUri(uri: Uri?): String {

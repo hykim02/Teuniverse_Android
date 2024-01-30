@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -108,12 +111,23 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                 }
                 R.id.edit -> {
                     // 수정 버튼 클릭 시 처리
+                    editEvent(item, view)
                     true
                 }
                 else -> false
             }
         }
         popupMenu.show()
+    }
+
+    private fun editEvent(item: CommunityPostItem, view: View) {
+        val intent = Intent(view.context, CommunityPostActivity::class.java)
+        val bundle = Bundle().apply {
+            putString("postImg", item.postImg.toString())
+            putString("postSummary", item.postSummary.toString())
+        }
+        intent.putExtras(bundle)
+        view.context.startActivity(intent)
     }
 
     private suspend fun deleteFeedApi(feedId: String) {

@@ -162,3 +162,14 @@ object DeleteFeedInstance {
             .create(DeleteFeedInterface::class.java)
     }
 }
+
+// 게시물 수정
+object EditFeedInstance {
+    fun editFeedService(): EditFeedInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(EditFeedInterface::class.java)
+    }
+}

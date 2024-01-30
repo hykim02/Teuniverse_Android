@@ -11,6 +11,7 @@ import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -121,5 +122,18 @@ interface DeleteFeedInterface {
     suspend fun deleteFeed(
         @Path("feedId") feedId: String,
         @Header("Authorization") authorization: String?
+    ): Response<SignUpResponse>
+}
+
+// 게시물 수정
+interface EditFeedInterface {
+    @Multipart
+    @PUT("community/{feedId}")
+    @Headers("accept: */*")
+    suspend fun editFeed(
+        @Path("feedId") feedId: String,
+        @Header("Authorization") authorization: String?,
+        @Part("content") content: RequestBody,
+        @Part imageFile: MultipartBody.Part?
     ): Response<SignUpResponse>
 }
