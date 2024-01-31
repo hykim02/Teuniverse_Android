@@ -62,6 +62,14 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         holder.optionBtn.setOnClickListener { view ->
             showPopupMenu(view, currentItem)
         }
+
+        holder.likeBtn.setOnClickListener {view: View  ->
+            // 이미지 변경
+            holder.likeBtn.setImageResource(R.drawable.fill_heart)
+            lifecycleOwner.lifecycleScope.launch {
+                clickLikeApi(currentItem.feedId, view)
+            }
+        }
 }
 
     override fun getItemCount(): Int {
@@ -78,6 +86,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         val commentCount: TextView = itemView.findViewById(R.id.comment_count)
         val feedId: TextView = itemView.findViewById(R.id.feed_id)
         val optionBtn: ImageButton = itemView.findViewById(R.id.btn_option)
+        val likeBtn: ImageButton = itemView.findViewById(R.id.like)
 
         init {
             itemView.setOnClickListener {
@@ -131,6 +140,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         view.context.startActivity(intent)
     }
 
+    // 피드 삭제 api
     private suspend fun deleteFeedApi(feedId: String, view: View) {
         Log.d("deleteFeedsApi 함수", "호출 성공")
         val accessToken = getAccessToken(view)
@@ -157,8 +167,35 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         }
     }
 
+    // 좋아요 생성
+    private suspend fun clickLikeApi(feedId: Int, view: View) {
+        Log.d("clickLikeApi 함수", "호출 성공")
+        val accessToken = getAccessToken(view)
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<CreateHeart>> = withContext(
+                    Dispatchers.IO) {
+                    ClickLikeInstance.clickLikeService().clickLike(feedId, accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theLike: ServerResponse<CreateHeart>? = response.body()
+                    if (theLike != null) {
+                        Log.d("deleteFeedApi 함수 response", "${theLike.statusCode} ${theLike.message}")
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("clickLikeApi 함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
     private fun handleError(errorMessage: String) {
-        Log.d("deleteFeedApi 함수 Error", errorMessage)
+        Log.d("Api 함수 Error", errorMessage)
     }
 
     // db에서 토큰 가져오기

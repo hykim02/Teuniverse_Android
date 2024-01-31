@@ -221,3 +221,14 @@ object DeleteCommentInstance {
             .create(DeleteCommentInterface::class.java)
     }
 }
+
+// 좋아요 생성
+object ClickLikeInstance {
+    fun clickLikeService(): ClickLikeInterface{
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ClickLikeInterface::class.java)
+    }
+}

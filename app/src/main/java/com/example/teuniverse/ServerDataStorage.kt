@@ -1,7 +1,9 @@
 package com.example.teuniverse
 
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 
 // 커뮤니티 리사이클러뷰 아이템 데이터
 data class CommunityPostItem(
@@ -12,8 +14,10 @@ data class CommunityPostItem(
     val postImg: String?,
     val postSummary: String?,
     val heartCount: Int,
-    val commentCount: Int
+    val commentCount: Int,
+    val likeImg: Boolean = false
 ): Parcelable {
+    @RequiresApi(Build.VERSION_CODES.Q)
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString(),
@@ -22,7 +26,8 @@ data class CommunityPostItem(
         parcel.readString(),
         parcel.readString(),
         parcel.readInt(),
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readBoolean()
     ) {
     }
 
@@ -42,6 +47,7 @@ data class CommunityPostItem(
     }
 
     companion object CREATOR : Parcelable.Creator<CommunityPostItem> {
+        @RequiresApi(Build.VERSION_CODES.Q)
         override fun createFromParcel(parcel: Parcel): CommunityPostItem {
             return CommunityPostItem(parcel)
         }
@@ -201,3 +207,6 @@ data class CreateComment(
 
 
 // 좋아요 생성
+data class CreateHeart(
+    val likeCount: Int
+)

@@ -171,3 +171,13 @@ interface DeleteCommentInterface {
         @Header("Authorization") authorization: String?
     ): Response<SignUpResponse>
 }
+
+// 좋아요 생성
+interface ClickLikeInterface {
+    @POST("community/{feedId}/like")
+    @Headers("accept: application/json")
+    suspend fun clickLike(
+        @Path("feedId") feedId: Int,
+        @Header("Authorization") authorization: String?
+    ): Response<ServerResponse<CreateHeart>>
+}
