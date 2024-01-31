@@ -65,7 +65,8 @@ data class CommentItem(
     val userImg: String,
     val nickName: String,
     val postTime: String,
-    val comment: String
+    val comment: String,
+    val commendId: Int
 )
 
 // 서버 응답 코드(data가 객체인 경우)
@@ -192,3 +193,11 @@ data class DetailComments(
     val updatedAt: String,
     val userProfile: UserProfileData
 )
+
+// 댓글 생성 requestBody
+data class CreateComment(
+    val content: String
+)
+
+
+// 좋아요 생성

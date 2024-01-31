@@ -199,3 +199,25 @@ object EditFeedInstance {
             .build()
     }
 }
+
+// 댓글 생성
+object CreateCommentInstance {
+        fun createCommentService(): CreateCommentInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CreateCommentInterface::class.java)
+    }
+}
+
+// 댓글 삭제
+object DeleteCommentInstance {
+    fun deleteCommentService(): DeleteCommentInterface{
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(DeleteCommentInterface::class.java)
+    }
+}

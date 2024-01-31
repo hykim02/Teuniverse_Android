@@ -137,3 +137,37 @@ interface EditFeedInterface {
         @Part imageFile: MultipartBody.Part?
     ): Response<SignUpResponse>
 }
+
+// 댓글 생성
+interface CreateCommentInterface {
+    @POST("community/{feedId}/comment")
+    @Headers("accept: */*",
+        "Content-Type: application/json")
+    suspend fun createComment(
+        @Path("feedId") feedId: String,
+        @Header("Authorization") authorization: String?,
+        @Body request: CreateComment
+    ): Response<SignUpResponse>
+}
+
+// 댓글 수정
+interface EditCommentInterface {
+    @PUT("community/comment/{commentId}")
+    @Headers("accept: */*",
+        "Content-Type: application/json")
+    suspend fun editComment(
+        @Path("commentId") commentId: Int,
+        @Header("Authorization") authorization: String?,
+        @Body request: CreateComment
+    ): Response<SignUpResponse>
+}
+
+// 댓글 삭제
+interface DeleteCommentInterface {
+    @DELETE("community/comment/{commentId}")
+    @Headers("accept: */*")
+    suspend fun deleteComment(
+        @Path("commentId") commentId: Int,
+        @Header("Authorization") authorization: String?
+    ): Response<SignUpResponse>
+}

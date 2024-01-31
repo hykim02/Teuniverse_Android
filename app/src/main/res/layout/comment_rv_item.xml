@@ -47,6 +47,18 @@
         app:layout_constraintStart_toEndOf="@+id/fandom_name"
         app:layout_constraintTop_toTopOf="@+id/fandom_name" />
 
+    <ImageButton
+        android:id="@+id/btn_option"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_help" />
+
     <TextView
         android:id="@+id/comment"
         android:layout_width="360dp"
@@ -57,5 +69,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/user_profile"
         app:layout_constraintTop_toBottomOf="@+id/user_profile" />
+
+    <TextView
+        android:id="@+id/commentId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="id"
+        app:layout_constraintEnd_toStartOf="@+id/btn_option"
+        app:layout_constraintTop_toTopOf="@+id/btn_option" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

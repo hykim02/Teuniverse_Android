@@ -132,7 +132,7 @@ class CommunityFragment : Fragment() {
             val feedContent = feed.content
             val heartCount = feed.likeCount
             val time = "11분 전"
-            val commentCount = 10
+            val commentCount = communityAdapter.itemCount
 
             feedList.add(
                 CommunityPostItem(

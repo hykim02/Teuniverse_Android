@@ -72,6 +72,8 @@ dependencies {
 
     implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
 
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0") // 새로고침
+
     implementation("com.android.identity:identity-credential-android:20231002") // 카카오 로그인
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
