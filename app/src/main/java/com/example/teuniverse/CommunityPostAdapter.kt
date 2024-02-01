@@ -180,7 +180,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                 if (response.isSuccessful) {
                     val theLike: ServerResponse<CreateHeart>? = response.body()
                     if (theLike != null) {
-                        Log.d("deleteFeedApi 함수 response", "${theLike.statusCode} ${theLike.message}")
+                        Log.d("clickLikeApi 함수 response", "${theLike.statusCode} ${theLike.message}")
                     } else {
                         handleError("Response body is null.")
                     }
@@ -192,6 +192,10 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.")
         }
+    }
+
+    private fun likeHandleResponse(theLike: ServerResponse<CreateHeart>, holder: CommunityPostViewHolder) {
+        holder.heartCount.text = theLike.data.likeCount.toString()
     }
 
     private fun handleError(errorMessage: String) {
