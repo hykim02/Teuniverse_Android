@@ -1,18 +1,16 @@
 package com.example.teuniverse
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.text.style.ForegroundColorSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.teuniverse.databinding.FragmentCalendarBinding
-import com.example.teuniverse.databinding.FragmentCommunityDetailBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import com.prolificinteractive.materialcalendarview.DayViewDecorator
+import com.prolificinteractive.materialcalendarview.DayViewFacade
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
@@ -32,23 +30,30 @@ class CalendarFragment : Fragment() {
         // 리사이클러뷰 어댑터 연결
         calendarAdapter = CalendarAdapter(scheduleList)
 
-        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
-            val calendar = Calendar.getInstance()
-            calendar.set(date.year, date.month - 1, date.day)
+        // SundayDecorator를 추가
+        binding.calendarView.addDecorator(SundayDecorator())
 
-            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-            if (dayOfWeek == Calendar.SATURDAY) {
-                // 토요일인 경우 파란색으로 설정
-                widget.setDateTextAppearance(R.style.CalendarDay_Saturday)
-            } else if (dayOfWeek == Calendar.SUNDAY) {
-                // 일요일인 경우 빨간색으로 설정
-                widget.setDateTextAppearance(R.style.CalendarDay_Sunday)
-            } else {
-                // 그 외의 날짜는 기본 색상으로 설정
-                widget.setDateTextAppearance(R.style.CalendarDay_Default)
-            }
-        }
         return binding.root
     }
 
-}
+    inner class SundayDecorator() : DayViewDecorator {
+        private val calendar = Calendar.getInstance()
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            // 주어진 캘린더 인스턴스에 오늘의 정보를 복사
+            day?.copyTo(calendar)
+            // 일주일을 받아옴
+            val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
+            // 그중 일요일을 리턴
+            return weekDay == Calendar.SUNDAY
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            // 하루(일요일)의 전체 텍스트에 범위의 색 추가
+            view?.addSpan(object : ForegroundColorSpan(Color.RED){})
+        }
+    }
+
+
+
+    }
+
