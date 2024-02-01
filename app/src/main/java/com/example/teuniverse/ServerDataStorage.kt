@@ -3,6 +3,7 @@ package com.example.teuniverse
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
+import android.widget.ImageView
 import androidx.annotation.RequiresApi
 
 // 커뮤니티 리사이클러뷰 아이템 데이터
@@ -73,6 +74,13 @@ data class CommentItem(
     val postTime: String,
     val comment: String,
     val commendId: Int
+)
+
+// 일정 리사이클러뷰 아이템 데이터
+data class CalendarItem(
+    val schedule: String,
+    val eventIcon: Int,
+    val time: String
 )
 
 // 서버 응답 코드(data가 객체인 경우)

@@ -74,6 +74,8 @@ dependencies {
 
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0") // 새로고침
 
+    implementation ("com.github.prolificinteractive:material-calendarview:1.4.3") // Calendar
+
     implementation("com.android.identity:identity-credential-android:20231002") // 카카오 로그인
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")

@@ -8,4 +8,17 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="CalendarDay_Saturday">
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="CalendarDay_Sunday">
+        <item name="android:textColor">@color/r</item>
+    </style>
+
+    <style name="CalendarDay_Default">
+        <item name="android:textColor">@color/b</item>
+    </style>
+
 </resources>

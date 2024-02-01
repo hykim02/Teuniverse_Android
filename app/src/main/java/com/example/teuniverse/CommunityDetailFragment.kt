@@ -47,8 +47,6 @@ class CommunityDetailFragment : Fragment() {
 
         // 댓글 리사이클러뷰 어댑터 연결
         commentAdapter = CommentAdapter(commentList, viewLifecycleOwner )
-//        binding.rvComment.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        binding.rvComment.adapter = commentAdapter
 
         return binding.root
     }
