@@ -90,7 +90,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView25"
             app:mcv_selectionColor="@color/mp"
             android:layout_margin="10dp"
-             />
+            />
 <!--        app:mcv_showOtherDates="all"-->
 
 

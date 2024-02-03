@@ -9,5 +9,22 @@
 <!--        <item name="android:windowTranslucentStatus">true</item>-->
     </style>
 
+    <style name="CustomDateTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@drawable/calendar_selector_textcolor</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CustomWeekDayAppearance" parent="TextAppearance.MaterialCalendarWidget.WeekDay">
+        <item name="android:textColor">@drawable/calendar_selector_textcolor</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CustomHeaderTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Header">
+        <item name="android:textColor">@color/b</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="Theme.Teuniverse" parent="Base.Theme.Teuniverse" />
 </resources>
