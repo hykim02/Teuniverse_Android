@@ -16,9 +16,9 @@ class CalendarAdapter(private val itemList: ArrayList<CalendarItem>): RecyclerVi
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val currentItem = itemList[position]
 
-        holder.eventIcon.setImageResource(currentItem.eventIcon)
-        holder.time.text = currentItem.time
-        holder.schedule.text = currentItem.schedule
+        holder.type.setImageResource(currentItem.type)
+        holder.content.text = currentItem.content
+        holder.startAt.text = currentItem.startAt
     }
 
     override fun getItemCount(): Int {
@@ -26,8 +26,8 @@ class CalendarAdapter(private val itemList: ArrayList<CalendarItem>): RecyclerVi
     }
 
     inner class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val eventIcon: ImageView = itemView.findViewById(R.id.event_icon)
-        val time: TextView = itemView.findViewById(R.id.time)
-        val schedule: TextView = itemView.findViewById(R.id.schedule)
+        val type: ImageView = itemView.findViewById(R.id.event_icon)
+        val content: TextView = itemView.findViewById(R.id.time)
+        val startAt: TextView = itemView.findViewById(R.id.schedule)
     }
 }

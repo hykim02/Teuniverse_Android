@@ -224,7 +224,7 @@ object DeleteCommentInstance {
 
 // 좋아요 생성
 object ClickLikeInstance {
-    fun clickLikeService(): ClickLikeInterface{
+    fun clickLikeService(): ClickLikeInterface {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -258,4 +258,15 @@ object ClickLikeInstance {
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
 //    }
+}
+
+// 일정
+object CalendarInstance {
+    fun scheduleService(): CalendarInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CalendarInterface::class.java)
+    }
 }

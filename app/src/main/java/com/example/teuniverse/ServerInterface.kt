@@ -181,3 +181,14 @@ interface ClickLikeInterface {
         @Header("Authorization") authorization: String?
     ): Response<ServerResponse<CreateHeart>>
 }
+
+// 일정
+interface CalendarInterface {
+    @GET("schedule/{year}/{month}")
+    @Headers("accept: */*")
+    suspend fun getSchedule(
+        @Path("year") year: Int,
+        @Path("month") month: Int,
+        @Header("Authorization") authorization: String?
+    ): ServerResponse<Map<String, List<CalendarItem>>>
+}
