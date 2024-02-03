@@ -14,12 +14,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.teuniverse.databinding.FragmentCalendarBinding
+import com.google.gson.Gson
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.internal.format
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.util.Calendar
@@ -46,11 +52,21 @@ class CalendarFragment : Fragment() {
 
         // 현재 날짜를 가져와서 해당 년도를 가져옴
         currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        callApi(currentYear)
 
         customCalendar()
         motionCalendar()
 
         return binding.root
+    }
+
+    // 1-12월까지 api 모두 호출
+    private fun callApi(year: Int) {
+        for (i in 1..12) {
+            lifecycleScope.launch {
+                scheduleApi(year, i)
+            }
+        }
     }
 
     // 달력 커스텀 모음
@@ -66,12 +82,19 @@ class CalendarFragment : Fragment() {
     // 달력 기능 모음
     private fun motionCalendar() {
         // 월 변경 이벤트 리스너 설정
-//        binding.calendarView.setOnMonthChangedListener { _, date ->
-//            // 월이 변경되면 해당 년도로 다시 설정
-//            if (date.year != currentYear) {
-//                initializeCalendar(binding.calendarView)
-//            }
-//        }
+        binding.calendarView.setOnMonthChangedListener { _, date ->
+            // 월이 변경되면 해당 년도로 다시 설정
+            if (date.year != currentYear) {
+                initializeCalendar(binding.calendarView)
+            }
+        }
+    }
+
+    // 해당 년도만 볼 수 있도록
+    private fun initializeCalendar(calendarView: MaterialCalendarView) {
+        // 특정 년도로 초기화
+        calendarView.setCurrentDate(CalendarDay.from(currentYear, 1, 1), true)
+        calendarView.selectedDate = CalendarDay.today()  // 현재 날짜를 선택하도록 설정
     }
 
     /* 일요일 날짜의 색상을 설정하는 클래스 */
@@ -87,19 +110,6 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    /* 선택된 날짜의 background를 설정하는 클래스 */
-//    private inner class DayDecorator(context: Context) : DayViewDecorator {
-//        private val drawable = ContextCompat.getDrawable(context,R.drawable.calendar_selector)
-//        // true를 리턴 시 모든 요일에 내가 설정한 드로어블이 적용된다
-//        override fun shouldDecorate(day: CalendarDay): Boolean {
-//            return true
-//        }
-//        // 일자 선택 시 내가 정의한 드로어블이 적용되도록 한다
-//        override fun decorate(view: DayViewFacade) {
-//            view.setSelectionDrawable(drawable!!)
-//        }
-//    }
-
     /* 오늘 날짜의 background를 설정하는 클래스 */
     private class TodayDecorator(context: Context): DayViewDecorator {
         private val drawable = ContextCompat.getDrawable(context,R.drawable.custom_circle_mp)
@@ -112,6 +122,69 @@ class CalendarFragment : Fragment() {
         override fun decorate(view: DayViewFacade?) {
             view?.setBackgroundDrawable(drawable!!)
         }
+    }
+
+    // 1-12월 일정 받아오기
+    private suspend fun scheduleApi(year: Int, month: Int) {
+        Log.d("scheduleApi $month", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<EventResponse> = withContext(
+                    Dispatchers.IO) {
+                    CalendarInstance.scheduleService().getSchedule(year, month, accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theSchedule: EventResponse? = response.body()
+                    if (theSchedule != null) {
+                        Log.d("scheduleApi $month", "${theSchedule.statusCode} ${theSchedule.message}")
+                        handleResponse(theSchedule, month)
+                    } else {
+                        handleError("Response body is null.",month)
+                    }
+                } else {
+                    handleError("scheduleApi $month Error: ${response.code()} - ${response.message()}",month)
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.",month)
+        }
+    }
+
+    private fun handleResponse(response: EventResponse, month: Int) {
+        MonthDBManager.initMonth(requireContext(), month) // 초기화
+        val monthDB = MonthDBManager.getMonthInstance(month) // 객체 얻기
+
+        // DB에 데이터 저장
+        if (response.data.isNotEmpty()) {
+            response.data.forEach { (date, events) ->
+                val jsonString = Gson().toJson(events) // Convert events List to JSON String
+                with(monthDB.edit()) {
+                    putString(date, jsonString)
+                    apply()
+                }
+            }
+        }
+    }
+
+    private fun handleError(errorMessage: String, month: Int) {
+        // 에러를 처리하는 코드
+        Log.d("일정Api $month Error", errorMessage)
+    }
+
+    // db에서 토큰 가져오기
+    private fun getAccessToken(): String? {
+        MainActivity.ServiceAccessTokenDB.init(requireContext())
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer " + value.toString()
+            }
+        }
+        return accessToken
     }
 }
 

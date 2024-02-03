@@ -78,9 +78,9 @@ data class CommentItem(
 
 // 일정 리사이클러뷰 아이템 데이터
 data class CalendarItem(
-    val content: String, //content
-    val type: Int, // type
-    val startAt: String //startAt
+    val content: String,
+    val type: Int,
+    val startAt: String
 )
 
 // 서버 응답 코드(data가 객체인 경우)
@@ -102,6 +102,19 @@ data class ArtistServerResponse<T>(
     val statusCode: Int,
     val message: String,
     val data: List<T>
+)
+// 일정 응답 코드
+data class EventResponse(
+    val success: Boolean,
+    val statusCode: Int,
+    val message: String,
+    val data: Map<String, List<Event>>
+)
+
+data class Event(
+    val content: String,
+    val type: String,
+    val startAt: String
 )
 // 최애 아티스트 조회
 data class ArtistData(

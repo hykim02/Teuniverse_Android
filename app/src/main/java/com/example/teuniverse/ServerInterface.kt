@@ -190,5 +190,5 @@ interface CalendarInterface {
         @Path("year") year: Int,
         @Path("month") month: Int,
         @Header("Authorization") authorization: String?
-    ): ServerResponse<Map<String, List<CalendarItem>>>
+    ): Response<EventResponse>
 }
