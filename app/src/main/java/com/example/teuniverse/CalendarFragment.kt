@@ -79,6 +79,7 @@ class CalendarFragment : Fragment() {
         binding.calendarView.setWeekDayTextAppearance(R.style.CustomWeekDayAppearance)
         binding.calendarView.setHeaderTextAppearance(R.style.CustomHeaderTextAppearance)
     }
+
     // 달력 기능 모음
     private fun motionCalendar() {
         // 월 변경 이벤트 리스너 설정
@@ -125,19 +126,35 @@ class CalendarFragment : Fragment() {
     }
 
     private fun makeDot() {
+        val datesWithDots = mutableListOf<CalendarDay>()
+        MonthDBManager.initAll(requireContext())
+        for (i in 1..12) {
+            val monthDB = MonthDBManager.getMonthInstance(i)
+            val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), i)
+
+            if (isExist) {
+                val newDates = monthDB.all.keys.mapNotNull { key ->
+                    val dateParts = key.split("-")
+                    if (dateParts.size == 3) {
+                        val year = dateParts[0].toInt()
+                        val month = dateParts[1].toInt()-1
+                        val day = dateParts[2].toInt()
+                        CalendarDay.from(year, month, day)
+                    } else {
+                        null
+                    }
+                }
+                // 점 표시할 날짜리스트
+                datesWithDots.addAll(newDates)
+            }
+        }
+
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
         val colors = intArrayOf(
             Color.parseColor("#4BCEFA"),
             Color.parseColor("#20E02A"),
             Color.parseColor("#FF5900"),
             Color.parseColor("#F9D400"))
-
-        // 특정 날짜에 표시할 날짜 리스트 생성
-        val datesWithDots = listOf(
-            CalendarDay.from(2024, 1, 10),
-            CalendarDay.from(2024, 1, 15),
-            CalendarDay.from(2024, 1, 20),
-        )
 
         // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
         binding.calendarView.addDecorator(object : DayViewDecorator {
@@ -167,10 +184,10 @@ class CalendarFragment : Fragment() {
             end: Int,
             lineNumber: Int
         ) {
-            val spacing = 7f
+            val spacing = 9f
 
             for (i in colors.indices) {
-                val cx = left + i * (2 * radius + spacing) + 42
+                val cx = left + i * (2 * radius + spacing) + 40
                 val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
                 paint.color = colors[i]
                 canvas.drawCircle(cx, cy, radius, paint)
