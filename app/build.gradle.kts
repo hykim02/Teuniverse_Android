@@ -76,7 +76,8 @@ dependencies {
 
     implementation ("com.github.prolificinteractive:material-calendarview:1.4.3") // Calendar
 
-    implementation("com.android.identity:identity-credential-android:20231002") // 카카오 로그인
+    implementation("com.android.identity:identity-credential-android:20231002")
+    implementation("androidx.constraintlayout:constraintlayout-compose-android:1.1.0-alpha13") // 카카오 로그인
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.1")
     testImplementation("junit:junit:4.13.2")
