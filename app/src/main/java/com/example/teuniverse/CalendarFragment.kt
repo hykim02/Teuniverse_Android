@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
 import android.text.style.LineBackgroundSpan
-import android.text.style.ReplacementSpan
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,7 +20,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,7 +42,7 @@ class CalendarFragment : Fragment() {
 
         binding = FragmentCalendarBinding.inflate(inflater, container, false)
         scheduleList = ArrayList()
-        // 리사이클러뷰 어댑터 연결
+        // 리사이클러뷰 어댑터 연결gi
         calendarAdapter = CalendarAdapter(scheduleList)
 
         // 현재 날짜를 가져와서 해당 년도를 가져옴
@@ -125,12 +122,13 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    // 일정있는 날에 점 표시하는 함수(일정 개수만큼 점 조절 필요)
     private fun makeDot() {
         val datesWithDots = mutableListOf<CalendarDay>()
         MonthDBManager.initAll(requireContext())
         for (i in 1..12) {
-            val monthDB = MonthDBManager.getMonthInstance(i)
-            val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), i)
+            val monthDB = MonthDBManager.getMonthInstance(i.toString())
+            val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), i.toString())
 
             if (isExist) {
                 val newDates = monthDB.all.keys.mapNotNull { key ->
@@ -169,7 +167,7 @@ class CalendarFragment : Fragment() {
         })
     }
 
-    // 점 표시 클래스
+    // 점 그리기 클래스
     private inner class MultiColorDotSpan(private val radius: Float, private val colors: IntArray) : LineBackgroundSpan {
         override fun drawBackground(
             canvas: Canvas,
@@ -193,6 +191,49 @@ class CalendarFragment : Fragment() {
                 canvas.drawCircle(cx, cy, radius, paint)
             }
         }
+    }
+
+    // db에서 데이터 들고와 일정 보여주는 함수
+    private fun makeSchedule() {
+        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
+            // 날짜 클릭 이벤트 처리
+            if (selected) {
+                // 클릭된 날짜의 이벤트를 표시하는 로직을 여기에 추가
+                val selectedDate = date
+                Log.d("selectedDate", selectedDate.toString())
+                val selectedMonth = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
+
+                // 해당 월에 해당하는 DB 파일을 찾아 데이터 가져오기
+                val dbFileName = "$selectedMonth.xml"
+                Log.d("dbFileName",dbFileName)
+                val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), dbFileName)
+
+                // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
+                if (isExist) {
+                    val monthDB = MonthDBManager.getMonthInstance(dbFileName)
+                    for (date in monthDB.all.keys) {
+                        // 년도, 월, 날짜를 '-'를 기준으로 분리
+                        val parts = date.split("-")
+
+                        val year = parts[0].toInt()
+                        val month = parts[1].toInt()
+                        val day = parts[2].toInt() // 날짜만 저장
+                        Log.d("day", day.toString())
+
+                        val dayDB = CalendarDay.from(year, month, day) // 타입 변환
+
+                        if (dayDB == selectedDate) {
+
+                        }
+                    }
+                    // 예를 들어, monthDB.all.keys를 통해 해당 월의 모든 키를 가져올 수 있습니다.
+                } else {
+                    // DB 파일이 존재하지 않을 경우 처리
+                    // 원하는 작업을 수행하거나 메시지를 표시할 수 있습니다.
+                }
+            }
+        }
+
     }
 
     // 1-12월 일정 받아오기
@@ -225,7 +266,7 @@ class CalendarFragment : Fragment() {
 
     private fun handleResponse(response: EventResponse, month: Int) {
         MonthDBManager.initMonth(requireContext(), month) // 초기화
-        val monthDB = MonthDBManager.getMonthInstance(month) // 객체 얻기
+        val monthDB = MonthDBManager.getMonthInstance(month.toString()) // 객체 얻기
 
         // DB에 데이터 저장
         if (response.data.isNotEmpty()) {

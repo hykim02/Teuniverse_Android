@@ -9,7 +9,7 @@ object MonthDBManager {
     private const val MONTH_COUNT = 12
     private val monthDBMap: MutableMap<Int, SharedPreferences> = mutableMapOf()
 
-    fun doesSharedPreferencesFileExist(context: Context, monthNumber: Int): Boolean {
+    fun doesSharedPreferencesFileExist(context: Context, monthNumber: String): Boolean {
         val sharedPrefsFile = File("${context.filesDir.parent}/shared_prefs/$monthNumber.xml")
         return sharedPrefsFile.exists()
     }
@@ -28,7 +28,7 @@ object MonthDBManager {
     }
 
     // Get a specific Month_DB instance
-    fun getMonthInstance(monthNumber: Int): SharedPreferences {
+    fun getMonthInstance(monthNumber: String): SharedPreferences {
         return monthDBMap[monthNumber] ?: throw IllegalStateException("Month_DB $monthNumber is not initialized")
     }
 }
