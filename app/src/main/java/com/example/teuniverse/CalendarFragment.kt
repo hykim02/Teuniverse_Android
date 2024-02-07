@@ -53,6 +53,7 @@ class CalendarFragment : Fragment() {
         customCalendar()
         motionCalendar()
         makeDot()
+        makeSchedule()
 
         return binding.root
     }
@@ -127,7 +128,7 @@ class CalendarFragment : Fragment() {
         val datesWithDots = mutableListOf<CalendarDay>()
         MonthDBManager.initAll(requireContext())
         for (i in 1..12) {
-            val monthDB = MonthDBManager.getMonthInstance(i.toString())
+            val monthDB = MonthDBManager.getMonthInstance(i)
             val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), i.toString())
 
             if (isExist) {
@@ -199,32 +200,31 @@ class CalendarFragment : Fragment() {
             // 날짜 클릭 이벤트 처리
             if (selected) {
                 // 클릭된 날짜의 이벤트를 표시하는 로직을 여기에 추가
-                val selectedDate = date
-                Log.d("selectedDate", selectedDate.toString())
+                Log.d("date",date.toString()) //CalendarDay{2024-0-24}
+                Log.d("selectedDate", selected.toString()) //true
                 val selectedMonth = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
 
                 // 해당 월에 해당하는 DB 파일을 찾아 데이터 가져오기
                 val dbFileName = "$selectedMonth.xml"
-                Log.d("dbFileName",dbFileName)
+                Log.d("dbFileName",dbFileName) //1.xml
                 val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), dbFileName)
 
                 // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
                 if (isExist) {
-                    val monthDB = MonthDBManager.getMonthInstance(dbFileName)
+                    val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
                     for (date in monthDB.all.keys) {
                         // 년도, 월, 날짜를 '-'를 기준으로 분리
                         val parts = date.split("-")
-
                         val year = parts[0].toInt()
                         val month = parts[1].toInt()
                         val day = parts[2].toInt() // 날짜만 저장
                         Log.d("day", day.toString())
-
                         val dayDB = CalendarDay.from(year, month, day) // 타입 변환
+                        Log.d("dayDB",dayDB.toString())
 
-                        if (dayDB == selectedDate) {
-
-                        }
+//                        if (dayDB.day == date.toInt()) {
+//
+//                        }
                     }
                     // 예를 들어, monthDB.all.keys를 통해 해당 월의 모든 키를 가져올 수 있습니다.
                 } else {
@@ -266,7 +266,7 @@ class CalendarFragment : Fragment() {
 
     private fun handleResponse(response: EventResponse, month: Int) {
         MonthDBManager.initMonth(requireContext(), month) // 초기화
-        val monthDB = MonthDBManager.getMonthInstance(month.toString()) // 객체 얻기
+        val monthDB = MonthDBManager.getMonthInstance(month) // 객체 얻기
 
         // DB에 데이터 저장
         if (response.data.isNotEmpty()) {

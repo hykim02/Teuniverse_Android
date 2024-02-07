@@ -28,7 +28,7 @@ object MonthDBManager {
     }
 
     // Get a specific Month_DB instance
-    fun getMonthInstance(monthNumber: String): SharedPreferences {
+    fun getMonthInstance(monthNumber: Int): SharedPreferences {
         return monthDBMap[monthNumber] ?: throw IllegalStateException("Month_DB $monthNumber is not initialized")
     }
 }
