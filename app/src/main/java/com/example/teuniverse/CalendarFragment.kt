@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
 import android.text.style.LineBackgroundSpan
@@ -12,11 +13,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.teuniverse.databinding.FragmentCalendarBinding
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
@@ -26,6 +28,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
@@ -37,6 +41,7 @@ class CalendarFragment : Fragment() {
     // 전역 변수로 선언
     private var currentYear: Int = 0
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -197,6 +202,7 @@ class CalendarFragment : Fragment() {
     }
 
     // db에서 데이터 들고와 일정 보여주는 함수
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun makeSchedule() {
         binding.calendarView.setOnDateChangedListener { widget, date, selected ->
             // 날짜 클릭 이벤트 처리
@@ -222,41 +228,31 @@ class CalendarFragment : Fragment() {
                     val dataString = monthDB.getString(key, null)
 
                     if (dataString != null) {
+                        scheduleList.clear()
                         // 가져온 데이터가 null이 아니라면 JSON 형식의 문자열이므로 파싱하여 사용
                         val jsonArray = JSONArray(dataString)
                         // JSONArray 내 각 객체를 순회하면서 데이터 추출
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
                             val content = jsonObject.getString("content")
-                            val startAt = jsonObject.getString("startAt")
+                            val startAt = setTime(jsonObject.getString("startAt"))
                             val type = jsonObject.getString("type")
-                            scheduleList.add(CalendarItem(content, type, startAt))
-                            // 여기서 얻은 데이터를 사용하거나 출력
-                            Log.d("JSON Parsing", "Content: $content, StartAt: $startAt, Type: $type")
+                            val typeImg = setTypeImg(type)
+                            scheduleList.add(CalendarItem(content, typeImg, startAt))
+
+                            // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
+                            val spanCount = scheduleList.size
+                            Log.d("댓글 개수", spanCount.toString())
+                            val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+                            binding.calendarRv.adapter = calendarAdapter
+                            binding.calendarRv.layoutManager = layoutManager
+
+                            // 어댑터에 데이터가 변경되었음을 알리기
+                            calendarAdapter.notifyDataSetChanged()
                         }
                     } else {
                         // 가져온 데이터가 null일 경우에 대한 처리
                         Log.d("Data", "No data found for the specified key.")}
-
-//                    for ((date, value) in monthDB.all) {
-//                        // 년도, 월, 날짜를 '-'를 기준으로 분리
-//                        val parts = date.split("-")
-//                        val year = parts[0].toInt()
-//                        val month = parts[1].toInt()
-//                        val day = parts[2].toInt() // 날짜만 저장
-//                        Log.d("day", day.toString()) // 24
-//                        val dayDB = CalendarDay.from(year, month, day) // 타입 변환
-//                        Log.d("dayDB.day",dayDB.day.toString()) // 24
-//
-//                        // db의 날짜와 클릭한 날짜가 같을 때
-//                        if (day == selectedDay) {
-//                            val events = parseJsonToList(value as String)
-//                            for (i in events.indices) {
-//                                events
-//                            }
-//                        }
-//                    }
-                    // 예를 들어, monthDB.all.keys를 통해 해당 월의 모든 키를 가져올 수 있습니다.
                 } else {
                     // DB 파일이 존재하지 않을 경우 처리
                     // 원하는 작업을 수행하거나 메시지를 표시할 수 있습니다.
@@ -266,8 +262,34 @@ class CalendarFragment : Fragment() {
 
     }
 
-    private fun setTypeImg(type: String) {
+    // 일정 시간 추출 함수
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setTime(time: String): String {
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(time, formatter)
 
+        // LocalDateTime에서 시간과 분 추출
+        val hour = dateTime.hour.toString()
+        val minute = dateTime.minute.toString()
+
+        // 추출된 시간과 분을 2자리 숫자로 변환하여 변수에 저장
+        val extractedHour = String.format("%02d", hour.toInt())
+        val extractedMinute = String.format("%02d", minute.toInt())
+
+        return "$extractedHour:$extractedMinute"
+    }
+
+    private fun setTypeImg(type: String): Int {
+        if (type == "기념일") {
+            return R.drawable.cake_on
+        } else if (type == "행사") {
+            return R.drawable.festival_on
+        } else if (type == "방송") {
+            return R.drawable.video_on
+        } else { // 기타
+            return R.drawable.more_on
+        }
     }
 
     // 날짜 포맷 함수

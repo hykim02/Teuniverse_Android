@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class CalendarAdapter(private val itemList: ArrayList<CalendarItem>): RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -16,7 +18,13 @@ class CalendarAdapter(private val itemList: ArrayList<CalendarItem>): RecyclerVi
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val currentItem = itemList[position]
 
+//        Glide.with(holder.itemView.context)
+//            .load(currentItem.type)
+//            .apply(RequestOptions.circleCropTransform())
+//            .into(holder.type)
+
         holder.type.setImageResource(currentItem.type)
+
         holder.content.text = currentItem.content
         holder.startAt.text = currentItem.startAt
     }
@@ -27,7 +35,7 @@ class CalendarAdapter(private val itemList: ArrayList<CalendarItem>): RecyclerVi
 
     inner class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val type: ImageView = itemView.findViewById(R.id.event_icon)
-        val content: TextView = itemView.findViewById(R.id.time)
-        val startAt: TextView = itemView.findViewById(R.id.schedule)
+        val content: TextView = itemView.findViewById(R.id.schedule)
+        val startAt: TextView = itemView.findViewById(R.id.time)
     }
 }
