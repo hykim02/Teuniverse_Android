@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.teuniverse.databinding.FragmentCalendarBinding
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
@@ -23,6 +24,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import retrofit2.Response
 import java.util.Calendar
 
@@ -200,32 +202,60 @@ class CalendarFragment : Fragment() {
             // 날짜 클릭 이벤트 처리
             if (selected) {
                 // 클릭된 날짜의 이벤트를 표시하는 로직을 여기에 추가
-                Log.d("date",date.toString()) //CalendarDay{2024-0-24}
-                Log.d("selectedDate", selected.toString()) //true
+                val selectedYear = date.year
                 val selectedMonth = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
+                val formatMonth = formatMonth(selectedMonth)
+                val selectedDay = date.day
+
+                Log.d("selectedDay", selectedDay.toString())
+                val key = "$selectedYear-$formatMonth-$selectedDay"
+                Log.d("key", key)
 
                 // 해당 월에 해당하는 DB 파일을 찾아 데이터 가져오기
-                val dbFileName = "$selectedMonth.xml"
-                Log.d("dbFileName",dbFileName) //1.xml
+                val dbFileName = "$selectedMonth"
                 val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), dbFileName)
 
                 // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
                 if (isExist) {
                     val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
-                    for (date in monthDB.all.keys) {
-                        // 년도, 월, 날짜를 '-'를 기준으로 분리
-                        val parts = date.split("-")
-                        val year = parts[0].toInt()
-                        val month = parts[1].toInt()
-                        val day = parts[2].toInt() // 날짜만 저장
-                        Log.d("day", day.toString())
-                        val dayDB = CalendarDay.from(year, month, day) // 타입 변환
-                        Log.d("dayDB",dayDB.toString())
+                    // 특정 키에 대한 값을 가져오기
+                    val dataString = monthDB.getString(key, null)
 
-//                        if (dayDB.day == date.toInt()) {
+                    if (dataString != null) {
+                        // 가져온 데이터가 null이 아니라면 JSON 형식의 문자열이므로 파싱하여 사용
+                        val jsonArray = JSONArray(dataString)
+                        // JSONArray 내 각 객체를 순회하면서 데이터 추출
+                        for (i in 0 until jsonArray.length()) {
+                            val jsonObject = jsonArray.getJSONObject(i)
+                            val content = jsonObject.getString("content")
+                            val startAt = jsonObject.getString("startAt")
+                            val type = jsonObject.getString("type")
+                            scheduleList.add(CalendarItem(content, type, startAt))
+                            // 여기서 얻은 데이터를 사용하거나 출력
+                            Log.d("JSON Parsing", "Content: $content, StartAt: $startAt, Type: $type")
+                        }
+                    } else {
+                        // 가져온 데이터가 null일 경우에 대한 처리
+                        Log.d("Data", "No data found for the specified key.")}
+
+//                    for ((date, value) in monthDB.all) {
+//                        // 년도, 월, 날짜를 '-'를 기준으로 분리
+//                        val parts = date.split("-")
+//                        val year = parts[0].toInt()
+//                        val month = parts[1].toInt()
+//                        val day = parts[2].toInt() // 날짜만 저장
+//                        Log.d("day", day.toString()) // 24
+//                        val dayDB = CalendarDay.from(year, month, day) // 타입 변환
+//                        Log.d("dayDB.day",dayDB.day.toString()) // 24
 //
+//                        // db의 날짜와 클릭한 날짜가 같을 때
+//                        if (day == selectedDay) {
+//                            val events = parseJsonToList(value as String)
+//                            for (i in events.indices) {
+//                                events
+//                            }
 //                        }
-                    }
+//                    }
                     // 예를 들어, monthDB.all.keys를 통해 해당 월의 모든 키를 가져올 수 있습니다.
                 } else {
                     // DB 파일이 존재하지 않을 경우 처리
@@ -234,6 +264,19 @@ class CalendarFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun setTypeImg(type: String) {
+
+    }
+
+    // 날짜 포맷 함수
+    private fun formatMonth(month: Int): String {
+        return if (month < 10) {
+            "0$month"
+        } else {
+            month.toString()
+        }
     }
 
     // 1-12월 일정 받아오기

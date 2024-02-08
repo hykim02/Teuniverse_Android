@@ -13,7 +13,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/video_off" />
+        app:srcCompat="@drawable/cake_on" />
 
     <TextView
         android:id="@+id/time"
