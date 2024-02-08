@@ -207,14 +207,16 @@ class CalendarFragment : Fragment() {
         binding.calendarView.setOnDateChangedListener { widget, date, selected ->
             // 날짜 클릭 이벤트 처리
             if (selected) {
+                scheduleList.clear()
                 // 클릭된 날짜의 이벤트를 표시하는 로직을 여기에 추가
                 val selectedYear = date.year
                 val selectedMonth = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
-                val formatMonth = formatMonth(selectedMonth)
+                val formatMonth = formatNum(selectedMonth)
                 val selectedDay = date.day
+                val formatDay = formatNum(selectedDay)
 
                 Log.d("selectedDay", selectedDay.toString())
-                val key = "$selectedYear-$formatMonth-$selectedDay"
+                val key = "$selectedYear-$formatMonth-$formatDay"
                 Log.d("key", key)
 
                 // 해당 월에 해당하는 DB 파일을 찾아 데이터 가져오기
@@ -228,7 +230,6 @@ class CalendarFragment : Fragment() {
                     val dataString = monthDB.getString(key, null)
 
                     if (dataString != null) {
-                        scheduleList.clear()
                         // 가져온 데이터가 null이 아니라면 JSON 형식의 문자열이므로 파싱하여 사용
                         val jsonArray = JSONArray(dataString)
                         // JSONArray 내 각 객체를 순회하면서 데이터 추출
@@ -242,7 +243,6 @@ class CalendarFragment : Fragment() {
 
                             // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
                             val spanCount = scheduleList.size
-                            Log.d("댓글 개수", spanCount.toString())
                             val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
                             binding.calendarRv.adapter = calendarAdapter
                             binding.calendarRv.layoutManager = layoutManager
@@ -293,11 +293,11 @@ class CalendarFragment : Fragment() {
     }
 
     // 날짜 포맷 함수
-    private fun formatMonth(month: Int): String {
-        return if (month < 10) {
-            "0$month"
+    private fun formatNum(num: Int): String {
+        return if (num < 10) {
+            "0$num"
         } else {
-            month.toString()
+            num.toString()
         }
     }
 
