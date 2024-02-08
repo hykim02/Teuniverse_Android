@@ -43,5 +43,10 @@
             android:id="@+id/action_navigation_communityDetail_to_navigation_community"
             app:destination="@id/navigation_community" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.teuniverse.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 
 </navigation>

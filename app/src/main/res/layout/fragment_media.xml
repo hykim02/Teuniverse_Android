@@ -2,14 +2,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     tools:context=".MediaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="미디어" />
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/g"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/artist_main_logo" />
+
+        <ImageButton
+            android:id="@+id/artist_main_logo"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/teniverse_logo_mp" />
+
+        <ImageButton
+            android:id="@+id/img_btn_person"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="24dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/person" />
+
+        <ImageButton
+            android:id="@+id/img_btn_vote"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="4dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/vote_count"
+            app:layout_constraintEnd_toStartOf="@+id/vote_count"
+            app:layout_constraintTop_toTopOf="@+id/vote_count"
+            app:srcCompat="@drawable/buy_vote" />
+
+        <TextView
+            android:id="@+id/vote_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="개수"
+            app:layout_constraintBottom_toBottomOf="@+id/img_btn_person"
+            app:layout_constraintEnd_toStartOf="@+id/img_btn_person"
+            app:layout_constraintTop_toTopOf="@+id/img_btn_person" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
