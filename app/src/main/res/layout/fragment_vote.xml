@@ -342,14 +342,19 @@
                         app:srcCompat="@drawable/profile" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <Button
+                <TextView
                     android:id="@+id/vote_btn"
                     android:layout_width="360dp"
-                    android:layout_height="45dp"
+                    android:layout_height="wrap_content"
+                    android:text="투표하기"
+                    android:layout_marginTop="10dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/mp"
-                    android:text="투표하기" />
+                    android:textColor="@color/w"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textAlignment="center"
+                    android:padding="5dp"
+                    android:background="@drawable/round_btn_mp"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -375,23 +380,32 @@
 
                             <TextView
                                 android:id="@+id/fan_tab"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="15dp"
+                                android:layout_width="90dp"
+                                android:layout_height="35dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/custom_background_top"
+                                android:backgroundTint="@color/mp"
+                                android:gravity="center"
                                 android:text="팬 순위"
-                                android:textColor="@color/dg"
+                                android:textAlignment="center"
+                                android:textColor="@color/w"
                                 android:textSize="17sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:translationZ="10dp" />
 
                             <TextView
                                 android:id="@+id/artist_tab"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="170dp"
+                                android:layout_height="35dp"
                                 android:layout_marginEnd="20dp"
+                                android:background="@drawable/custom_background_top"
+                                android:gravity="center"
                                 android:text="전체 아티스트 순위"
+                                android:textAlignment="center"
                                 android:textColor="@color/mp"
                                 android:textSize="17sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:translationZ="10dp" />
                         </LinearLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
