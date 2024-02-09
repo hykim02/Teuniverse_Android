@@ -9,6 +9,7 @@
         android:id="@+id/imageView15"
         android:layout_width="170dp"
         android:layout_height="110dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_item_custom" />
