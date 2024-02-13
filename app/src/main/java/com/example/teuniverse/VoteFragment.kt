@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +33,7 @@ class VoteFragment : Fragment() {
     private lateinit var voteRankAdapter: VoteRankAdapter
     private lateinit var numberOfVote: TextView
     private lateinit var voteMission: ImageView
+    private lateinit var profileBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +62,11 @@ class VoteFragment : Fragment() {
         voteMission = view.findViewById(R.id.img_btn_vote)
 
         voteRankAdapter = VoteRankAdapter(rankingList)
+
+        profileBtn = view.findViewById(R.id.img_btn_person)
+        profileBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_vote_to_profileFragment2)
+        }
 
         // 뷰 숨기기
         fanAll.visibility = View.GONE

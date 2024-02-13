@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.teuniverse.databinding.FragmentCalendarBinding
 import com.google.gson.Gson
@@ -51,6 +52,10 @@ class CalendarFragment : Fragment() {
         scheduleList = ArrayList()
         // 리사이클러뷰 어댑터 연결gi
         calendarAdapter = CalendarAdapter(scheduleList)
+
+        binding.imgBtnPerson.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_calendar_to_profileFragment)
+        }
 
         // 현재 날짜를 가져와서 해당 년도를 가져옴
         currentYear = Calendar.getInstance().get(Calendar.YEAR)

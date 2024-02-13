@@ -210,3 +210,12 @@ interface HomeInterface {
         @Header("Authorization") authorization: String?
     ): Response<ServerResponse<HomeItem>>
 }
+
+// 프로필
+interface ProfileInterface {
+    @GET("user/profile")
+    @Headers("accept: application/json")
+    suspend fun getProfileData(
+        @Header("Authorization") authorization: String?
+    ): Response<ServerResponse<ProfileItem>>
+}

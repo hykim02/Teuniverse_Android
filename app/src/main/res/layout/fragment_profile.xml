@@ -131,7 +131,7 @@
                         android:layout_marginTop="16dp"
                         android:text="프로필"
                         android:textColor="@color/b"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -142,14 +142,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="수정하기"
+                        android:textSize="18sp"
                         android:textColor="@color/b"
                         app:layout_constraintEnd_toStartOf="@+id/edit_btn"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
                         android:id="@+id/edit_btn"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginEnd="16dp"
                         android:background="@android:color/transparent"
                         android:scaleType="fitCenter"
@@ -209,7 +210,7 @@
                         android:layout_marginTop="16dp"
                         android:text="나의 최애"
                         android:textColor="@color/b"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -220,14 +221,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="변경하기"
+                        android:textSize="18sp"
                         android:textColor="@color/b"
                         app:layout_constraintEnd_toStartOf="@+id/modify_btn"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
                         android:id="@+id/modify_btn"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginEnd="16dp"
                         android:background="@android:color/transparent"
                         android:scaleType="fitCenter"
@@ -247,7 +249,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
                     <ImageView
-                        android:id="@+id/imageView12"
+                        android:id="@+id/artist_img"
                         android:layout_width="57dp"
                         android:layout_height="57dp"
                         android:src="@drawable/profile"
@@ -263,11 +265,11 @@
                         android:layout_marginStart="60dp"
                         android:text="아티스트"
                         android:textColor="@color/b"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView12"
+                        app:layout_constraintBottom_toBottomOf="@+id/artist_img"
                         app:layout_constraintStart_toEndOf="@+id/imageView10"
-                        app:layout_constraintTop_toTopOf="@+id/imageView12" />
+                        app:layout_constraintTop_toTopOf="@+id/artist_img" />
 
                     <TextView
                         android:id="@+id/textView37"
@@ -276,7 +278,7 @@
                         android:layout_marginStart="1dp"
                         android:text="월 투표 수"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/month1"
                         app:layout_constraintStart_toEndOf="@+id/month1"
                         app:layout_constraintTop_toTopOf="@+id/month1" />
@@ -287,7 +289,7 @@
                         android:layout_height="wrap_content"
                         android:text="월 기여도"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/month2"
                         app:layout_constraintStart_toEndOf="@+id/month2"
                         app:layout_constraintTop_toTopOf="@+id/month2" />
@@ -299,7 +301,7 @@
                         android:layout_marginStart="1dp"
                         android:text="월 팬랭킹"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/month3"
                         app:layout_constraintStart_toEndOf="@+id/month3"
                         app:layout_constraintTop_toTopOf="@+id/month3" />
@@ -312,7 +314,7 @@
                         android:layout_marginTop="16dp"
                         android:text="8"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imageView10" />
 
@@ -324,7 +326,7 @@
                         android:layout_marginTop="8dp"
                         android:text="8"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/month1" />
 
@@ -336,7 +338,7 @@
                         android:layout_marginTop="8dp"
                         android:text="8"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/month2" />
 
@@ -347,7 +349,7 @@
                         android:layout_marginEnd="1dp"
                         android:text="0"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/textView37"
                         app:layout_constraintEnd_toStartOf="@+id/textView44"
@@ -360,7 +362,7 @@
                         android:layout_marginEnd="16dp"
                         android:text="표"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/vote"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -375,7 +377,7 @@
                         android:layout_marginBottom="1dp"
                         android:text="23.5%"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/textView38"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -389,26 +391,26 @@
                         android:layout_marginEnd="16dp"
                         android:text="23.5%"
                         android:textColor="@color/b"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/textView39"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/textView39" />
 
                     <TextView
-                        android:id="@+id/textView47"
+                        android:id="@+id/all_rank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:text="(전체) 47위"
                         android:textColor="@color/b"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/fan_ranking" />
 
                     <TextView
-                        android:id="@+id/textView48"
+                        android:id="@+id/best_rank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -416,19 +418,19 @@
                         android:layout_marginBottom="16dp"
                         android:text="(최애) 3위"
                         android:textColor="@color/b"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView47" />
+                        app:layout_constraintTop_toBottomOf="@+id/all_rank" />
 
                     <TextView
-                        android:id="@+id/textView52"
+                        android:id="@+id/registedAt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="60dp"
                         android:text="D+1"
                         android:textColor="@color/mp"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/artist_name"
                         app:layout_constraintStart_toEndOf="@+id/artist_name"
@@ -449,7 +451,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:text="이용약관"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/dg"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -470,7 +472,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:text="개인정보처리방침"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/dg"
                         app:layout_constraintBottom_toBottomOf="parent"

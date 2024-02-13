@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -39,6 +40,7 @@ class CommunityFragment : Fragment() {
     private lateinit var numberOfVote: TextView
     private lateinit var intent: Intent
     private lateinit var postBtn: FloatingActionButton
+    private lateinit var profileBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +57,6 @@ class CommunityFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community, container, false)
-//        intent = Intent(context, CommunityDetailFragment::class.java)
 
         artistProfile = view.findViewById(R.id.img_best_artist)
         artistName = view.findViewById(R.id.tv_best_artist_name)
@@ -70,6 +71,11 @@ class CommunityFragment : Fragment() {
         // 리사이클러뷰 어댑터 연결
         rvCommunity.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvCommunity.adapter = communityAdapter
+
+        profileBtn = view.findViewById(R.id.img_btn_person)
+        profileBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_community_to_profileFragment)
+        }
 
         postBtn.setOnClickListener {
             activity?.let{

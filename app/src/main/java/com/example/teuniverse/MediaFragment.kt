@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.teuniverse.databinding.FragmentMediaBinding
 import com.google.gson.Gson
@@ -37,6 +38,9 @@ class MediaFragment : Fragment() {
         mediaList = ArrayList()
         mediaAdapter = MediaAdapter(mediaList)
 
+        binding.imgBtnPerson.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_media_to_profileFragment)
+        }
 
         lifecycleScope.launch{
             mediaContentsApi()

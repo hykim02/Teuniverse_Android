@@ -279,3 +279,28 @@ data class MediasItem(
     val thumbnailUrl: String,
     val url: String
 )
+
+// 프로필
+data class ProfileItem(
+    val userProfile: UserProfile,
+    val favoriteArtistProfile: FavoriteProfile
+)
+
+// 프로필 user
+data class UserProfile(
+    val id: Long,
+    val nickName: String,
+    val thumbnailUrl: String,
+    val registedAt: Int,
+    val voteCount: Int,
+    val contribution: Float,
+    val rank: Int,
+    val artistRank: Int
+)
+
+// 프로필 최애
+data class FavoriteProfile(
+    val id: Int,
+    val name: String,
+    val thumbnailUrl: String
+)

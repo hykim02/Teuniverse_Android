@@ -281,3 +281,14 @@ object MediaInstance {
             .create(MediaInterface::class.java)
     }
 }
+
+// 프로필
+object ProfileInstance {
+    fun profileService(): ProfileInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ProfileInterface::class.java)
+    }
+}
