@@ -83,6 +83,19 @@ data class CalendarItem(
     val startAt: String
 )
 
+// 홈 미디어 어댑터 아이템
+data class HomeMediaItem(
+    val url: String,
+    val thumbnail: String
+)
+
+// 홈 커뮤니티 어댑터 아이템
+data class HomeCommunityItem(
+    val id: Int,
+    val title: String,
+    val postImg: String
+)
+
 // 서버 응답 코드(data가 객체인 경우)
 data class ServerResponse<T>(
     val success: Boolean,
@@ -103,6 +116,7 @@ data class ArtistServerResponse<T>(
     val message: String,
     val data: List<T>
 )
+
 // 일정 응답 코드
 data class EventResponse(
     val success: Boolean,
@@ -116,6 +130,7 @@ data class Event(
     val type: String,
     val startAt: String
 )
+
 // 최애 아티스트 조회
 data class ArtistData(
     val id: Int,
@@ -150,8 +165,6 @@ data class UserProfileData(
     val thumbnailUrl: String
 )
 
-
-
 // 투표권 개수 조회
 data class NumberOfVote(
     val voteCount: Int?
@@ -174,8 +187,6 @@ data class SignUpRequest(
     val favoriteArtistId: Int
 )
 
-
-
 // 커뮤니티 피드 조회
 data class ArtistProfile(
     val id: Int,
@@ -197,8 +208,6 @@ data class CommunityData(
     val artistProfile: ArtistProfile,
     val feeds: List<Feeds>
 )
-
-
 
 // 상세 피드 조회
 data class CommunityDetailData(
@@ -239,4 +248,34 @@ data class MediaContent(
     val publishedAt: String,
     val url: String,
     val views: Long
+)
+
+// 홈 아이템
+data class HomeItem(
+    val votes: List<VotesItem>,
+    val communities: List<CommunitiesItem>,
+    val medias: List<MediasItem>
+)
+
+// 홈 투표
+data class VotesItem(
+    val id: Int,
+    val name: String,
+    val thumbnailUrl: String,
+    val voteCount: Long,
+    val rank: Int,
+    val isFavorite: Boolean
+)
+
+// 홈 커뮤니티
+data class CommunitiesItem(
+    val id: Int,
+    val content: String,
+    val thumbnailUrl: String
+)
+
+// 홈 미디어
+data class MediasItem(
+    val thumbnailUrl: String,
+    val url: String
 )

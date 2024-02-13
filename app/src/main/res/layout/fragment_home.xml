@@ -425,13 +425,14 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_home_community"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="25dp"
+                    android:orientation="horizontal"
                     tools:itemCount="1"
-                    tools:listitem="@layout/home_rv_community"/>
+                    tools:listitem="@layout/home_rv_community" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -473,13 +474,14 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_home_media"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="25dp"
-                    tools:listitem="@layout/home_rv_media"
-                    tools:itemCount="1"/>
+                    android:orientation="horizontal"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/home_rv_media" />
 
             </LinearLayout>
         </ScrollView>

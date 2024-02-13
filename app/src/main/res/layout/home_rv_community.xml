@@ -23,4 +23,13 @@
         android:text="title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_img" />
+
+    <TextView
+        android:id="@+id/post_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/post_img"
+        app:layout_constraintTop_toBottomOf="@+id/post_img" />
 </androidx.constraintlayout.widget.ConstraintLayout>

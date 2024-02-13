@@ -201,3 +201,12 @@ interface MediaInterface {
         @Header("Authorization") authorization: String?
     ): Response<ArtistServerResponse<MediaContent>>
 }
+
+// 홈
+interface HomeInterface {
+    @GET("home")
+    @Headers("accept: application/json")
+    suspend fun getHomeContents(
+        @Header("Authorization") authorization: String?
+    ): Response<ServerResponse<HomeItem>>
+}
