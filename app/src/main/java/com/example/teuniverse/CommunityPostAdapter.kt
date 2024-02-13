@@ -49,7 +49,6 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         // 이미지 로딩
         Glide.with(holder.itemView.context)
             .load(currentItem.postImg) // currentItem.img가 이미지 URL인 경우
-            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(holder.postImg)
 
         // 이미지 로딩

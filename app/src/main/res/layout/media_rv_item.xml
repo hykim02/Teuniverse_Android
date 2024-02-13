@@ -7,17 +7,22 @@
 
     <ImageView
         android:id="@+id/media_img"
-        android:layout_width="170dp"
+        android:layout_width="190dp"
         android:layout_height="110dp"
         android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/media_title"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_item_custom" />
 
     <TextView
         android:id="@+id/media_title"
-        android:layout_width="170dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
         android:text="title"
         android:textColor="@color/b"
         android:textStyle="bold"

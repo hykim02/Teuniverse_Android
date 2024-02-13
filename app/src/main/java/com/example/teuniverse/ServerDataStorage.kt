@@ -83,15 +83,6 @@ data class CalendarItem(
     val startAt: String
 )
 
-// 미디어 리사이클러뷰 아이템 데이터
-data class MediaItem(
-    val thumbnail: String,
-    val title: String,
-    val date: String,
-    val view: Long,
-    val link: String
-)
-
 // 서버 응답 코드(data가 객체인 경우)
 data class ServerResponse<T>(
     val success: Boolean,
