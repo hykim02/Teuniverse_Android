@@ -55,7 +55,7 @@ class CalendarFragment : Fragment() {
         // 현재 날짜를 가져와서 해당 년도를 가져옴
         currentYear = Calendar.getInstance().get(Calendar.YEAR)
         // 초반에 한 번만 호출되도록 조건 설정 필요
-//        callApi(currentYear)
+        callApi(currentYear)
 
         customCalendar()
         motionCalendar()

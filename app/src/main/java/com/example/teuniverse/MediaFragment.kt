@@ -1,59 +1,74 @@
 package com.example.teuniverse
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.teuniverse.databinding.FragmentMediaBinding
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MediaFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MediaFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var binding: FragmentMediaBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_media, container, false)
+        binding = FragmentMediaBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MediaFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MediaFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private suspend fun mediaContentsApi() {
+        Log.d("mediaContentsApi", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ArtistServerResponse<MediaContent>> = withContext(
+                    Dispatchers.IO) {
+                    MediaInstance.mediaService().getContents(accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theContent: ArtistServerResponse<MediaContent>? = response.body()
+                    if (theContent != null) {
+                        Log.d("mediaContentsApi", "${theContent.statusCode} ${theContent.message}")
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("mediaContentsApi Error: ${response.code()} - ${response.message()}")
                 }
             }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleResponse(response: EventResponse) {
+        
+    }
+
+    private fun handleError(errorMessage: String) {
+        // 에러를 처리하는 코드
+        Log.d("미디어Api Error", errorMessage)
+    }
+
+    // db에서 토큰 가져오기
+    private fun getAccessToken(): String? {
+        MainActivity.ServiceAccessTokenDB.init(requireContext())
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer " + value.toString()
+            }
+        }
+        return accessToken
     }
 }

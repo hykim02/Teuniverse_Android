@@ -91,7 +91,7 @@ class VoteFragment : Fragment() {
         fanAll.visibility = View.VISIBLE
         fanBest.visibility = View.VISIBLE
         // 색상 변경
-        fanTab.setTextColor(Color.parseColor("#5C21A4"))
+        fanTab.setTextColor(Color.parseColor("#FFFFFFFF"))
         artistTab.setTextColor(Color.parseColor("#7C7C7C"))
         // 팬: 전체
         fanAll.setOnClickListener {

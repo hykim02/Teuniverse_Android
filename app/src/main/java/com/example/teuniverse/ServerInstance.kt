@@ -270,3 +270,14 @@ object CalendarInstance {
             .create(CalendarInterface::class.java)
     }
 }
+
+// 미디어
+object MediaInstance {
+    fun mediaService(): MediaInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MediaInterface::class.java)
+    }
+}

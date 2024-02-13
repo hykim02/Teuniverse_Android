@@ -192,3 +192,12 @@ interface CalendarInterface {
         @Header("Authorization") authorization: String?
     ): Response<EventResponse>
 }
+
+// 미디어 영상
+interface MediaInterface {
+    @GET("media")
+    @Headers("accept: application/json")
+    suspend fun getContents(
+        @Header("Authorization") authorization: String?
+    ): Response<ArtistServerResponse<MediaContent>>
+}

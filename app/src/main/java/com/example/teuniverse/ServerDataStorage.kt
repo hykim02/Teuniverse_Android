@@ -83,6 +83,15 @@ data class CalendarItem(
     val startAt: String
 )
 
+// 미디어 리사이클러뷰 아이템 데이터
+data class MediaItem(
+    val thumbnail: String,
+    val title: String,
+    val date: String,
+    val view: Long,
+    val link: String
+)
+
 // 서버 응답 코드(data가 객체인 경우)
 data class ServerResponse<T>(
     val success: Boolean,
@@ -230,4 +239,13 @@ data class CreateComment(
 // 좋아요 생성
 data class CreateHeart(
     val likeCount: Int
+)
+
+// 미디어 콘텐츠
+data class MediaContent(
+    val title: String,
+    val thumbnailUrl: String,
+    val publishedAt: String,
+    val url: String,
+    val views: Long
 )

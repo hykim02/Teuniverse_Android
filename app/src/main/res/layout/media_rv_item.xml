@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView15"
+        android:id="@+id/media_img"
         android:layout_width="170dp"
         android:layout_height="110dp"
         android:layout_marginTop="16dp"
@@ -21,9 +21,9 @@
         android:text="title"
         android:textColor="@color/b"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/imageView15"
-        app:layout_constraintStart_toStartOf="@+id/imageView15"
-        app:layout_constraintTop_toBottomOf="@+id/imageView15" />
+        app:layout_constraintEnd_toEndOf="@+id/media_img"
+        app:layout_constraintStart_toStartOf="@+id/media_img"
+        app:layout_constraintTop_toBottomOf="@+id/media_img" />
 
     <TextView
         android:id="@+id/date"
@@ -40,4 +40,13 @@
         android:text="조회수"
         app:layout_constraintEnd_toEndOf="@+id/media_title"
         app:layout_constraintTop_toBottomOf="@+id/media_title" />
+
+    <TextView
+        android:id="@+id/video_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="link"
+        app:layout_constraintBottom_toTopOf="@+id/media_img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
