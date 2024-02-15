@@ -219,3 +219,12 @@ interface ProfileInterface {
         @Header("Authorization") authorization: String?
     ): Response<ServerResponse<ProfileItem>>
 }
+
+// 투표 순위 요약 1-4위
+interface VoteSummaryInterface {
+    @GET("vote/monthly-artist-summary")
+    @Headers("accept: application/json")
+    suspend fun getVoteSummary(
+        @Header("Authorization") authorization: String?
+    ): Response<ArtistServerResponse<VotesItem>>
+}

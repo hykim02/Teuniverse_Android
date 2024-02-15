@@ -303,3 +303,14 @@ object HomeInstance {
             .create(HomeInterface::class.java)
     }
 }
+
+// 투표 순위 요약
+object VoteSummaryInstance {
+    fun voteSummaryService(): VoteSummaryInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(VoteSummaryInterface::class.java)
+    }
+}

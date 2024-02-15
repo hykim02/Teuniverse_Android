@@ -2,6 +2,7 @@ package com.example.teuniverse
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,6 +44,7 @@ class VoteFragment : Fragment() {
         lifecycleScope.launch {
             getRankingOfArtists()
             getNumberOfVotes()
+            getVoteSummary()
         }
     }
 
@@ -172,6 +176,33 @@ class VoteFragment : Fragment() {
         }
     }
 
+    // 1-4위 api
+    private suspend fun getVoteSummary() {
+        Log.d("getVoteSummary 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ArtistServerResponse<VotesItem>> = withContext(Dispatchers.IO) {
+                    VoteSummaryInstance.voteSummaryService().getVoteSummary(accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theVote: ArtistServerResponse<VotesItem>? = response.body()
+                    if (theVote != null) {
+                        Log.d("response", "${theVote.statusCode} ${theVote.message}")
+                        handleResponse(theVote)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("getVoteSummary함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
     // 서버에서 월간 아티스트 투표 데이터 가져오는 함수
     private suspend fun getRankingOfArtists() {
         Log.d("getRankingOfArtists 함수", "호출 성공")
@@ -191,7 +222,6 @@ class VoteFragment : Fragment() {
                     if (artistVoteCountList != null) {
                         Log.d("voteCountList", "${artistVoteCountList.statusCode} ${artistVoteCountList.message}")
                         // 정렬 기준에 따른 순서
-                        handleResponse(artistVoteCountList)
                         handleRankingData(artistVoteCountList)
                     } else {
                         handleError("Response body is null.")
@@ -252,43 +282,48 @@ class VoteFragment : Fragment() {
 
     // 1~4위 까지
     @SuppressLint("DiscouragedApi")
-    private fun handleResponse(voteCountList: ArtistServerResponse<VoteData>?) {
-        if (voteCountList != null) {
-            // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
-            for (i in 0 until 4) {
-                val voteCountData = voteCountList.data[i]
-                val imageUrl = voteCountData.thumbnailUrl
-                val nametxt = voteCountData.name
-                var numberOfVotes = voteCountData.voteCount
-
+    private fun handleResponse(voteCountList: ArtistServerResponse<VotesItem>?) {
+        val theSummary = voteCountList?.data
+        if (theSummary != null) {
+            for (i in theSummary.indices) {
                 // 이미지뷰 가져오기
                 val imageViewId = resources.getIdentifier("first_img", "id", requireContext().packageName)
                 val imageView = view?.findViewById<ImageView>(imageViewId)
 
-                // name 텍스트뷰 가져오기
+                // 텍스트뷰 가져오기
                 val nameTvId = resources.getIdentifier("name_${i + 1}", "id", requireContext().packageName)
                 val nameTv = view?.findViewById<TextView>(nameTvId)
-                // Count 텍스트뷰 가져오기
+
                 val countTvId = resources.getIdentifier("vote_count_${i+1}","id",requireContext().packageName)
                 val countTv = view?.findViewById<TextView>(countTvId)
 
-                // 텍스트뷰에 데이터 연결
+                // 컨테이너 가져오기
+                val containerId = resources.getIdentifier("ct_${i+1}", "id", requireContext().packageName)
+                val containerView = view?.findViewById<ConstraintLayout>(containerId)
+
                 if (nameTv != null) {
-                    nameTv.text = nametxt
+                    nameTv.text = theSummary[i].name
                 }
                 if (countTv != null) {
-                    numberOfVotes = addCommasToNumber(numberOfVotes)
-                    countTv.text = numberOfVotes
+                    countTv.text = addCommasToNumber(theSummary[i].voteCount.toString())
                 }
-
-                // Glide를 사용하여 이미지 로딩 (1위만)
-                if (i == 0 && imageView != null) {
+                if (theSummary[i].rank == 1 && imageView != null) {
                     Glide.with(this)
-                        .load(imageUrl)
+                        .load(theSummary[i].thumbnailUrl)
                         .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
                         .into(imageView)
+                }
+
+                // 최애 아티스트인 경우 배경 색상 변경
+                if (theSummary[i].isFavorite) {
+                    val drawable = containerView?.background // drawable 가져옴
+                    drawable?.setColorFilter(
+                        ContextCompat.getColor(requireContext(), R.color.mp),
+                        PorterDuff.Mode.SRC_ATOP //색상을 적용할 때 알파 채널을 유지하도록 하는 모드
+                    )
                 } else {
-                    continue
+                    // 원래의 배경색상으로 복원
+                    containerView?.background?.clearColorFilter()
                 }
             }
         }
