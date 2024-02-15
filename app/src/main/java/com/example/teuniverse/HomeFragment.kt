@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -40,6 +43,14 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding =  FragmentHomeBinding.inflate(inflater, container, false)
 
+        binding.imgBtnVote.setOnClickListener {
+            showPopupMissionDialog()
+        }
+
+        binding.voteBtn.setOnClickListener {
+            showPopupVoteDialog()
+        }
+
         // 일정 리사이클러뷰 어댑터 연결
         scheduleList = ArrayList()
         calendarAdapter = CalendarAdapter(scheduleList)
@@ -55,6 +66,7 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             homeApi()
+            getNumberOfVotes()
         }
 
         return binding.root
@@ -144,6 +156,22 @@ class HomeFragment : Fragment() {
             }
             names[i].text = votes[i].name
             voteCount[i].text = addCommasToNumber(votes[i].voteCount.toString())
+
+            // 컨테이너 가져오기
+            val containerId = resources.getIdentifier("ct_${i+1}", "id", requireContext().packageName)
+            val containerView = view?.findViewById<ConstraintLayout>(containerId)
+
+            // 최애 아티스트인 경우 배경 색상 변경
+            if (votes[i].isFavorite) {
+                val drawable = containerView?.background // drawable 가져옴
+                drawable?.setColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.mp),
+                    PorterDuff.Mode.SRC_ATOP //색상을 적용할 때 알파 채널을 유지하도록 하는 모드
+                )
+            } else {
+                // 원래의 배경색상으로 복원
+                containerView?.background?.clearColorFilter()
+            }
         }
 
         // 일정
@@ -214,6 +242,39 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // 투표권 개수 가져오기
+    private suspend fun getNumberOfVotes() {
+        Log.d("getNumberOfVotes 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
+                    VoteCountInstance.getVotesService().getVotes(accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theVote: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVote != null) {
+                        Log.d("response", "${theVote.statusCode} ${theVote.message}")
+                        handleTheVotes(theVote)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 보유 투표권 개수 조회
+    private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
+        Log.d("handleTheVotes 함수","호출 성공" )
+        binding.voteCount.text = votes.data.voteCount.toString()
+    }
+
     // 일정 시간 추출 함수
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setTime(time: String): String {
@@ -276,6 +337,25 @@ class HomeFragment : Fragment() {
             }
         }
         return accessToken
+    }
+
+    private fun showPopupMissionDialog() {
+        val popupVoteMission = PopupVoteMission(requireContext())
+        popupVoteMission.show()
+
+        popupVoteMission.setOnDismissListener {
+            Log.d("popupVoteMission", "PopupVote dialog dismissed.")
+        }
+    }
+
+    // 투표하기 다이얼로그를 생성
+    private fun showPopupVoteDialog() {
+        val popupVote = PopupVote(requireContext()) { /* Callback if needed */ }
+        popupVote.show()
+
+        popupVote.setOnDismissListener {
+            Log.d("VoteFragment", "PopupVote dialog dismissed.")
+        }
     }
 
 }

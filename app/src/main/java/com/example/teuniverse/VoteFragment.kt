@@ -3,6 +3,7 @@ package com.example.teuniverse
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +26,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
+import java.util.Calendar
 
 class VoteFragment : Fragment() {
     private lateinit var fanTab: TextView
@@ -36,6 +42,8 @@ class VoteFragment : Fragment() {
     private lateinit var numberOfVote: TextView
     private lateinit var voteMission: ImageView
     private lateinit var profileBtn: ImageButton
+    private lateinit var voteMonth: TextView
+    private lateinit var voteRemainDay: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +56,7 @@ class VoteFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,6 +72,8 @@ class VoteFragment : Fragment() {
         rankingList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
         voteMission = view.findViewById(R.id.img_btn_vote)
+        voteMonth = view.findViewById(R.id.vote_tv_month)
+        voteRemainDay = view.findViewById(R.id.vote_tv_lastday)
 
         voteRankAdapter = VoteRankAdapter(rankingList)
 
@@ -94,7 +105,24 @@ class VoteFragment : Fragment() {
             // 미션창 다이얼로그 띄우기
             showPopupMissionDialog()
         }
+
+        settingDate()
+
         return view
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun settingDate() {
+        // 현재 월
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        voteMonth.text = currentMonth.toString()
+        // 오늘 날짜
+        val today = LocalDate.now()
+        // 이번 달의 마지막 날짜 계산
+        val lastDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth())
+        // 오늘로부터 이번 달이 끝날 때까지의 남은 일 수 계산
+        val daysRemaining = ChronoUnit.DAYS.between(today, lastDayOfMonth)
+        voteRemainDay.text = daysRemaining.toString()
     }
 
     private fun fanTabSetting() {

@@ -41,6 +41,7 @@ class CommunityFragment : Fragment() {
     private lateinit var intent: Intent
     private lateinit var postBtn: FloatingActionButton
     private lateinit var profileBtn: ImageButton
+    private lateinit var voteBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,7 @@ class CommunityFragment : Fragment() {
         feedList = ArrayList()
         numberOfVote = view.findViewById(R.id.vote_count)
         postBtn = view.findViewById(R.id.add_btn)
+        voteBtn = view.findViewById(R.id.img_btn_vote)
 
         // 어댑터에 NavController 전달
         val navController = findNavController()
@@ -82,6 +84,10 @@ class CommunityFragment : Fragment() {
                 intent = Intent(context, CommunityPostActivity::class.java)
                 startActivity(intent)
             }
+        }
+
+        voteBtn.setOnClickListener {
+            showPopupMissionDialog()
         }
 
         return view
@@ -198,6 +204,15 @@ class CommunityFragment : Fragment() {
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
         Log.d("handleTheVotes 함수","호출 성공" )
         numberOfVote.text = votes.data.voteCount.toString()
+    }
+
+    private fun showPopupMissionDialog() {
+        val popupVoteMission = PopupVoteMission(requireContext())
+        popupVoteMission.show()
+
+        popupVoteMission.setOnDismissListener {
+            Log.d("popupVoteMission", "PopupVote dialog dismissed.")
+        }
     }
 }
 

@@ -38,12 +38,17 @@ class MediaFragment : Fragment() {
         mediaList = ArrayList()
         mediaAdapter = MediaAdapter(mediaList)
 
+        binding.imgBtnVote.setOnClickListener {
+            showPopupMissionDialog()
+        }
+
         binding.imgBtnPerson.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_media_to_profileFragment)
         }
 
         lifecycleScope.launch{
             mediaContentsApi()
+            getNumberOfVotes()
         }
         return binding.root
     }
@@ -100,6 +105,39 @@ class MediaFragment : Fragment() {
         }
     }
 
+    // 투표권 개수 가져오기
+    private suspend fun getNumberOfVotes() {
+        Log.d("getNumberOfVotes 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(Dispatchers.IO) {
+                    VoteCountInstance.getVotesService().getVotes(accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theVote: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVote != null) {
+                        Log.d("response", "${theVote.statusCode} ${theVote.message}")
+                        handleTheVotes(theVote)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("getNumverOfVotes함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 보유 투표권 개수 조회
+    private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
+        Log.d("handleTheVotes 함수","호출 성공" )
+        binding.voteCount.text = votes.data.voteCount.toString()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun handleResponse(response: ArtistServerResponse<MediaContent>) {
         val serverDatas = response.data
@@ -138,5 +176,14 @@ class MediaFragment : Fragment() {
             }
         }
         return accessToken
+    }
+
+    private fun showPopupMissionDialog() {
+        val popupVoteMission = PopupVoteMission(requireContext())
+        popupVoteMission.show()
+
+        popupVoteMission.setOnDismissListener {
+            Log.d("popupVoteMission", "PopupVote dialog dismissed.")
+        }
     }
 }

@@ -136,7 +136,7 @@
                         android:layout_height="150dp"
                         android:layout_marginStart="18dp"
                         android:background="@drawable/chartbox_custom"
-                        android:backgroundTint="@color/mp"
+                        android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
@@ -329,6 +329,8 @@
                     android:layout_width="360dp"
                     android:layout_height="wrap_content"
                     android:text="투표하기"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:layout_marginTop="10dp"
                     android:layout_gravity="center"
                     android:textColor="@color/w"
