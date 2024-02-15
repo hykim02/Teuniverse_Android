@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -384,7 +383,7 @@ class VoteFragment : Fragment() {
     }
 
     private fun showPopupMissionDialog() {
-        val popupVoteMission = PopupVoteMission(requireContext()) { /* Callback if needed */ }
+        val popupVoteMission = PopupVoteMission(requireContext())
         popupVoteMission.show()
 
         popupVoteMission.setOnDismissListener {

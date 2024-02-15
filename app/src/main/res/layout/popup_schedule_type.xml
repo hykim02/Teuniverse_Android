@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_ranking_list">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout7"
@@ -39,12 +40,14 @@
             app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
         <ImageButton
-            android:id="@+id/imageButton5"
+            android:id="@+id/cake_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -112,16 +115,19 @@
             app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/video_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/checkbox" />
+            app:srcCompat="@drawable/checkbox"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -158,12 +164,14 @@
             app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/festival_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -205,12 +213,14 @@
             app:layout_constraintVertical_bias="0.666" />
 
         <ImageButton
-            android:id="@+id/imageButton6"
+            android:id="@+id/more_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -32,3 +32,20 @@ object MonthDBManager {
         return monthDBMap[monthNumber] ?: throw IllegalStateException("Month_DB $monthNumber is not initialized")
     }
 }
+
+// 스케줄 타입 상태 DB
+object ScheduleTypeDB {
+    private lateinit var sharedPreferences: SharedPreferences
+    // 초기화
+    fun init(context: Context) {
+        sharedPreferences = context.getSharedPreferences("ScheduleType", Context.MODE_PRIVATE)
+    }
+
+    // 객체 반환
+    fun getInstance(): SharedPreferences {
+        if(!this::sharedPreferences.isInitialized) {
+            throw IllegalStateException("SharedPreferencesSingleton is not initialized")
+        }
+        return sharedPreferences
+    }
+}

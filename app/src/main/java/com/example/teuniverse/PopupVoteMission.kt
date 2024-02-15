@@ -6,9 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.example.teuniverse.databinding.PopupMissionBinding
-import com.example.teuniverse.databinding.PopupVoteBinding
 
-class PopupVoteMission(context: Context, private val okCallback: (String) -> Unit): Dialog(context) {
+class PopupVoteMission(context: Context): Dialog(context) {
     private lateinit var binding : PopupMissionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

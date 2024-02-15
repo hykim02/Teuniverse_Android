@@ -57,6 +57,10 @@ class CalendarFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_calendar_to_profileFragment)
         }
 
+        binding.typeBtn.setOnClickListener {
+            showPopupScheduleTypeDialog()
+        }
+
         // 현재 날짜를 가져와서 해당 년도를 가져옴
         currentYear = Calendar.getInstance().get(Calendar.YEAR)
         // 초반에 한 번만 호출되도록 조건 설정 필요
@@ -367,6 +371,16 @@ class CalendarFragment : Fragment() {
             }
         }
         return accessToken
+    }
+
+    // 스케줄 타입 다이얼로그를 생성
+    private fun showPopupScheduleTypeDialog() {
+        val popupScheduleType = PopupScheduleType(requireContext())
+        popupScheduleType.show()
+
+        popupScheduleType.setOnDismissListener {
+            Log.d("CalendarFragment", "PopupScheduleType dialog dismissed.")
+        }
     }
 }
 

@@ -46,11 +46,4 @@ class PopupVoteCheck(
         // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
-
-    interface VoteCheckCallback {
-        fun onVoteConfirmed(value: String)
-    }
-
-
-
 }
