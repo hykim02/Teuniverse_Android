@@ -20,6 +20,12 @@ class PopupScheduleType(context: Context): Dialog(context) {
         initViews()
         setCheckBox()
 
+        // 체크박스 초기화
+        initCheckBox("video", binding.videoChk)
+        initCheckBox("cake", binding.cakeChk)
+        initCheckBox("festival", binding.festivalChk)
+        initCheckBox("more", binding.moreChk)
+
         binding.completeBtn.setOnClickListener {
             dismiss()
         }
@@ -29,6 +35,21 @@ class PopupScheduleType(context: Context): Dialog(context) {
         }
     }
 
+    // 체크박스 초기화 함수
+    private fun initCheckBox(chkbox: String, image: ImageButton) {
+        ScheduleTypeDB.init(context)
+        val typeDB = ScheduleTypeDB.getInstance().all
+        val src = "checkbox_$chkbox"
+        val resources: Resources = context.resources
+        val packageName: String = context.packageName
+
+        if (typeDB.getValue("$chkbox") == true) {
+            val resID = resources.getIdentifier(src, "drawable", packageName)
+            image.setImageResource(resID)
+        }
+    }
+
+    // 체크박스 클릭이벤트 함수
     private fun setCheckBox() {
         binding.videoChk.setOnClickListener {
             confirmCheckBox("video", binding.videoChk)
@@ -44,6 +65,7 @@ class PopupScheduleType(context: Context): Dialog(context) {
         }
     }
 
+    // 체크박스 DB 확인 함수
     private fun confirmCheckBox(chkbox: String, image: ImageButton) {
         ScheduleTypeDB.init(context)
         val typeDB = ScheduleTypeDB.getInstance().all
@@ -71,8 +93,8 @@ class PopupScheduleType(context: Context): Dialog(context) {
             image.setImageResource(resID)
             editor.apply()
         }
-
     }
+
     private fun initViews() = with(binding) {
         // 뒤로가기 버튼, 빈 화면 터치를 통해 dialog가 사라지지 않도록
         setCancelable(false)

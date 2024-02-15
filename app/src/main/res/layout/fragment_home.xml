@@ -95,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="투표"
-                        android:textSize="22sp"
+                        android:textSize="24sp"
                         android:textColor="@color/b"
                         android:textStyle="bold"/>
 
@@ -352,7 +352,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="일정"
-                        android:textSize="22sp"
+                        android:layout_marginTop="20dp"
+                        android:textSize="24sp"
                         android:textColor="@color/b"
                         android:textStyle="bold"/>
 
@@ -379,9 +380,10 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/schedule_rv"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
                     tools:itemCount="5"
                     tools:listitem="@layout/calendar_rv_item" />
 
@@ -399,7 +401,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="커뮤니티"
-                        android:textSize="22sp"
+                        android:layout_marginTop="20dp"
+                        android:textSize="24sp"
                         android:textColor="@color/b"
                         android:textStyle="bold"/>
 
@@ -426,11 +429,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_home_community"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="25dp"
                     android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
                     tools:itemCount="1"
                     tools:listitem="@layout/home_rv_community" />
 
@@ -447,8 +451,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginTop="20dp"
                         android:text="미디어"
-                        android:textSize="22sp"
+                        android:textSize="24sp"
                         android:textColor="@color/b"
                         android:textStyle="bold"/>
 
@@ -475,11 +480,13 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_home_media"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="25dp"
                     android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp"
                     tools:itemCount="1"
                     tools:listitem="@layout/home_rv_media" />
 

@@ -292,3 +292,14 @@ object ProfileInstance {
             .create(ProfileInterface::class.java)
     }
 }
+
+// 홈
+object HomeInstance {
+    fun homeService(): HomeInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(HomeInterface::class.java)
+    }
+}

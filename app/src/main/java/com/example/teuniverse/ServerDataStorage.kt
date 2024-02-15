@@ -3,7 +3,6 @@ package com.example.teuniverse
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 
 // 커뮤니티 리사이클러뷰 아이템 데이터
@@ -76,26 +75,6 @@ data class CommentItem(
     val commendId: Int
 )
 
-// 일정 리사이클러뷰 아이템 데이터
-data class CalendarItem(
-    val content: String,
-    val type: Int,
-    val startAt: String
-)
-
-// 홈 미디어 어댑터 아이템
-data class HomeMediaItem(
-    val url: String,
-    val thumbnail: String
-)
-
-// 홈 커뮤니티 어댑터 아이템
-data class HomeCommunityItem(
-    val id: Int,
-    val title: String,
-    val postImg: String
-)
-
 // 서버 응답 코드(data가 객체인 경우)
 data class ServerResponse<T>(
     val success: Boolean,
@@ -123,12 +102,6 @@ data class EventResponse(
     val statusCode: Int,
     val message: String,
     val data: Map<String, List<Event>>
-)
-
-data class Event(
-    val content: String,
-    val type: String,
-    val startAt: String
 )
 
 // 최애 아티스트 조회
@@ -253,8 +226,20 @@ data class MediaContent(
 // 홈 아이템
 data class HomeItem(
     val votes: List<VotesItem>,
-    val communities: List<CommunitiesItem>,
-    val medias: List<MediasItem>
+    val communities: List<HomeCommunityItem>,
+    val medias: List<HomeMediaItem>,
+    val schedules: Map<String, List<HomeSchedule>>
+)
+
+data class HomeSchedule(
+    val content: String,
+    val type: String,
+    val startAt: String
+)
+data class Event(
+    val content: String,
+    val type: Int,
+    val startAt: String
 )
 
 // 홈 투표
@@ -267,17 +252,18 @@ data class VotesItem(
     val isFavorite: Boolean
 )
 
-// 홈 커뮤니티
-data class CommunitiesItem(
-    val id: Int,
-    val content: String,
+
+// 홈 미디어 어댑터 아이템
+data class HomeMediaItem(
+    val url: String,
     val thumbnailUrl: String
 )
 
-// 홈 미디어
-data class MediasItem(
-    val thumbnailUrl: String,
-    val url: String
+// 홈 커뮤니티 어댑터 아이템
+data class HomeCommunityItem(
+    val id: Int,
+    val content: String,
+    val thumbnailUrl: String
 )
 
 // 프로필

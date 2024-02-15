@@ -37,7 +37,7 @@ class CalendarFragment : Fragment() {
 
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var calendarAdapter: CalendarAdapter
-    private lateinit var scheduleList: ArrayList<CalendarItem>
+    private lateinit var scheduleList: ArrayList<Event>
 
     // 전역 변수로 선언
     private var currentYear: Int = 0
@@ -86,8 +86,7 @@ class CalendarFragment : Fragment() {
     // 달력 커스텀 모음
     private fun customCalendar() {
         // Decorator 추가
-        binding.calendarView.addDecorators(SunDecorator(),
-            TodayDecorator(requireContext()))
+        binding.calendarView.addDecorators(SunDecorator(), TodayDecorator(requireContext()))
         // 폰트 사이즈
         binding.calendarView.setDateTextAppearance(R.style.CustomDateTextAppearance)
         binding.calendarView.setWeekDayTextAppearance(R.style.CustomWeekDayAppearance)
@@ -165,11 +164,8 @@ class CalendarFragment : Fragment() {
         }
 
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
-        val colors = intArrayOf(
-            Color.parseColor("#4BCEFA"),
-            Color.parseColor("#20E02A"),
-            Color.parseColor("#FF5900"),
-            Color.parseColor("#F9D400"))
+        val colorList = ArrayList<Int>()
+        setDot(colorList) // 색 추가
 
         // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
         binding.calendarView.addDecorator(object : DayViewDecorator {
@@ -179,13 +175,32 @@ class CalendarFragment : Fragment() {
 
             override fun decorate(view: DayViewFacade?) {
                 // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
-                view?.addSpan(MultiColorDotSpan(8f, colors))
+                view?.addSpan(MultiColorDotSpan(8f, colorList))
             }
         })
     }
 
+    // 필터링된 스케줄 타입에 맞게 점 나타내기
+    private fun setDot(list: ArrayList<Int>) {
+        ScheduleTypeDB.init(requireContext())
+        val typeDB = ScheduleTypeDB.getInstance().all
+
+        if (typeDB.getValue("video") == true) {
+            list.add(Color.parseColor("#4BCEFA"))
+        }
+        if (typeDB.getValue("festival") == true) {
+            list.add(Color.parseColor("#20E02A"))
+        }
+        if (typeDB.getValue("cake") == true) {
+            list.add(Color.parseColor("#FF5900"))
+        }
+        if (typeDB.getValue("more") == true) {
+            list.add(Color.parseColor("#F9D400"))
+        }
+    }
+
     // 점 그리기 클래스
-    private inner class MultiColorDotSpan(private val radius: Float, private val colors: IntArray) : LineBackgroundSpan {
+    private inner class MultiColorDotSpan(private val radius: Float, private val colors: ArrayList<Int>) : LineBackgroundSpan {
         override fun drawBackground(
             canvas: Canvas,
             paint: Paint,
@@ -248,8 +263,8 @@ class CalendarFragment : Fragment() {
                             val startAt = setTime(jsonObject.getString("startAt"))
                             val type = jsonObject.getString("type")
                             val typeImg = setTypeImg(type)
-                            scheduleList.add(CalendarItem(content, typeImg, startAt))
 
+                            scheduleList.add(Event(content, typeImg, startAt))
                             // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
                             val spanCount = scheduleList.size
                             val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
@@ -310,6 +325,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /* api 관련 함수 */
     // 1-12월 일정 받아오기
     private suspend fun scheduleApi(year: Int, month: Int) {
         Log.d("scheduleApi $month", "호출 성공")

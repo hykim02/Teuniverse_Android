@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,9 +21,10 @@ class HomeMediaAdapter(private val homeMediaList: ArrayList<HomeMediaItem>): Rec
         val currentItem = homeMediaList[position]
 
         holder.url.text = currentItem.url
+        holder.url.visibility = GONE
 
         Glide.with(holder.itemView)
-            .load(currentItem.thumbnail)
+            .load(currentItem.thumbnailUrl)
             .into(holder.thumbnail)
 
         holder.thumbnail.setOnClickListener {

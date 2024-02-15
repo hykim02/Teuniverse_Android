@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_community"
             app:destination="@id/navigation_community" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_communityDetail"
+            app:destination="@id/navigation_communityDetail" />
     </fragment>
     <fragment
         android:id="@+id/navigation_vote"
