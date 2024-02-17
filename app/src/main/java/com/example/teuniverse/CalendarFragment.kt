@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -112,6 +113,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     private fun motionCalendar() {
         // 월 변경 이벤트 리스너 설정
         binding.calendarView.setOnMonthChangedListener { _, date ->
+            binding.calendarRv.visibility = GONE
             // 월이 변경되면 해당 년도로 다시 설정
             if (date.year != currentYear) {
                 initializeCalendar(binding.calendarView)
@@ -155,7 +157,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
     // 일정있는 날 찾기 (일정 개수만큼 점 조절 필요)
     private fun findDate() {
-//        val datesWithDots = mutableListOf<CalendarDay>()
         MonthDBManager.initAll(requireContext())
         for (i in 1..12) {
             val monthDB = MonthDBManager.getMonthInstance(i)
@@ -187,7 +188,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
         val colorList = ArrayList<Int>()
         context?.let { setDot(it, colorList) } // 색 추가
-        Log.d("colorList", colorList.toString())
 
         // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
         binding.calendarView.addDecorator(object : DayViewDecorator {
@@ -197,7 +197,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
             override fun decorate(view: DayViewFacade?) {
                 // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
-                Log.d("decorate colorList", colorList.toString())
                 view?.addSpan(MultiColorDotSpan(8f, colorList))
             }
         })
@@ -263,7 +262,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         ) {
             val spacing = 9f
             for (i in colors.indices) {
-                Log.d("for문 colors", colors.toString())
                 val cx = left + i * (2 * radius + spacing) + 40
                 val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
                 paint.color = colors[i]
@@ -275,7 +273,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     // db에서 데이터 들고와 일정 보여주는 함수
     @RequiresApi(Build.VERSION_CODES.O)
     private fun makeSchedule() {
-        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
+        binding.calendarView.setOnDateChangedListener { _, date, selected ->
             // 날짜 클릭 이벤트 처리
             if (selected) {
                 scheduleList.clear()
@@ -286,10 +284,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 val selectedDay = date.day
                 val formatDay = formatNum(selectedDay)
 
-                Log.d("selectedDay", selectedDay.toString())
                 val key = "$selectedYear-$formatMonth-$formatDay"
-                Log.d("key", key)
-
                 // 해당 월에 해당하는 DB 파일을 찾아 데이터 가져오기
                 val dbFileName = "$selectedMonth"
                 val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), dbFileName)
@@ -301,6 +296,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                     val dataString = monthDB.getString(key, null)
 
                     if (dataString != null) {
+                        binding.calendarRv.visibility = View.VISIBLE
                         // 가져온 데이터가 null이 아니라면 JSON 형식의 문자열이므로 파싱하여 사용
                         val jsonArray = JSONArray(dataString)
                         // JSONArray 내 각 객체를 순회하면서 데이터 추출
@@ -323,7 +319,9 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                         }
                     } else {
                         // 가져온 데이터가 null일 경우에 대한 처리
-                        Log.d("Data", "No data found for the specified key.")}
+                        scheduleList.clear()
+                        binding.calendarRv.visibility = GONE
+                    }
                 } else {
                     // DB 파일이 존재하지 않을 경우 처리
                     // 원하는 작업을 수행하거나 메시지를 표시할 수 있습니다.

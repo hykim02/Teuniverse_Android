@@ -38,6 +38,10 @@ class PopupScheduleType(context: Context, private var listener: CommunicationLis
         binding.closeBtn.setOnClickListener {
             dismiss()
         }
+
+        binding.resetBtn.setOnClickListener {
+            resetCheckBox()
+        }
     }
 
     // 외부에서 리스너를 설정하기 위한 메서드
@@ -73,6 +77,22 @@ class PopupScheduleType(context: Context, private var listener: CommunicationLis
         binding.moreChk.setOnClickListener {
             confirmCheckBox("more", binding.moreChk)
         }
+    }
+
+    // 초기화 클릭 시 이벤트
+    private fun resetCheckBox() {
+        binding.videoChk.setImageResource(R.drawable.checkbox_video)
+        binding.festivalChk.setImageResource(R.drawable.checkbox_festival)
+        binding.cakeChk.setImageResource(R.drawable.checkbox_cake)
+        binding.moreChk.setImageResource(R.drawable.checkbox_more)
+
+        ScheduleTypeDB.init(context)
+        val editor = ScheduleTypeDB.getInstance().edit()
+        editor.putBoolean("video", true)
+        editor.putBoolean("cake", true)
+        editor.putBoolean("festival", true)
+        editor.putBoolean("more", true)
+        editor.apply()
     }
 
     // 체크박스 DB 확인 함수
