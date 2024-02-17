@@ -289,44 +289,100 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 val dbFileName = "$selectedMonth"
                 val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), dbFileName)
 
-                // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
-                if (isExist) {
-                    val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
-                    // 특정 키에 대한 값을 가져오기
-                    val dataString = monthDB.getString(key, null)
-
-                    if (dataString != null) {
-                        binding.calendarRv.visibility = View.VISIBLE
-                        // 가져온 데이터가 null이 아니라면 JSON 형식의 문자열이므로 파싱하여 사용
-                        val jsonArray = JSONArray(dataString)
-                        // JSONArray 내 각 객체를 순회하면서 데이터 추출
-                        for (i in 0 until jsonArray.length()) {
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            val content = jsonObject.getString("content")
-                            val startAt = setTime(jsonObject.getString("startAt"))
-                            val type = jsonObject.getString("type")
-                            val typeImg = setTypeImg(type)
-
-                            scheduleList.add(Event(content, typeImg.toString(), startAt))
-                            // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
-                            val spanCount = scheduleList.size
-                            val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
-                            binding.calendarRv.adapter = calendarAdapter
-                            binding.calendarRv.layoutManager = layoutManager
-
-                            // 어댑터에 데이터가 변경되었음을 알리기
-                            calendarAdapter.notifyDataSetChanged()
-                        }
-                    } else {
-                        // 가져온 데이터가 null일 경우에 대한 처리
-                        scheduleList.clear()
-                        binding.calendarRv.visibility = GONE
-                    }
-                } else {
-                    // DB 파일이 존재하지 않을 경우 처리
-                    // 원하는 작업을 수행하거나 메시지를 표시할 수 있습니다.
+                ScheduleTypeDB.init(requireContext())
+                val typeDB = ScheduleTypeDB.getInstance().all
+                // value가 true인 것이 하나라도 존재한다면
+                if (typeDB.containsValue(true)) {
+                    getScheduleData(dbFileName, isExist, key)
                 }
             }
+        }
+    }
+
+    // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getScheduleData(dbFileName: String, isExist: Boolean, key: String) {
+        if (isExist) {
+            val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
+            // 특정 키에 대한 값을 가져오기
+            val dataString = monthDB.getString(key, null)
+
+            if (dataString != null) {
+                binding.calendarRv.visibility = View.VISIBLE
+                // 가져온 데이터가 null이 아니라면 JSON 형식의 문자열이므로 파싱하여 사용
+                val jsonArray = JSONArray(dataString)
+                // JSONArray 내 각 객체를 순회하면서 데이터 추출
+                for (i in 0 until jsonArray.length()) {
+                    val jsonObject = jsonArray.getJSONObject(i)
+                    val content = jsonObject.getString("content")
+                    val startAt = setTime(jsonObject.getString("startAt"))
+                    val type = jsonObject.getString("type")
+
+                    findCorrectData(content, type, startAt)
+//                    val typeImg = setTypeImg(type)
+
+//                    scheduleList.add(Event(content, typeImg.toString(), startAt))
+//                    // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
+//                    val spanCount = scheduleList.size
+//                    val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+//                    binding.calendarRv.adapter = calendarAdapter
+//                    binding.calendarRv.layoutManager = layoutManager
+//
+//                    // 어댑터에 데이터가 변경되었음을 알리기
+//                    calendarAdapter.notifyDataSetChanged()
+                }
+            } else {
+                // 가져온 데이터가 null일 경우에 대한 처리
+                scheduleList.clear()
+                binding.calendarRv.visibility = GONE
+            }
+        } else {
+            // DB 파일이 존재하지 않을 경우 처리
+            // 원하는 작업을 수행하거나 메시지를 표시할 수 있습니다.
+        }
+    }
+
+    private fun findCorrectData(content: String, type: String, startAt: String) {
+        ScheduleTypeDB.init(requireContext())
+        val typeDB = ScheduleTypeDB.getInstance().all
+        val typeList = arrayListOf<String>()
+        for ((key, value) in typeDB.entries) {
+            if (value == true) {
+                typeList.add(key)
+            }
+        }
+        Log.d("typeList", typeList.toString())
+
+        for (item in typeList.indices) {
+            Log.d("item & type", typeList[item] + type)
+            if (typeList[item] == "video" && type == "방송") {
+                val typeImg = setTypeImg(type)
+                scheduleList.add(Event(content, typeImg.toString(), startAt))
+            } else if (typeList[item] == "festival" && type == "행사") {
+                val typeImg = setTypeImg(type)
+                scheduleList.add(Event(content, typeImg.toString(), startAt))
+            } else if (typeList[item] == "cake" && type == "기념일") {
+                val typeImg = setTypeImg(type)
+                scheduleList.add(Event(content, typeImg.toString(), startAt))
+            } else if (typeList[item] == "more" && type == "기타") {
+                val typeImg = setTypeImg(type)
+                scheduleList.add(Event(content, typeImg.toString(), startAt))
+            } else {
+                continue
+            }
+        }
+        Log.d("scheduleList", scheduleList.toString())
+
+        if (scheduleList.size >= 1) {
+            val spanCount = scheduleList.size
+            val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+            binding.calendarRv.adapter = calendarAdapter
+            binding.calendarRv.layoutManager = layoutManager
+
+            // 어댑터에 데이터가 변경되었음을 알리기
+            calendarAdapter.notifyDataSetChanged()
+        } else {
+            binding.calendarRv.visibility = GONE
         }
     }
 
