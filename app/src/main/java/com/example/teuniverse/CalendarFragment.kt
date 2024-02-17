@@ -39,6 +39,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var calendarAdapter: CalendarAdapter
     private lateinit var scheduleList: ArrayList<Event>
+    private lateinit var datesWithDots: MutableList<CalendarDay>
 
     // 전역 변수로 선언
     private var currentYear: Int = 0
@@ -55,6 +56,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         currentYear = Calendar.getInstance().get(Calendar.YEAR)
         // 초반에 한 번만 호출되도록 조건 설정 필요
 //        callApi(currentYear)
+
+        datesWithDots = mutableListOf()
 
         scheduleList = ArrayList()
         // 리사이클러뷰 어댑터 연결gi
@@ -75,7 +78,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         customCalendar()
         motionCalendar()
 
-        makeDot()
+        findDate()
+        makeDot(datesWithDots)
         makeSchedule()
 
         lifecycleScope.launch {
@@ -149,9 +153,9 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         }
     }
 
-    // 일정있는 날에 점 표시하는 함수(일정 개수만큼 점 조절 필요)
-    private fun makeDot() {
-        val datesWithDots = mutableListOf<CalendarDay>()
+    // 일정있는 날 찾기 (일정 개수만큼 점 조절 필요)
+    private fun findDate() {
+//        val datesWithDots = mutableListOf<CalendarDay>()
         MonthDBManager.initAll(requireContext())
         for (i in 1..12) {
             val monthDB = MonthDBManager.getMonthInstance(i)
@@ -173,6 +177,12 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 datesWithDots.addAll(newDates)
             }
         }
+    }
+
+    // 점 색상 추가하고 점 그리기
+    private fun makeDot(datesWithDots: MutableList<CalendarDay>) {
+        // 동그라미를 표시하는 데코레이터를 모두 제거
+        binding.calendarView.removeDecorators()
 
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
         val colorList = ArrayList<Int>()
@@ -187,10 +197,12 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
             override fun decorate(view: DayViewFacade?) {
                 // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
+                Log.d("decorate colorList", colorList.toString())
                 view?.addSpan(MultiColorDotSpan(8f, colorList))
             }
         })
     }
+
 
     // 필터링된 스케줄 타입에 맞게 점 나타내기
     private fun setDot(context: Context, list: ArrayList<Int>) {
@@ -250,10 +262,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             lineNumber: Int
         ) {
             val spacing = 9f
-            Log.d("for문","전")
             for (i in colors.indices) {
-                Log.d("for문","후")
-                Log.d("colors$i", colors.toString())
+                Log.d("for문 colors", colors.toString())
                 val cx = left + i * (2 * radius + spacing) + 40
                 val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
                 paint.color = colors[i]
@@ -479,7 +489,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     override fun onPopupCompleteButtonClicked() {
         // 팝업에서 버튼이 클릭되었을 때 실행할 코드
         Log.d("팝업창 완료","click")
-        makeDot()
+        makeDot(datesWithDots)
     }
 
     private fun showPopupMissionDialog() {
