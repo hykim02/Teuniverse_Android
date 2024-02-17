@@ -33,6 +33,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
     private lateinit var gridLayout: GridLayout
     private lateinit var filterSpinner: Spinner
+    private lateinit var searchTxt: EditText
 
     object SelectArtistDB {
         private lateinit var sharedPreferences: SharedPreferences
@@ -57,7 +58,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         gridLayout = findViewById(R.id.artist_gridlayout)
         val backBtn = findViewById<ImageButton>(R.id.back_btn_detail)
         filterSpinner = findViewById(R.id.select_spinner)
-        val searchTxt = findViewById<EditText>(R.id.search_txt)
+        searchTxt = findViewById<EditText>(R.id.search_txt)
 
         searchTxt.hint = "아티스트를 검색하세요"
 
@@ -139,10 +140,10 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                     Log.d("error", "서버 연동 실패")
                     handleError("Error: ${response.code()} - ${response.message()}")
                 }
-              } else {
-                  Log.d("accessToken", "null")
+            } else {
+                Log.d("accessToken", "null")
             }
-            } catch (e: Exception) {
+        } catch (e: Exception) {
             // 예외 처리 코드
             handleError(e.message ?: "Unknown error occurred.")
         }
@@ -333,7 +334,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             val newSize = 28f
             finalArtistName.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize)
 
-        // 원하는 값과 일치하는 키를 찾지 못했을 때의 처리
+            // 원하는 값과 일치하는 키를 찾지 못했을 때의 처리
         } else {
             Log.d("failed","일치하는 키를 찾지 못함")
         }

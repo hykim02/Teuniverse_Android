@@ -9,8 +9,12 @@ import android.util.Log
 import android.widget.ImageButton
 import com.example.teuniverse.databinding.PopupScheduleTypeBinding
 
-class PopupScheduleType(context: Context): Dialog(context) {
+class PopupScheduleType(context: Context, private var listener: CommunicationListener): Dialog(context) {
     private lateinit var binding : PopupScheduleTypeBinding
+
+    interface CommunicationListener {
+        fun onPopupCompleteButtonClicked()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,15 +22,16 @@ class PopupScheduleType(context: Context): Dialog(context) {
         setContentView(binding.root)
 
         initViews()
-        setCheckBox()
+        clickEventCheckBox()
 
-        // 체크박스 초기화
+        // 체크박스 고정
         initCheckBox("video", binding.videoChk)
         initCheckBox("cake", binding.cakeChk)
         initCheckBox("festival", binding.festivalChk)
         initCheckBox("more", binding.moreChk)
 
         binding.completeBtn.setOnClickListener {
+            listener.onPopupCompleteButtonClicked() // 외부에서 설정한 리스너 호출
             dismiss()
         }
 
@@ -35,7 +40,12 @@ class PopupScheduleType(context: Context): Dialog(context) {
         }
     }
 
-    // 체크박스 초기화 함수
+    // 외부에서 리스너를 설정하기 위한 메서드
+    fun setListener(listener: CommunicationListener) {
+        this.listener = listener
+    }
+
+    // 체크박스 고정 함수
     private fun initCheckBox(chkbox: String, image: ImageButton) {
         ScheduleTypeDB.init(context)
         val typeDB = ScheduleTypeDB.getInstance().all
@@ -50,7 +60,7 @@ class PopupScheduleType(context: Context): Dialog(context) {
     }
 
     // 체크박스 클릭이벤트 함수
-    private fun setCheckBox() {
+    private fun clickEventCheckBox() {
         binding.videoChk.setOnClickListener {
             confirmCheckBox("video", binding.videoChk)
         }

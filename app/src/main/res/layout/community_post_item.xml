@@ -73,7 +73,7 @@
                 <ImageView
                     android:id="@+id/post_img"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:background="@drawable/post_design"
                     android:backgroundTint="@color/w" />

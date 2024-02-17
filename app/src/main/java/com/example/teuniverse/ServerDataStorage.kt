@@ -238,7 +238,7 @@ data class HomeSchedule(
 )
 data class Event(
     val content: String,
-    val type: Int,
+    val type: String,
     val startAt: String
 )
 
@@ -289,4 +289,10 @@ data class FavoriteProfile(
     val id: Int,
     val name: String,
     val thumbnailUrl: String
+)
+
+// 최애 아티스트 선택
+data class FavoriteArtist(
+    val name: String,
+    val imgUrl: String
 )

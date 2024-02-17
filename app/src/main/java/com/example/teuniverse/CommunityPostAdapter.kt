@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import android.view.View.GONE
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
@@ -44,7 +45,11 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         holder.heartCount.text = currentItem.heartCount.toString()
         holder.commentCount.text = currentItem.commentCount.toString()
 
-        holder.feedId.visibility = View.GONE
+        holder.feedId.visibility = GONE
+
+        if (currentItem.postImg == null) {
+            holder.postImg.visibility = GONE
+        }
 
         // 이미지 로딩
         Glide.with(holder.itemView.context)

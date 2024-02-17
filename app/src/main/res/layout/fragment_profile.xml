@@ -384,39 +384,25 @@
                         app:layout_constraintTop_toTopOf="@+id/textView38" />
 
                     <TextView
-                        android:id="@+id/fan_ranking"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="23.5%"
-                        android:textColor="@color/b"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView39"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/textView39" />
-
-                    <TextView
                         android:id="@+id/all_rank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:text="(전체) 47위"
+                        android:text="(전체) 위"
                         android:textColor="@color/b"
                         android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView39"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/fan_ranking" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView38" />
 
                     <TextView
                         android:id="@+id/best_rank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
-                        android:text="(최애) 3위"
+                        android:text="(최애) 위"
                         android:textColor="@color/b"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"

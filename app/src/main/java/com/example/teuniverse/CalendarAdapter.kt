@@ -18,7 +18,7 @@ class CalendarAdapter(private val itemList: ArrayList<Event>): RecyclerView.Adap
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val currentItem = itemList[position]
 
-        holder.type.setImageResource(currentItem.type)
+        holder.type.setImageResource(currentItem.type.toInt())
         holder.content.text = currentItem.content
         holder.startAt.text = currentItem.startAt
     }

@@ -65,13 +65,20 @@ class MainActivity : AppCompatActivity() {
 //        tokenEditor.clear()
 //        tokenEditor.apply()
 
+//        ScheduleTypeDB.init(this)
+//        val editor = ScheduleTypeDB.getInstance().edit()
+//        editor.clear()
+//        editor.apply()
+
 //        kakaoUnlink()
 
         kakaoLogin.setOnClickListener{
             ServiceAccessTokenDB.init(this)
             val serviceToken = ServiceAccessTokenDB.getInstance()
+            UserInfoDB.init(this)
+            val userData = UserInfoDB.getInstance()
 
-            if (serviceToken.contains("accessToken")) {
+            if (serviceToken.contains("accessToken") && userData.contains("id")) {
                 // 화면 전환
                 val intent = Intent(this, MenuActivity::class.java)
                 startActivity(intent)

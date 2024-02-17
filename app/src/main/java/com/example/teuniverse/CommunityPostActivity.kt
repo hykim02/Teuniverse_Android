@@ -10,6 +10,8 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.teuniverse.databinding.CommunityPostItemBinding
@@ -50,90 +52,88 @@ class CommunityPostActivity: AppCompatActivity() {
         }
 
         countPostContent() // 글자수 세기 및 500자 제한
-        applyBtn()
+//        applyBtn()
     }
 
     // 갤러리에서 선택한 이미지를 처리하는 메서드
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        // 이미지 첨부한 경우
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-//            putImage(data)
-//
-//        } else { // 이미지 첨부 안하는 경우
-//            noneImage()
-//        }
-//    }
-//
-//    // 이미지 첨부한 경우 처리
-//    private fun putImage(data: Intent?) {
-//        val selectedImageUri = data?.data
-//        selectedImagePath = getPathFromUri(selectedImageUri)
-//        binding.postImg.setImageURI(selectedImageUri)
-//
-//        // 이미지뷰에서 Drawable 얻기
-//        val drawable: Drawable? = binding.postImg.drawable
-//        // Drawable에서 Bitmap으로 변환
-//        bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-//        val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
-//
-//        val content = binding.postContent.text.toString() // 게시글 내용
-//        val contentBody = RequestBody.create("text/plain".toMediaType(), content)
-//
-//        binding.applyBtn.setOnClickListener {
-//            // 서버로 데이터 전송
-//            lifecycleScope.launch {
-//                postToServerApi(contentBody, imageFile)
-//            }
-//            navigateToCommunityFragment()
-//            finish()
-//        }
-//    }
-//
-//    // 이미지 첨부 안하는 경우 처리
-//    private fun noneImage() {
-//        val content = binding.postContent.text.toString() // 게시글 내용
-//        val contentBody = RequestBody.create("text/plain".toMediaType(), content)
-//
-//        // 이미지를 선택하지 않은 경우 빈 파일 생성
-//        val emptyImageFile = createEmptyImageFile()
-//        val imageFilePart = createMultipartBodyFile(emptyImageFile)
-//
-//        binding.applyBtn.setOnClickListener {
-//            // 서버로 데이터 전송
-//            lifecycleScope.launch {
-//                postToServerApi(contentBody, imageFilePart)
-//            }
-//            navigateToCommunityFragment()
-//            finish()
-//        }
-//    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // 이미지 첨부한 경우
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            putImage(data)
 
-    private fun applyBtn() {
+        } else { // 이미지 첨부 안하는 경우
+            noneImage()
+        }
+    }
+
+    // 이미지 첨부한 경우 처리
+    private fun putImage(data: Intent?) {
+        val selectedImageUri = data?.data
+        selectedImagePath = getPathFromUri(selectedImageUri)
+        binding.postImg.setImageURI(selectedImageUri)
+
+        // 이미지뷰를 보이도록 설정
+        binding.postImg.visibility = View.VISIBLE
+
+        // 이미지뷰에서 Drawable 얻기
+        val drawable: Drawable? = binding.postImg.drawable
+        // Drawable에서 Bitmap으로 변환
+        bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
+        val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
+
+        setContents(imageFile)
+    }
+
+    // 이미지 첨부 안하는 경우 처리
+    private fun noneImage() {
+        // 이미지뷰를 숨기도록 설정
+        binding.postImg.visibility = GONE
+
+        setContents(null)
+    }
+
+    private fun setContents(imgFile: MultipartBody.Part?) {
+        val content = binding.postContent.text.toString() // 게시글 내용
+        val contentBody = RequestBody.create("text/plain".toMediaType(), content)
+
         binding.applyBtn.setOnClickListener {
-            Log.d("applyBtn", "Clicked!")
-            val content = binding.postContent.text.toString() // 게시글 내용
-
-            // 이미지 첨부한 경우
-            if (selectedImagePath != null) {
-                val imageFile = createMultipartBody(bitmap)
-                lifecycleScope.launch {
-                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
-                }
-            } else { // 이미지 첨부 안한 경우
-                val emptyImageFile = createEmptyImageFile()
-                val imageFilePart = createMultipartBodyFile(emptyImageFile)
-
-                lifecycleScope.launch {
-                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFilePart)
-                }
+            // 서버로 데이터 전송
+            lifecycleScope.launch {
+                postToServerApi(contentBody, imgFile)
             }
-
-            // 이후에 네비게이션 등 필요한 로직 추가
             navigateToCommunityFragment()
             finish()
         }
     }
+
+
+    // 게시물 등록
+//    private fun applyBtn() {
+//        binding.applyBtn.setOnClickListener {
+//            Log.d("applyBtn", "Clicked!")
+//            val content = binding.postContent.text.toString() // 게시글 내용
+//
+//            // 이미지 첨부한 경우
+//            if (selectedImagePath != null) {
+//                val imageFile = createMultipartBody(bitmap)
+//                lifecycleScope.launch {
+//                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
+//                }
+//            } else { // 이미지 첨부 안한 경우
+//                binding.postImg.visibility = GONE
+//                val emptyImageFile = createEmptyImageFile()
+//                val imageFilePart = createMultipartBodyFile(emptyImageFile)
+//
+//                lifecycleScope.launch {
+//                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFilePart)
+//                }
+//            }
+//            // 이후에 네비게이션 등 필요한 로직 추가
+//            navigateToCommunityFragment()
+//            finish()
+//        }
+//    }
 
 
     // 빈 이미지 파일 생성
@@ -171,7 +171,6 @@ class CommunityPostActivity: AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("bitmapToFile", "Error writing bitmap to file: $e")
         }
-
         return imageFile
     }
 
@@ -209,7 +208,7 @@ class CommunityPostActivity: AppCompatActivity() {
     }
 
     // 게시글 데이터 서버로 전송
-    private suspend fun postToServerApi(content: RequestBody, imageFile:MultipartBody.Part) {
+    private suspend fun postToServerApi(content: RequestBody, imageFile: MultipartBody.Part?) {
         Log.d("postToServerApi 함수", "호출 성공")
         val accessToken = getAccessToken()
         try {
@@ -255,11 +254,6 @@ class CommunityPostActivity: AppCompatActivity() {
         val menuIntent = Intent(this, MenuActivity::class.java)
         menuIntent.putExtra("destinationFragment", R.id.navigation_community)
         startActivity(menuIntent)
-//        val communityFragment = CommunityFragment() // CommunityFragment 인스턴스 생성
-//        val transaction = supportFragmentManager.beginTransaction()
-//        transaction.replace(R.id.nav_host_fragment, communityFragment)
-//        transaction.addToBackStack(null)
-//        transaction.commit()
     }
 
     // db에서 토큰 가져오기

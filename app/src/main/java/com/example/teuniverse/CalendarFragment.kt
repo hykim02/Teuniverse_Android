@@ -29,11 +29,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import retrofit2.Response
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
-class CalendarFragment : Fragment() {
+class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var calendarAdapter: CalendarAdapter
@@ -49,6 +50,12 @@ class CalendarFragment : Fragment() {
     ): View? {
 
         binding = FragmentCalendarBinding.inflate(inflater, container, false)
+
+        // 현재 날짜를 가져와서 해당 년도를 가져옴
+        currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        // 초반에 한 번만 호출되도록 조건 설정 필요
+//        callApi(currentYear)
+
         scheduleList = ArrayList()
         // 리사이클러뷰 어댑터 연결gi
         calendarAdapter = CalendarAdapter(scheduleList)
@@ -65,13 +72,9 @@ class CalendarFragment : Fragment() {
             showPopupMissionDialog()
         }
 
-        // 현재 날짜를 가져와서 해당 년도를 가져옴
-        currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        // 초반에 한 번만 호출되도록 조건 설정 필요
-        callApi(currentYear)
-
         customCalendar()
         motionCalendar()
+
         makeDot()
         makeSchedule()
 
@@ -173,7 +176,8 @@ class CalendarFragment : Fragment() {
 
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
         val colorList = ArrayList<Int>()
-        setDot(colorList) // 색 추가
+        context?.let { setDot(it, colorList) } // 색 추가
+        Log.d("colorList", colorList.toString())
 
         // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
         binding.calendarView.addDecorator(object : DayViewDecorator {
@@ -189,21 +193,44 @@ class CalendarFragment : Fragment() {
     }
 
     // 필터링된 스케줄 타입에 맞게 점 나타내기
-    private fun setDot(list: ArrayList<Int>) {
+    private fun setDot(context: Context, list: ArrayList<Int>) {
         ScheduleTypeDB.init(requireContext())
         val typeDB = ScheduleTypeDB.getInstance().all
+        val editor = ScheduleTypeDB.getInstance().edit()
 
-        if (typeDB.getValue("video") == true) {
+        val sharedPrefsFile = File("${context.filesDir.parent}/shared_prefs/ScheduleType.xml")
+        val isExist = sharedPrefsFile.exists()
+        // 스케줄 타입 DB가 존재한다면
+        if (isExist) {
+            list.clear() // 기존 리스트의 모든 요소 제거
+
+            if (typeDB.getValue("video") == true) {
+                list.add(Color.parseColor("#4BCEFA"))
+            }
+
+            if (typeDB.getValue("festival") == true) {
+                list.add(Color.parseColor("#20E02A"))
+            }
+
+            if (typeDB.getValue("cake") == true) {
+                list.add(Color.parseColor("#FF5900"))
+            }
+
+            if (typeDB.getValue("more") == true) {
+                list.add(Color.parseColor("#F9D400"))
+            }
+
+        } else { // 존재하지 않는다면
             list.add(Color.parseColor("#4BCEFA"))
-        }
-        if (typeDB.getValue("festival") == true) {
             list.add(Color.parseColor("#20E02A"))
-        }
-        if (typeDB.getValue("cake") == true) {
             list.add(Color.parseColor("#FF5900"))
-        }
-        if (typeDB.getValue("more") == true) {
             list.add(Color.parseColor("#F9D400"))
+
+            editor.putBoolean("video", true)
+            editor.putBoolean("festival", true)
+            editor.putBoolean("cake", true)
+            editor.putBoolean("more", true)
+            editor.apply()
         }
     }
 
@@ -223,8 +250,10 @@ class CalendarFragment : Fragment() {
             lineNumber: Int
         ) {
             val spacing = 9f
-
+            Log.d("for문","전")
             for (i in colors.indices) {
+                Log.d("for문","후")
+                Log.d("colors$i", colors.toString())
                 val cx = left + i * (2 * radius + spacing) + 40
                 val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
                 paint.color = colors[i]
@@ -272,7 +301,7 @@ class CalendarFragment : Fragment() {
                             val type = jsonObject.getString("type")
                             val typeImg = setTypeImg(type)
 
-                            scheduleList.add(Event(content, typeImg, startAt))
+                            scheduleList.add(Event(content, typeImg.toString(), startAt))
                             // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
                             val spanCount = scheduleList.size
                             val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
@@ -405,6 +434,7 @@ class CalendarFragment : Fragment() {
 
         // DB에 데이터 저장
         if (response.data.isNotEmpty()) {
+            Log.d("일정api", response.data.toString())
             response.data.forEach { (date, events) ->
                 val jsonString = Gson().toJson(events) // Convert events List to JSON String
                 with(monthDB.edit()) {
@@ -436,12 +466,20 @@ class CalendarFragment : Fragment() {
 
     // 스케줄 타입 다이얼로그를 생성
     private fun showPopupScheduleTypeDialog() {
-        val popupScheduleType = PopupScheduleType(requireContext())
+        val popupScheduleType = PopupScheduleType(requireContext(), this)
+        popupScheduleType.setListener(this)
         popupScheduleType.show()
 
         popupScheduleType.setOnDismissListener {
-            Log.d("CalendarFragment", "PopupScheduleType dialog dismissed.")
+            Log.d("YourActivityOrFragment", "PopupScheduleType dialog dismissed.")
         }
+    }
+
+    // CommunicationListener의 메서드 구현
+    override fun onPopupCompleteButtonClicked() {
+        // 팝업에서 버튼이 클릭되었을 때 실행할 코드
+        Log.d("팝업창 완료","click")
+        makeDot()
     }
 
     private fun showPopupMissionDialog() {

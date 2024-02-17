@@ -183,7 +183,7 @@ class HomeFragment : Fragment() {
                 val startAt = setTime(events[i].startAt)
                 val type = setTypeImg(events[i].type)
 
-                scheduleList.add(Event(content, type, startAt))
+                scheduleList.add(Event(content, type.toString(), startAt))
             }
             // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
             val spanCount = scheduleList.size

@@ -73,7 +73,8 @@ class ProfileFragment : Fragment() {
         binding.registedAt.text = "D+${userData.registedAt}"
         binding.vote.text = userData.voteCount.toString()
         binding.contribution.text = String.format("%.2f", userData.contribution) + "%"
-        binding.fanRanking.text = userData.rank.toString()
+        binding.allRank.text = "(전체)" + userData.rank + "위"
+        binding.bestRank.text = "(최애)" + userData.artistRank + "위"
 
         // profile
         Glide.with(this)

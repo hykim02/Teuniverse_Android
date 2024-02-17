@@ -110,7 +110,7 @@ class CommunityFragment : Fragment() {
                         handleError("Response body is null.")
                     }
                 } else {
-                    handleError("communityFeedsApi 함수 Error: ${response.code()} - ${response.message()}")
+                    handleError("communityFeedsApi 함수 Error2: ${response.code()} - ${response.message()}")
                 }
             }
         }
@@ -123,6 +123,8 @@ class CommunityFragment : Fragment() {
         Log.d("handleGetFeeds함수","호출 성공")
         val artistProfileData = theFeeds.data.artistProfile
         val feedsData = theFeeds.data.feeds
+
+        Log.d("feedsData", feedsData.toString())
 
         // 아티스트 데이터
         Glide.with(this)
@@ -141,6 +143,7 @@ class CommunityFragment : Fragment() {
             // feed
             val feedId = feed.id
             val feedImg = feed.thumbnailUrl
+            Log.d("feedImg$i", feedImg)
             val feedContent = feed.content
             val heartCount = feed.likeCount
             val time = "11분 전"
