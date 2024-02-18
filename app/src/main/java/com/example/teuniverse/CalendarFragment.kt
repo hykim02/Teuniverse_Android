@@ -34,6 +34,7 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.HashMap
 
 class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
@@ -80,7 +81,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         motionCalendar()
 
         findDate()
-        makeDot(datesWithDots)
+        setDot(requireContext(), datesWithDots)
+//        makeDot(datesWithDots)
         makeSchedule()
 
         lifecycleScope.launch {
@@ -181,67 +183,145 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     }
 
     // 점 색상 추가하고 점 그리기
-    private fun makeDot(datesWithDots: MutableList<CalendarDay>) {
+//    private fun makeDot(datesWithDots: MutableList<CalendarDay>) {
+//        // 동그라미를 표시하는 데코레이터를 모두 제거
+//        binding.calendarView.removeDecorators()
+//
+//        // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
+//        val colorList = ArrayList<Int>()
+//        context?.let { setDot(it, colorList, datesWithDots) } // 색 추가
+//        Log.d("최종 colorList", colorList.toString())
+//
+//        // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
+//        binding.calendarView.addDecorator(object : DayViewDecorator {
+//            override fun shouldDecorate(day: CalendarDay?): Boolean {
+//                return datesWithDots.contains(day)
+//            }
+//
+//            override fun decorate(view: DayViewFacade?) {
+//                // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
+//                view?.addSpan(MultiColorDotSpan(8f, colorList))
+//            }
+//        })
+//    }
+
+
+    // 필터링된 스케줄 타입에 맞는 색상 추가
+    private fun setDot(context: Context, datesWithDots: MutableList<CalendarDay>) {
         // 동그라미를 표시하는 데코레이터를 모두 제거
         binding.calendarView.removeDecorators()
-
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
         val colorList = ArrayList<Int>()
-        context?.let { setDot(it, colorList) } // 색 추가
 
-        // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
-        binding.calendarView.addDecorator(object : DayViewDecorator {
-            override fun shouldDecorate(day: CalendarDay?): Boolean {
-                return datesWithDots.contains(day)
-            }
-
-            override fun decorate(view: DayViewFacade?) {
-                // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
-                view?.addSpan(MultiColorDotSpan(8f, colorList))
-            }
-        })
-    }
-
-
-    // 필터링된 스케줄 타입에 맞게 점 나타내기
-    private fun setDot(context: Context, list: ArrayList<Int>) {
         ScheduleTypeDB.init(requireContext())
         val typeDB = ScheduleTypeDB.getInstance().all
         val editor = ScheduleTypeDB.getInstance().edit()
+        val isTrueList = arrayListOf<String>()
 
         val sharedPrefsFile = File("${context.filesDir.parent}/shared_prefs/ScheduleType.xml")
         val isExist = sharedPrefsFile.exists()
         // 스케줄 타입 DB가 존재한다면
         if (isExist) {
-            list.clear() // 기존 리스트의 모든 요소 제거
+            datesWithDots.forEach { date ->
+                isTrueList.clear()
+                if (typeDB.getValue("video") == true) {
+                    Log.d("video", date.toString())
+                    isTrueList.add("방송")
+                }
 
-            if (typeDB.getValue("video") == true) {
-                list.add(Color.parseColor("#4BCEFA"))
+                if (typeDB.getValue("festival") == true) {
+                    Log.d("festival", date.toString())
+                    isTrueList.add("행사")
+                }
+
+                if (typeDB.getValue("cake") == true) {
+                    Log.d("cake", date.toString())
+                    isTrueList.add("기념일")
+                }
+
+                if (typeDB.getValue("more") == true) {
+                    Log.d("more", date.toString())
+                    isTrueList.add("기타")
+                }
+                Log.d("isTrueList", isTrueList.toString())
+                isExistSchedule(isTrueList, colorList, date)
             }
-
-            if (typeDB.getValue("festival") == true) {
-                list.add(Color.parseColor("#20E02A"))
-            }
-
-            if (typeDB.getValue("cake") == true) {
-                list.add(Color.parseColor("#FF5900"))
-            }
-
-            if (typeDB.getValue("more") == true) {
-                list.add(Color.parseColor("#F9D400"))
-            }
-
         } else { // 존재하지 않는다면
-            list.add(Color.parseColor("#4BCEFA"))
-            list.add(Color.parseColor("#20E02A"))
-            list.add(Color.parseColor("#FF5900"))
-            list.add(Color.parseColor("#F9D400"))
+            datesWithDots.forEach { date ->
+                isTrueList.add("방송")
+                isTrueList.add("행사")
+                isTrueList.add("기념일")
+                isTrueList.add("기타")
+                isExistSchedule(isTrueList, colorList, date)
+            }
 
             editor.putBoolean("video", true)
             editor.putBoolean("festival", true)
             editor.putBoolean("cake", true)
             editor.putBoolean("more", true)
             editor.apply()
+        }
+    }
+
+    // 스케줄 타입이 true인 것들 중에 일정이 존재하는지
+    private fun isExistSchedule(isTrueList: ArrayList<String>, list: ArrayList<Int>, date: CalendarDay) {
+        val year = date.year
+        val month = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
+        val formatMonth = formatNum(month)
+        val day2 = date.day
+        val formatDay = formatNum(day2)
+        val key = "$year-$formatMonth-$formatDay"
+        list.clear()
+
+        MonthDBManager.initMonth(requireContext(), month)
+        val monthDB = MonthDBManager.getMonthInstance(month)
+        val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), month.toString())
+
+        if (isExist) {
+            Log.d("isExist", month.toString())
+            // 특정 키에 대한 값을 가져오기
+            val dataString = monthDB.getString(key, null)
+            Log.d("dataString2", dataString.toString())
+
+            if (dataString != null) {
+                val jsonArray = JSONArray(dataString)
+                // JSONArray 내 각 객체를 순회하면서 데이터 추출
+                for (i in 0 until jsonArray.length()) {
+                    val jsonObject = jsonArray.getJSONObject(i)
+                    val type = jsonObject.getString("type")
+                    if (isTrueList.contains(type)) {
+                        Log.d("일치 type", type.toString())
+                        findCorrectColor(type, list)
+                    }
+                }
+                Log.d("colorList", list.toString())
+                // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
+                binding.calendarView.addDecorator(object : DayViewDecorator {
+                    override fun shouldDecorate(day: CalendarDay?): Boolean {
+                        // 특정 날짜에만 점을 표시하도록 수정
+                        return day != null && day.year == year && day.month + 1 == month && day.day == day2
+                    }
+
+                    override fun decorate(view: DayViewFacade?) {
+                        // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
+                        view?.addSpan(MultiColorDotSpan(8f, list))
+                    }
+                })
+            }
+        }
+    }
+
+    // 타입에 맞는 색상 찾기
+    private fun findCorrectColor(type: String, list: ArrayList<Int>) {
+        Log.d("findCorrectColor", "실행")
+        if (type == "기념일") {
+            list.add(Color.parseColor("#FF5900"))
+        } else if (type == "방송") {
+            list.add(Color.parseColor("#4BCEFA"))
+        } else if (type == "행사") {
+            list.add(Color.parseColor("#20E02A"))
+        } else {
+            list.add(Color.parseColor("#F9D400"))
         }
     }
 
@@ -261,6 +341,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             lineNumber: Int
         ) {
             val spacing = 9f
+            Log.d("multicolorSpan","실행")
             for (i in colors.indices) {
                 val cx = left + i * (2 * radius + spacing) + 40
                 val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
@@ -306,6 +387,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
             // 특정 키에 대한 값을 가져오기
             val dataString = monthDB.getString(key, null)
+            Log.d("dataString", dataString.toString())
 
             if (dataString != null) {
                 binding.calendarRv.visibility = View.VISIBLE
@@ -319,17 +401,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                     val type = jsonObject.getString("type")
 
                     findCorrectData(content, type, startAt)
-//                    val typeImg = setTypeImg(type)
-
-//                    scheduleList.add(Event(content, typeImg.toString(), startAt))
-//                    // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
-//                    val spanCount = scheduleList.size
-//                    val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
-//                    binding.calendarRv.adapter = calendarAdapter
-//                    binding.calendarRv.layoutManager = layoutManager
-//
-//                    // 어댑터에 데이터가 변경되었음을 알리기
-//                    calendarAdapter.notifyDataSetChanged()
                 }
             } else {
                 // 가져온 데이터가 null일 경우에 대한 처리
@@ -342,6 +413,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         }
     }
 
+    // 표시된 동그라미와 일치하는 데이터 찾기
     private fun findCorrectData(content: String, type: String, startAt: String) {
         ScheduleTypeDB.init(requireContext())
         val typeDB = ScheduleTypeDB.getInstance().all
@@ -351,10 +423,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 typeList.add(key)
             }
         }
-        Log.d("typeList", typeList.toString())
 
         for (item in typeList.indices) {
-            Log.d("item & type", typeList[item] + type)
             if (typeList[item] == "video" && type == "방송") {
                 val typeImg = setTypeImg(type)
                 scheduleList.add(Event(content, typeImg.toString(), startAt))
@@ -543,7 +613,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     override fun onPopupCompleteButtonClicked() {
         // 팝업에서 버튼이 클릭되었을 때 실행할 코드
         Log.d("팝업창 완료","click")
-        makeDot(datesWithDots)
+        setDot(requireContext(), datesWithDots)
     }
 
     private fun showPopupMissionDialog() {
