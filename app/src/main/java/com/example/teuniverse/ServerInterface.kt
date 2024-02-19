@@ -182,6 +182,16 @@ interface ClickLikeInterface {
     ): Response<ServerResponse<CreateHeart>>
 }
 
+// 좋아요 취소
+interface CancelClickLikeInterface {
+    @DELETE("community/{feedId}/like")
+    @Headers("accept: application/json")
+    suspend fun cancelClickLike(
+        @Path("feedId") feedId: Int,
+        @Header("Authorization") authorization: String?
+    ): Response<ServerResponse<CreateHeart>>
+}
+
 // 일정
 interface CalendarInterface {
     @GET("schedule/{year}/{month}")

@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.io.File
 
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                            private val navController: NavController,
@@ -40,6 +41,11 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         val currentItem = itemList[position]
         HeartStateDB.init(holder.itemView.context)
         val editor = HeartStateDB.getInstance().edit()
+        val getData = HeartStateDB.getInstance().all
+        val sharedPrefsFile = File("${holder.itemView.context.filesDir.parent}/shared_prefs/HeartState.xml")
+        val isExist = sharedPrefsFile.exists()
+
+        initHeartState(holder, currentItem) // 하트 상태 초기화
 
         holder.feedId.text = currentItem.feedId.toString()
         holder.fandomName.text = currentItem.fandomName
@@ -70,19 +76,89 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             showPopupMenu(view, currentItem)
         }
 
-//        holder.likeBtn.setOnClickListener {view: View  ->
-//            // 이미지 변경
-//            holder.likeBtn.setImageResource(R.drawable.fill_heart)
-//            lifecycleOwner.lifecycleScope.launch {
-//                clickLikeApi(currentItem.feedId, view)
-//            }
-//        }
-
         holder.likeBtn.setOnClickListener { view ->
-
-
+            Log.d("heartClicked feedID", currentItem.feedId.toString())
+            setHeartState(holder, currentItem, view)
         }
-}
+    }
+
+    // 하트 상태 설정
+    private fun setHeartState(holder: CommunityPostViewHolder, currentItem: CommunityPostItem, view: View) {
+        Log.d("setHeartState 함수", "실행")
+        HeartStateDB.init(holder.itemView.context)
+        val editor = HeartStateDB.getInstance().edit()
+        val getData = HeartStateDB.getInstance().all
+        val sharedPrefsFile = File("${holder.itemView.context.filesDir.parent}/shared_prefs/HeartState.xml")
+        val isExist = sharedPrefsFile.exists()
+
+        // heart 파일이 존재한다면
+        if (isExist) {
+            Log.d("heartDB","exist")
+            if (getData.containsKey("${currentItem.feedId}")) { // 해당 키가 존재한다면
+                Log.d("heartDB","contains key")
+                val heartState = getData.getValue("${currentItem.feedId}") // feedID에 해당하는 하트 상태 값
+
+                if (heartState == true) { // 하트가 이미 클릭된 상태
+                    holder.likeBtn.setImageResource(R.drawable.icon_heart_off)
+                    lifecycleOwner.lifecycleScope.launch {
+                        cancelClickLikeApi(currentItem.feedId, view, holder)
+                    }
+                    Log.d("heart","true")
+                    editor.putBoolean("${currentItem.feedId}", false)
+                    editor.apply()
+                } else {
+                    holder.likeBtn.setImageResource(R.drawable.icon_heart_on)
+                    lifecycleOwner.lifecycleScope.launch {
+                        clickLikeApi(currentItem.feedId, view, holder)
+                    }
+                    Log.d("heart","false")
+                    editor.putBoolean("${currentItem.feedId}", true)
+                    editor.apply()
+                }
+            } else { // 파일은 존재하지만 해당 키가 존재하지 않는다면
+                Log.d("heartDB","dosen't contains key")
+                holder.likeBtn.setImageResource(R.drawable.icon_heart_on)
+                lifecycleOwner.lifecycleScope.launch {
+                    clickLikeApi(currentItem.feedId, view, holder)
+                }
+                Log.d("heartDB","dosen't exist")
+                editor.putBoolean("${currentItem.feedId}", true)
+                editor.apply()
+            }
+        } else {  // 존재하지 않는다면 (최초 클릭)
+            holder.likeBtn.setImageResource(R.drawable.icon_heart_on)
+            lifecycleOwner.lifecycleScope.launch {
+                clickLikeApi(currentItem.feedId, view, holder)
+            }
+            Log.d("heartDB","dosen't exist")
+            editor.putBoolean("${currentItem.feedId}", true)
+            editor.apply()
+        }
+    }
+
+    // 하트 상태 초기화
+    private fun initHeartState(holder: CommunityPostViewHolder,  currentItem: CommunityPostItem) {
+        Log.d("initHeartState 함수","실행")
+        HeartStateDB.init(holder.itemView.context)
+        val getData = HeartStateDB.getInstance().all
+        val sharedPrefsFile = File("${holder.itemView.context.filesDir.parent}/shared_prefs/HeartState.xml")
+        val isExist = sharedPrefsFile.exists()
+
+        if (isExist) {
+            Log.d("heartDB","exist")
+            for ((key, value) in getData.entries) {
+                if (key == currentItem.feedId.toString()) {
+                    val isLiked = value as? Boolean ?: false
+
+                    if (isLiked) {
+                        holder.likeBtn.setImageResource(R.drawable.icon_heart_on)
+                    } else {
+                        holder.likeBtn.setImageResource(R.drawable.icon_heart_off)
+                    }
+                }
+            }
+        }
+    }
 
     override fun getItemCount(): Int {
         return itemList.count()
@@ -180,7 +256,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
     }
 
     // 좋아요 생성
-    private suspend fun clickLikeApi(feedId: Int, view: View) {
+    private suspend fun clickLikeApi(feedId: Int, view: View, holder: CommunityPostViewHolder) {
         Log.d("clickLikeApi 함수", "호출 성공")
         val accessToken = getAccessToken(view)
         try {
@@ -193,11 +269,40 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                     val theLike: ServerResponse<CreateHeart>? = response.body()
                     if (theLike != null) {
                         Log.d("clickLikeApi 함수 response", "${theLike.statusCode} ${theLike.message}")
+                        likeHandleResponse(theLike, holder)
                     } else {
                         handleError("Response body is null.")
                     }
                 } else {
                     handleError("clickLikeApi 함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 좋아요 취소
+    private suspend fun cancelClickLikeApi(feedId: Int, view: View, holder: CommunityPostViewHolder) {
+        Log.d("cancelClickLikeApi 함수", "호출 성공")
+        val accessToken = getAccessToken(view)
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<CreateHeart>> = withContext(
+                    Dispatchers.IO) {
+                    CancelClickLikeInstance.cancelClickLikeService().cancelClickLike(feedId, accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theLike: ServerResponse<CreateHeart>? = response.body()
+                    if (theLike != null) {
+                        Log.d("cancelClickLikeApi 함수 response", "${theLike.statusCode} ${theLike.message}")
+                        likeHandleResponse(theLike, holder)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("cancelClickLikeApi 함수 Error: ${response.code()} - ${response.message()}")
                 }
             }
         }
