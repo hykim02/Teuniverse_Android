@@ -34,7 +34,6 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.HashMap
 
 class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
@@ -290,21 +289,21 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                     val jsonObject = jsonArray.getJSONObject(i)
                     val type = jsonObject.getString("type")
                     if (isTrueList.contains(type)) {
-                        Log.d("일치 type", type.toString())
+                        Log.d("type 일치", type.toString())
                         findCorrectColor(type, list)
                     }
                 }
-                Log.d("colorList", list.toString())
+                Log.d("colorList3", list.toString())
                 // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
                 binding.calendarView.addDecorator(object : DayViewDecorator {
                     override fun shouldDecorate(day: CalendarDay?): Boolean {
                         // 특정 날짜에만 점을 표시하도록 수정
-                        return day != null && day.year == year && day.month + 1 == month && day.day == day2
+                        return date == day
                     }
 
                     override fun decorate(view: DayViewFacade?) {
                         // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
-                        view?.addSpan(MultiColorDotSpan(8f, list))
+                        view?.addSpan(MultiColorDotSpan(8f, list, date))
                     }
                 })
             }
@@ -326,7 +325,12 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     }
 
     // 점 그리기 클래스
-    private inner class MultiColorDotSpan(private val radius: Float, private val colors: ArrayList<Int>) : LineBackgroundSpan {
+    private inner class MultiColorDotSpan(
+        private val radius: Float,
+        private val colors: ArrayList<Int>,
+        private val date: CalendarDay
+    ) : LineBackgroundSpan {
+
         override fun drawBackground(
             canvas: Canvas,
             paint: Paint,
@@ -341,15 +345,21 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             lineNumber: Int
         ) {
             val spacing = 9f
-            Log.d("multicolorSpan","실행")
-            for (i in colors.indices) {
-                val cx = left + i * (2 * radius + spacing) + 40
-                val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
-                paint.color = colors[i]
-                canvas.drawCircle(cx, cy, radius, paint)
+            Log.d("multicolorSpan", "실행")
+            Log.d("text", text.toString())
+
+            // 특정 날짜에 대해서만 동그라미를 그리도록 수정
+            if (date.day == text.toString().toInt()) {
+                for (i in colors.indices) {
+                    val cx = left + i * (2 * radius + spacing) + 40
+                    val cy = bottom + radius + 20 // 텍스트 아래에 점을 그리도록 계산
+                    paint.color = colors[i]
+                    canvas.drawCircle(cx, cy, radius, paint)
+                }
             }
         }
     }
+
 
     // db에서 데이터 들고와 일정 보여주는 함수
     @RequiresApi(Build.VERSION_CODES.O)

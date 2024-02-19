@@ -49,3 +49,20 @@ object ScheduleTypeDB {
         return sharedPreferences
     }
 }
+
+// 하트 클릭 상태 DB
+object HeartStateDB {
+    private lateinit var sharedPreferences: SharedPreferences
+    // 초기화
+    fun init(context: Context) {
+        sharedPreferences = context.getSharedPreferences("HeartState", Context.MODE_PRIVATE)
+    }
+
+    // 객체 반환
+    fun getInstance(): SharedPreferences {
+        if(!this::sharedPreferences.isInitialized) {
+            throw IllegalStateException("SharedPreferencesSingleton is not initialized")
+        }
+        return sharedPreferences
+    }
+}

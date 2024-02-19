@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -37,6 +38,8 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
 
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
+        HeartStateDB.init(holder.itemView.context)
+        val editor = HeartStateDB.getInstance().edit()
 
         holder.feedId.text = currentItem.feedId.toString()
         holder.fandomName.text = currentItem.fandomName
@@ -67,12 +70,17 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             showPopupMenu(view, currentItem)
         }
 
-        holder.likeBtn.setOnClickListener {view: View  ->
-            // 이미지 변경
-            holder.likeBtn.setImageResource(R.drawable.fill_heart)
-            lifecycleOwner.lifecycleScope.launch {
-                clickLikeApi(currentItem.feedId, view)
-            }
+//        holder.likeBtn.setOnClickListener {view: View  ->
+//            // 이미지 변경
+//            holder.likeBtn.setImageResource(R.drawable.fill_heart)
+//            lifecycleOwner.lifecycleScope.launch {
+//                clickLikeApi(currentItem.feedId, view)
+//            }
+//        }
+
+        holder.likeBtn.setOnClickListener { view ->
+
+
         }
 }
 
