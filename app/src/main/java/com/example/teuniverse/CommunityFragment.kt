@@ -1,6 +1,7 @@
 package com.example.teuniverse
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,9 +10,11 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,6 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class CommunityFragment : Fragment() {
@@ -36,6 +42,7 @@ class CommunityFragment : Fragment() {
     private lateinit var profileBtn: ImageButton
     private lateinit var voteBtn: ImageButton
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -86,6 +93,7 @@ class CommunityFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun communityFeedsApi() {
         Log.d("communityFeedsApi 함수", "호출 성공")
         val accessToken = getAccessToken()
@@ -112,6 +120,7 @@ class CommunityFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun handleGetFeeds(theFeeds: ServerResponse<CommunityData>) {
         Log.d("handleGetFeeds함수","호출 성공")
         val artistProfileData = theFeeds.data.artistProfile
@@ -137,7 +146,8 @@ class CommunityFragment : Fragment() {
             var feedContent = feed.content
             val heartCount = feed.likeCount
             val time = "11분 전"
-            val commentCount = communityAdapter.itemCount
+            val commentCount = feed.commentCount
+            setTime(feed.createdAt)
 
             feedList.add(
                 CommunityPostItem(
@@ -145,6 +155,24 @@ class CommunityFragment : Fragment() {
         }
         // 어댑터에 데이터가 변경되었음을 알리기
         communityAdapter.notifyDataSetChanged()
+    }
+
+    // 일정 시간 추출 함수
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setTime(time: String){
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(time, formatter)
+        val currentTime : Long = System.currentTimeMillis() // ms로 반환
+
+        // LocalDateTime에서 시간과 분 추출
+        val hour = dateTime.hour.toString()
+        val minute = dateTime.minute.toString()
+        val month = dateTime.monthValue
+        val day = dateTime.dayOfMonth
+        val dataFormat5 = SimpleDateFormat("yyyy-MM-dd-hh:mm:ss")
+        Log.d("서버 시간", "$hour-$minute-$month-$day")
+        Log.d("로컬 시간", dataFormat5.format(currentTime))
     }
 
     // db에서 토큰 가져오기

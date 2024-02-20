@@ -63,15 +63,15 @@ class CommentAdapter(private val itemList: List<CommentItem>,
 
     // 댓글 삭제 api
     private suspend fun deleteCommentApi(commentId: Int, view: View) {
-        Log.d("createCommentApi 함수", "호출 성공")
+        Log.d("deleteCommentApi 함수", "호출 성공")
         val accessToken = getAccessToken(view)
         try {
             if (accessToken != null) {
-                val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
+                val response: Response<ServerResponse<AfterDeleteComment>> = withContext(Dispatchers.IO) {
                     DeleteCommentInstance.deleteCommentService().deleteComment(commentId, accessToken)
                 }
                 if (response.isSuccessful) {
-                    val theComment: SignUpResponse? = response.body()
+                    val theComment: ServerResponse<AfterDeleteComment>? = response.body()
                     if (theComment != null) {
                         Log.d("deleteCommentApi 함수 response", "${theComment.statusCode} ${theComment.message}")
                     } else {

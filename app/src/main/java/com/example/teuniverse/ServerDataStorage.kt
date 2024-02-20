@@ -171,6 +171,7 @@ data class Feeds(
     val id: Int,
     val content: String,
     val thumbnailUrl: String,
+    val commentCount: Int,
     val likeCount: Int,
     val createdAt: String,
     val updatedAt: String,
@@ -188,6 +189,7 @@ data class CommunityDetailData(
     val content: String,
     val thumbnailUrl: String,
     val likeCount: Int,
+    val commentCount: Int,
     val createdAt: String,
     val updatedAt: String,
     val userProfile: UserProfileData,
@@ -208,6 +210,23 @@ data class CreateComment(
     val content: String
 )
 
+// 댓글 생성 responseBody
+data class CreateCommentResponse(
+    val commentCount: Int,
+    val comment: CommentAfterCreate
+)
+
+data class CommentAfterCreate(
+    val id: Int,
+    val content: String,
+    val createdAt: String,
+    val updatedAt: String
+)
+
+// 댓글 삭제
+data class AfterDeleteComment(
+    val commentCount: Int
+)
 
 // 좋아요 생성
 data class CreateHeart(

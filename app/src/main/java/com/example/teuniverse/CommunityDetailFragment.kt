@@ -1,12 +1,17 @@
 package com.example.teuniverse
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -55,7 +60,7 @@ class CommunityDetailFragment : Fragment() {
         }
 
         // 댓글 리사이클러뷰 어댑터 연결
-        commentAdapter = CommentAdapter(commentList, viewLifecycleOwner )
+        commentAdapter = CommentAdapter(commentList, viewLifecycleOwner)
 
         return binding.root
     }
@@ -113,6 +118,7 @@ class CommunityDetailFragment : Fragment() {
 
         binding.postContent.text = detailData.content
         binding.heartCount.text = detailData.likeCount.toString()
+        binding.commentCount.text = detailData.commentCount.toString()
 
         for (i in commentData.indices) {
             val comment = commentData[i]
@@ -142,13 +148,14 @@ class CommunityDetailFragment : Fragment() {
         val content = CreateComment(content = content)
         try {
             if (accessToken != null) {
-                val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
+                val response: Response<ServerResponse<CreateCommentResponse>> = withContext(Dispatchers.IO) {
                     CreateCommentInstance.createCommentService().createComment(feedId, accessToken, content)
                 }
                 if (response.isSuccessful) {
-                    val theComment: SignUpResponse? = response.body()
+                    val theComment: ServerResponse<CreateCommentResponse>? = response.body()
                     if (theComment != null) {
                         Log.d("createCommentApi 함수 response", "${theComment.statusCode} ${theComment.message}")
+                        handleResponse(theComment)
                     } else {
                         handleError("Response body is null.")
                     }
@@ -164,16 +171,61 @@ class CommunityDetailFragment : Fragment() {
 
     // 댓글 등록 버튼 이벤트
     private fun createCommentBtn() {
-        binding.btnEnroll.setOnClickListener {
-            val feedId = getFeedId()
-            val content = binding.commentTxt.text.toString()
-            if (feedId != null) {
-                lifecycleScope.launch {
-                    createCommentApi(feedId, content)
+        binding.commentTxt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // 텍스트 변경 전에 호출되는 메서드
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // 텍스트가 변경될 때 호출되는 메서드
+                val currentText = s.toString()
+                if (currentText.isNotEmpty()) {
+                    binding.btnEnroll.setBackgroundResource(R.drawable.enroll_button_event)
+                } else {
+                    binding.btnEnroll.setBackgroundResource(R.drawable.custom_comment_enroll)
                 }
             }
-            findNavController().navigate(R.id.action_navigation_communityDetail_to_navigation_community)
-        }
+
+            override fun afterTextChanged(s: Editable?) {
+                // 텍스트 변경 후에 호출되는 메서드
+                binding.btnEnroll.setOnClickListener {
+                    val feedId = getFeedId()
+                    val content = binding.commentTxt.text.toString()
+                    if (feedId != null) {
+                        lifecycleScope.launch {
+                            createCommentApi(feedId, content)
+                        }
+                    }
+                    binding.commentTxt.setText("")
+                }
+            }
+        })
+
+    }
+
+    // 댓글 생성
+    private fun handleResponse(theComment: ServerResponse<CreateCommentResponse>) {
+        MainActivity.UserInfoDB.init(requireContext())
+        val getData = MainActivity.UserInfoDB.getInstance().all
+        val response = theComment.data
+        binding.commentCount.text = response.commentCount.toString()
+
+        val nickname = getData.getValue("nickName").toString()
+        val userImg = getData.getValue("thumbnailUrl").toString()
+        val content = response.comment.content
+        val commentId = response.comment.id
+        val time = "1분 전"
+
+        commentList.add(CommentItem(userImg, nickname, time, content, commentId))
+
+        // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
+        val spanCount = commentList.size
+        val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+        binding.rvComment.adapter = commentAdapter
+        binding.rvComment.layoutManager = layoutManager
+
+        // 어댑터에 데이터가 변경되었음을 알리기
+        commentAdapter.notifyDataSetChanged()
     }
 
     private fun handleError(errorMessage: String) {

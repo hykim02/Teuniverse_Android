@@ -147,7 +147,7 @@ interface CreateCommentInterface {
         @Path("feedId") feedId: String,
         @Header("Authorization") authorization: String?,
         @Body request: CreateComment
-    ): Response<SignUpResponse>
+    ): Response<ServerResponse<CreateCommentResponse>>
 }
 
 // 댓글 수정
@@ -159,7 +159,7 @@ interface EditCommentInterface {
         @Path("commentId") commentId: Int,
         @Header("Authorization") authorization: String?,
         @Body request: CreateComment
-    ): Response<SignUpResponse>
+    ): Response<ServerResponse<CommentAfterCreate>>
 }
 
 // 댓글 삭제
@@ -169,7 +169,7 @@ interface DeleteCommentInterface {
     suspend fun deleteComment(
         @Path("commentId") commentId: Int,
         @Header("Authorization") authorization: String?
-    ): Response<SignUpResponse>
+    ): Response<ServerResponse<AfterDeleteComment>>
 }
 
 // 좋아요 생성
