@@ -9,13 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,9 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
 import retrofit2.Response
-import java.io.File
 
 
 class CommunityFragment : Fragment() {
@@ -124,8 +117,6 @@ class CommunityFragment : Fragment() {
         val artistProfileData = theFeeds.data.artistProfile
         val feedsData = theFeeds.data.feeds
 
-        Log.d("feedsData", feedsData.toString())
-
         // 아티스트 데이터
         Glide.with(this)
             .load(artistProfileData.thumbnailUrl)
@@ -143,8 +134,7 @@ class CommunityFragment : Fragment() {
             // feed
             val feedId = feed.id
             val feedImg = feed.thumbnailUrl
-            Log.d("feedImg$i", feedImg)
-            val feedContent = feed.content
+            var feedContent = feed.content
             val heartCount = feed.likeCount
             val time = "11분 전"
             val commentCount = communityAdapter.itemCount
@@ -215,6 +205,17 @@ class CommunityFragment : Fragment() {
 
         popupVoteMission.setOnDismissListener {
             Log.d("popupVoteMission", "PopupVote dialog dismissed.")
+        }
+    }
+
+    //요약 보여주기 - 공지 전체내용 중 일부(15자)만 가져옴
+    //15자 이상인 경우 일부를 자르고 "..."을 붙임
+    private fun getContextPreview(context: String): String {
+        return if (context.isNotEmpty()) {
+            val trimmedText = if (context.length >= 85) "${context.substring(0, 85)}..." else context
+            trimmedText
+        } else {
+            ""
         }
     }
 }

@@ -257,7 +257,6 @@ class CommunityDetailFragment : Fragment() {
 
     // 하트 상태 설정
     private fun setHeartState() {
-        Log.d("setHeartState 함수", "실행")
         HeartStateDB.init(requireContext())
         val editor = HeartStateDB.getInstance().edit()
         val getData = HeartStateDB.getInstance().all
@@ -267,10 +266,7 @@ class CommunityDetailFragment : Fragment() {
 
         // heart 파일이 존재한다면
         if (isExist) {
-            Log.d("heartDB","exist")
-
             if (getData.containsKey("$feedId")) { // 해당 키가 존재한다면
-                Log.d("heartDB","contains key")
                 val heartState = getData.getValue("$feedId") // feedID에 해당하는 하트 상태 값
 
                 if (heartState == true) { // 하트가 이미 클릭된 상태
@@ -278,7 +274,6 @@ class CommunityDetailFragment : Fragment() {
                     lifecycleScope.launch {
                         cancelClickLikeApi(feedId.toString())
                     }
-                    Log.d("heart","true")
                     editor.putBoolean("$feedId", false)
                     editor.apply()
                 } else {
@@ -286,17 +281,14 @@ class CommunityDetailFragment : Fragment() {
                     lifecycleScope.launch {
                         clickLikeApi(feedId.toString())
                     }
-                    Log.d("heart","false")
                     editor.putBoolean("$feedId", true)
                     editor.apply()
                 }
             } else { // 파일은 존재하지만 해당 키가 존재하지 않는다면
-                Log.d("heartDB","dosen't contains key")
                 binding.like.setImageResource(R.drawable.icon_heart_on)
                 lifecycleScope.launch {
                     clickLikeApi(feedId.toString())
                 }
-                Log.d("heartDB","dosen't exist")
                 editor.putBoolean("$feedId", true)
                 editor.apply()
             }
@@ -305,7 +297,6 @@ class CommunityDetailFragment : Fragment() {
             lifecycleScope.launch {
                 clickLikeApi(feedId.toString())
             }
-            Log.d("heartDB","dosen't exist")
             editor.putBoolean("$feedId", true)
             editor.apply()
         }
@@ -313,7 +304,6 @@ class CommunityDetailFragment : Fragment() {
 
     // 하트 상태 초기화
     private fun initHeartState() {
-        Log.d("initHeartState 함수","실행")
         HeartStateDB.init(requireContext())
         val getData = HeartStateDB.getInstance().all
         val sharedPrefsFile = File("${context?.filesDir?.parent}/shared_prefs/HeartState.xml")
@@ -321,7 +311,6 @@ class CommunityDetailFragment : Fragment() {
         val feedId = binding.feedID.text
 
         if (isExist) {
-            Log.d("heartDB","exist")
             for ((key, value) in getData.entries) {
                 if (key == feedId.toString()) {
                     val isLiked = value as? Boolean ?: false

@@ -60,6 +60,22 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             holder.postImg.visibility = GONE
         }
 
+        // 본문 내용 글자 수가 85 이하라면
+        if (currentItem.postSummary != null && currentItem.postSummary.length <= 85) {
+            holder.postSummary.text = currentItem.postSummary
+            holder.moreBtn.visibility = GONE
+        } else if (currentItem.postSummary != null) {
+            val truncatedPostSummary = currentItem.postSummary.substring(0, 85) + "..."
+            holder.postSummary.text = truncatedPostSummary
+            holder.moreBtn.visibility = View.VISIBLE
+
+            // 더보기 클릭 시 모든 내용 확인 가능하도록
+            holder.moreBtn.setOnClickListener {
+                holder.postSummary.text = currentItem.postSummary
+                holder.moreBtn.visibility = GONE
+            }
+        }
+
         // 이미지 로딩
         Glide.with(holder.itemView.context)
             .load(currentItem.postImg) // currentItem.img가 이미지 URL인 경우
@@ -77,14 +93,16 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         }
 
         holder.likeBtn.setOnClickListener { view ->
-            Log.d("heartClicked feedID", currentItem.feedId.toString())
             setHeartState(holder, currentItem, view)
+        }
+
+        holder.moreBtn.setOnClickListener {
+            holder.postSummary.text = currentItem.postSummary
         }
     }
 
     // 하트 상태 설정
     private fun setHeartState(holder: CommunityPostViewHolder, currentItem: CommunityPostItem, view: View) {
-        Log.d("setHeartState 함수", "실행")
         HeartStateDB.init(holder.itemView.context)
         val editor = HeartStateDB.getInstance().edit()
         val getData = HeartStateDB.getInstance().all
@@ -93,9 +111,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
 
         // heart 파일이 존재한다면
         if (isExist) {
-            Log.d("heartDB","exist")
             if (getData.containsKey("${currentItem.feedId}")) { // 해당 키가 존재한다면
-                Log.d("heartDB","contains key")
                 val heartState = getData.getValue("${currentItem.feedId}") // feedID에 해당하는 하트 상태 값
 
                 if (heartState == true) { // 하트가 이미 클릭된 상태
@@ -103,7 +119,6 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                     lifecycleOwner.lifecycleScope.launch {
                         cancelClickLikeApi(currentItem.feedId, view, holder)
                     }
-                    Log.d("heart","true")
                     editor.putBoolean("${currentItem.feedId}", false)
                     editor.apply()
                 } else {
@@ -111,17 +126,14 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                     lifecycleOwner.lifecycleScope.launch {
                         clickLikeApi(currentItem.feedId, view, holder)
                     }
-                    Log.d("heart","false")
                     editor.putBoolean("${currentItem.feedId}", true)
                     editor.apply()
                 }
             } else { // 파일은 존재하지만 해당 키가 존재하지 않는다면
-                Log.d("heartDB","dosen't contains key")
                 holder.likeBtn.setImageResource(R.drawable.icon_heart_on)
                 lifecycleOwner.lifecycleScope.launch {
                     clickLikeApi(currentItem.feedId, view, holder)
                 }
-                Log.d("heartDB","dosen't exist")
                 editor.putBoolean("${currentItem.feedId}", true)
                 editor.apply()
             }
@@ -130,7 +142,6 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             lifecycleOwner.lifecycleScope.launch {
                 clickLikeApi(currentItem.feedId, view, holder)
             }
-            Log.d("heartDB","dosen't exist")
             editor.putBoolean("${currentItem.feedId}", true)
             editor.apply()
         }
@@ -138,14 +149,12 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
 
     // 하트 상태 초기화
     private fun initHeartState(holder: CommunityPostViewHolder,  currentItem: CommunityPostItem) {
-        Log.d("initHeartState 함수","실행")
         HeartStateDB.init(holder.itemView.context)
         val getData = HeartStateDB.getInstance().all
         val sharedPrefsFile = File("${holder.itemView.context.filesDir.parent}/shared_prefs/HeartState.xml")
         val isExist = sharedPrefsFile.exists()
 
         if (isExist) {
-            Log.d("heartDB","exist")
             for ((key, value) in getData.entries) {
                 if (key == currentItem.feedId.toString()) {
                     val isLiked = value as? Boolean ?: false
@@ -175,6 +184,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         val feedId: TextView = itemView.findViewById(R.id.feed_id)
         val optionBtn: ImageButton = itemView.findViewById(R.id.btn_option)
         val likeBtn: ImageButton = itemView.findViewById(R.id.like)
+        val moreBtn: TextView = itemView.findViewById(R.id.more)
 
         init {
             itemView.setOnClickListener {
