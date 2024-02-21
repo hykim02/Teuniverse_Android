@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -19,10 +20,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-class CommentAdapter(private val itemList: List<CommentItem>,
+class CommentAdapter(private val itemList: MutableList<CommentItem>,
                      private val lifecycleOwner: LifecycleOwner
-):
-    RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+): RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.comment_rv_item, parent, false)
@@ -101,7 +101,7 @@ class CommentAdapter(private val itemList: List<CommentItem>,
             when (menuItem.itemId) {
                 R.id.delete -> {
                     // 삭제 버튼 클릭 시 처리
-                    Log.d("삭제할 댓글id",item.commendId.toString())
+                    updateComment(item.commendId) // 댓글 삭제
                     lifecycleOwner.lifecycleScope.launch {
                         deleteCommentApi(item.commendId, view)
                     }
@@ -116,6 +116,22 @@ class CommentAdapter(private val itemList: List<CommentItem>,
             }
         }
         popupMenu.show()
+    }
+
+    // 댓글 삭제 후 댓글 내용 업데이트
+    private fun updateComment(commentId: Int) {
+        // 댓글 삭제 후에 데이터 세트에서 해당 댓글을 제거
+        val iterator = itemList.iterator()
+        while (iterator.hasNext()) {
+            val comment = iterator.next()
+            Log.d("comment", comment.toString())
+            if (comment.commendId == commentId) {
+                itemList.remove(comment)
+                break
+            }
+        }
+        // Adapter에게 데이터 변경을 알림
+        notifyDataSetChanged()
     }
 
     // db에서 토큰 가져오기

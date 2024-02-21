@@ -13,8 +13,10 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
-import com.example.teuniverse.databinding.CommunityPostItemBinding
+import com.example.teuniverse.databinding.ActivityCommunityPostBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,13 +32,13 @@ import java.io.OutputStream
 
 class CommunityPostActivity: AppCompatActivity() {
 
-    private lateinit var binding: CommunityPostItemBinding
+    private lateinit var binding: ActivityCommunityPostBinding
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
     private lateinit var bitmap: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = CommunityPostItemBinding.inflate(layoutInflater)
+        binding = ActivityCommunityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // 갤러리에서 이미지를 선택하기 위한 버튼 클릭 이벤트 등록
@@ -46,6 +48,9 @@ class CommunityPostActivity: AppCompatActivity() {
         }
 
         binding.closeBtn.setOnClickListener {
+//            val manager: FragmentManager = supportFragmentManager
+//            val transaction: FragmentTransaction = manager.beginTransaction()
+//            transaction.replace(R.id.post_activity, CommunityFragment).commit()
             val intent = Intent(this, CommunityFragment::class.java)
             startActivity(intent)
             finish()

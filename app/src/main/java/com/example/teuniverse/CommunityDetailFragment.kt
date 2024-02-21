@@ -132,7 +132,6 @@ class CommunityDetailFragment : Fragment() {
         }
         // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
         val spanCount = commentList.size
-        Log.d("댓글 개수", spanCount.toString())
         val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.layoutManager = layoutManager
