@@ -100,7 +100,9 @@ class CommunityPostActivity: AppCompatActivity() {
 
     private fun setContents(imgFile: MultipartBody.Part?) {
         val content = binding.postContent.text.toString() // 게시글 내용
+        Log.d("content", content)
         val contentBody = RequestBody.create("text/plain".toMediaType(), content)
+        Log.d("contentBody", contentBody.toString())
 
         binding.applyBtn.setOnClickListener {
             // 서버로 데이터 전송

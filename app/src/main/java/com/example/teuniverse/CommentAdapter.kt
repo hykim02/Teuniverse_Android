@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -21,7 +20,8 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class CommentAdapter(private val itemList: MutableList<CommentItem>,
-                     private val lifecycleOwner: LifecycleOwner
+                     private val lifecycleOwner: LifecycleOwner,
+                     private val fragment: TextView
 ): RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -54,7 +54,7 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
 
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userImg: ImageView = itemView.findViewById(R.id.user_profile)
-        val nickName: TextView = itemView.findViewById(R.id.fandom_name)
+         val nickName: TextView = itemView.findViewById(R.id.fandom_name)
         val time: TextView = itemView.findViewById(R.id.term)
         val comment: TextView = itemView.findViewById(R.id.comment)
         val commentId: TextView = itemView.findViewById(R.id.commentId)
@@ -74,6 +74,7 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
                     val theComment: ServerResponse<AfterDeleteComment>? = response.body()
                     if (theComment != null) {
                         Log.d("deleteCommentApi 함수 response", "${theComment.statusCode} ${theComment.message}")
+                        fragment.text = theComment.data.commentCount.toString()
                     } else {
                         handleError("Response body is null.")
                     }

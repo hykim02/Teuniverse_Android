@@ -1,7 +1,5 @@
 package com.example.teuniverse
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,10 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -60,7 +57,7 @@ class CommunityDetailFragment : Fragment() {
         }
 
         // 댓글 리사이클러뷰 어댑터 연결
-        commentAdapter = CommentAdapter(commentList, viewLifecycleOwner)
+        commentAdapter = CommentAdapter(commentList, viewLifecycleOwner, binding.commentCount)
 
         return binding.root
     }
@@ -113,7 +110,6 @@ class CommunityDetailFragment : Fragment() {
         // feed
         Glide.with(this)
             .load(detailData.thumbnailUrl)
-            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
             .into(binding.postImg)
 
         binding.postContent.text = detailData.content
@@ -178,7 +174,7 @@ class CommunityDetailFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // 텍스트가 변경될 때 호출되는 메서드
                 val currentText = s.toString()
-                if (currentText.isNotEmpty()) {
+                if (currentText.length >= 10) {
                     binding.btnEnroll.setBackgroundResource(R.drawable.enroll_button_event)
                 } else {
                     binding.btnEnroll.setBackgroundResource(R.drawable.custom_comment_enroll)
@@ -190,12 +186,16 @@ class CommunityDetailFragment : Fragment() {
                 binding.btnEnroll.setOnClickListener {
                     val feedId = getFeedId()
                     val content = binding.commentTxt.text.toString()
-                    if (feedId != null) {
-                        lifecycleScope.launch {
-                            createCommentApi(feedId, content)
+                    if (content.length < 10 && view != null) {
+                        Toast.makeText(view!!.context,"10글자 이상 작성 해주세요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        if (feedId != null) {
+                            lifecycleScope.launch {
+                                createCommentApi(feedId, content)
+                            }
                         }
+                        binding.commentTxt.setText("")
                     }
-                    binding.commentTxt.setText("")
                 }
             }
         })
