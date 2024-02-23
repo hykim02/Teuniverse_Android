@@ -1,6 +1,7 @@
 package com.example.teuniverse
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -13,6 +14,8 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +28,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
@@ -35,6 +39,7 @@ class CommunityPostActivity: AppCompatActivity() {
     private lateinit var binding: ActivityCommunityPostBinding
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
+    private val READ_EXTERNAL_STORAGE_REQUEST = 123
     private lateinit var bitmap: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +62,7 @@ class CommunityPostActivity: AppCompatActivity() {
         }
 
         countPostContent() // 글자수 세기 및 500자 제한
-//        applyBtn()
+        applyBtn()
     }
 
     // 갤러리에서 선택한 이미지를 처리하는 메서드
@@ -66,7 +71,6 @@ class CommunityPostActivity: AppCompatActivity() {
         // 이미지 첨부한 경우
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             putImage(data)
-
         } else { // 이미지 첨부 안하는 경우
             noneImage()
         }
@@ -74,37 +78,32 @@ class CommunityPostActivity: AppCompatActivity() {
 
     // 이미지 첨부한 경우 처리
     private fun putImage(data: Intent?) {
-        val selectedImageUri = data?.data
-        selectedImagePath = getPathFromUri(selectedImageUri)
-        binding.postImg.setImageURI(selectedImageUri)
+        val selectedImageUri = data?.data // 이미지 들고옴
+        selectedImagePath = getPathFromUri(selectedImageUri) // 실제 경로 가져옴
+        binding.postImg.setImageURI(selectedImageUri) // 게시물 작성 페이지에 이미지 넣음
 
-        // 이미지뷰를 보이도록 설정
-        binding.postImg.visibility = View.VISIBLE
+        binding.postImg.visibility = View.VISIBLE // 이미지뷰를 보이도록 설정
 
         // 이미지뷰에서 Drawable 얻기
         val drawable: Drawable? = binding.postImg.drawable
-        // Drawable에서 Bitmap으로 변환
+        //Drawable에서 Bitmap으로 변환
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-        val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
-
-        setContents(imageFile)
+//        val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
+//        setContents(imageFile)
     }
 
     // 이미지 첨부 안하는 경우 처리
     private fun noneImage() {
         // 이미지뷰를 숨기도록 설정
         binding.postImg.visibility = GONE
-
-        setContents(null)
+//        setContents(null)
     }
 
+    // 게시글 내용 타입 설정
     private fun setContents(imgFile: MultipartBody.Part?) {
-        val content = binding.postContent.text.toString() // 게시글 내용
-        Log.d("content", content)
-        val contentBody = RequestBody.create("text/plain".toMediaType(), content)
-        Log.d("contentBody", contentBody.toString())
-
         binding.applyBtn.setOnClickListener {
+            val content = binding.postContent.text.toString() // 게시글 내용
+            val contentBody = RequestBody.create("text/plain".toMediaType(), content)
             // 서버로 데이터 전송
             lifecycleScope.launch {
                 postToServerApi(contentBody, imgFile)
@@ -114,48 +113,58 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
-
     // 게시물 등록
-//    private fun applyBtn() {
-//        binding.applyBtn.setOnClickListener {
-//            Log.d("applyBtn", "Clicked!")
-//            val content = binding.postContent.text.toString() // 게시글 내용
-//
-//            // 이미지 첨부한 경우
-//            if (selectedImagePath != null) {
-//                val imageFile = createMultipartBody(bitmap)
-//                lifecycleScope.launch {
-//                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
-//                }
-//            } else { // 이미지 첨부 안한 경우
-//                binding.postImg.visibility = GONE
-//                val emptyImageFile = createEmptyImageFile()
-//                val imageFilePart = createMultipartBodyFile(emptyImageFile)
-//
-//                lifecycleScope.launch {
-//                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFilePart)
-//                }
-//            }
-//            // 이후에 네비게이션 등 필요한 로직 추가
-//            navigateToCommunityFragment()
-//            finish()
-//        }
-//    }
+    private fun applyBtn() {
+        binding.applyBtn.setOnClickListener {
+            Log.d("applyBtn", "Clicked!")
+            val content = binding.postContent.text.toString() // 게시글 내용
 
+            // 이미지 첨부한 경우
+            if (selectedImagePath != null) {
+                val imageFile = createMultipartBody(bitmap)
+                lifecycleScope.launch {
+                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
+                }
+            } else { // 이미지 첨부 안한 경우
+                binding.postImg.visibility = GONE
 
-    // 빈 이미지 파일 생성
-    private fun createEmptyImageFile(): File {
-        val emptyBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        return bitmapToFile(emptyBitmap)
+                lifecycleScope.launch {
+                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
+                }
+            }
+            // 이후에 네비게이션 등 필요한 로직 추가
+            navigateToCommunityFragment()
+        }
     }
 
-    private fun createMultipartBodyFile(file: File): MultipartBody.Part {
-        // 이미지 파일을 RequestBody로 변환
-        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-        // MultipartBody.Part 생성
-        return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+    private fun createMultipartBody2(selectedImagePath: String?): MultipartBody.Part? {
+        selectedImagePath?.let { path ->
+            val file = File(path)
+            if (file.exists()) {
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+            }
+        }
+        return null
     }
 
+
+    // Uri에서 실제 파일 경로 가져오기
+    private fun getPathFromUri(uri: Uri?): String? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        contentResolver.query(uri!!, projection, null, null, null)?.use { cursor ->
+            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            return cursor.getString(columnIndex)
+        }
+        return null
+    }
+
+
+
+
+
+    // 이미지 파일 타입 설정
     private fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
         val file = bitmapToFile(bitmap) // Bitmap을 File로 변환하는 함수
         // 이미지 파일을 RequestBody로 변환
@@ -203,16 +212,7 @@ class CommunityPostActivity: AppCompatActivity() {
         })
     }
 
-    // Uri에서 실제 파일 경로 가져오기
-    private fun getPathFromUri(uri: Uri?): String {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri!!, projection, null, null, null)
-        val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
-        val path = cursor.getString(columnIndex)
-        cursor.close()
-        return path
-    }
+
 
     // 게시글 데이터 서버로 전송
     private suspend fun postToServerApi(content: RequestBody, imageFile: MultipartBody.Part?) {
@@ -258,9 +258,15 @@ class CommunityPostActivity: AppCompatActivity() {
     // close 버튼 클릭 시 호출되는 함수
     private fun navigateToCommunityFragment() {
         // MenuActivity로 이동하여 CommunityFragment로 이동하는 코드
-        val menuIntent = Intent(this, MenuActivity::class.java)
-        menuIntent.putExtra("destinationFragment", R.id.navigation_community)
-        startActivity(menuIntent)
+        // CommunityFragment로 이동하는 Intent 생성
+        val intent = Intent(this@CommunityPostActivity, MenuActivity::class.java)
+        intent.putExtra("destinationFragment", R.id.navigation_community)
+        // 기존의 액티비티 스택을 모두 지우고 새로운 액티비티 스택을 시작
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        // Intent를 사용하여 CommunityFragment로 이동
+        startActivity(intent)
+        // 현재 액티비티 종료 (선택적)
+        finish()
     }
 
     // db에서 토큰 가져오기

@@ -103,7 +103,7 @@ interface CommunityDetailInterface {
     ): Response<ServerResponse<CommunityDetailData>>
 }
 
-// 게시물 작성
+// 게시물 생성
 interface CommunityPostInterface {
     @Multipart
     @POST("community")

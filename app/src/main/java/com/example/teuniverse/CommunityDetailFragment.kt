@@ -108,9 +108,14 @@ class CommunityDetailFragment : Fragment() {
         binding.fandomName.text = detailData.userProfile.nickName // 닉네임
 
         // feed
-        Glide.with(this)
-            .load(detailData.thumbnailUrl)
-            .into(binding.postImg)
+        if (detailData.thumbnailUrl != null) {
+            Glide.with(this)
+                .load(detailData.thumbnailUrl)
+                .into(binding.postImg)
+        } else {
+            binding.postImg.visibility = GONE
+        }
+
 
         binding.postContent.text = detailData.content
         binding.heartCount.text = detailData.likeCount.toString()

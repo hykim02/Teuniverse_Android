@@ -9,6 +9,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
 
 const val BASE_URL = BuildConfig.BASE_URL
 
@@ -131,17 +132,15 @@ object CommunityPostInstance {
     }
 
     private fun provideRetrofit(baseUrl: String): Retrofit {
-        val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) {
-                // HTTP 요청 로그를 출력
-                println("OkHttp: $message")
-            }
-        }).apply {
+        val loggingInterceptor = HttpLoggingInterceptor { message -> // HTTP 요청 로그를 출력
+            println("OkHttp: $message")
+        }.apply {
             level = HttpLoggingInterceptor.Level.BODY // 로그 수준 설정
         }
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor) // 인터셉터 추가
+            .connectTimeout(100, TimeUnit.SECONDS) // 연결 타임아웃 설정
             .build()
 
         return Retrofit.Builder()

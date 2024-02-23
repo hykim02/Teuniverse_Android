@@ -82,5 +82,4 @@
         android:name="com.example.teuniverse.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-
 </navigation>
