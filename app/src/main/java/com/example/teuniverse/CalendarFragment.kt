@@ -158,6 +158,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
     // 일정있는 날 찾기 (일정 개수만큼 점 조절 필요)
     private fun findDate() {
+        Log.d("findDate 함수","실행")
         MonthDBManager.initAll(requireContext())
         for (i in 1..12) {
             val monthDB = MonthDBManager.getMonthInstance(i)
@@ -177,38 +178,19 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 }
                 // 점 표시할 날짜리스트
                 datesWithDots.addAll(newDates)
+                Log.d("datesWithDots", datesWithDots.toString())
             }
         }
     }
 
-    // 점 색상 추가하고 점 그리기
-//    private fun makeDot(datesWithDots: MutableList<CalendarDay>) {
-//        // 동그라미를 표시하는 데코레이터를 모두 제거
-//        binding.calendarView.removeDecorators()
-//
-//        // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
-//        val colorList = ArrayList<Int>()
-//        context?.let { setDot(it, colorList, datesWithDots) } // 색 추가
-//        Log.d("최종 colorList", colorList.toString())
-//
-//        // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
-//        binding.calendarView.addDecorator(object : DayViewDecorator {
-//            override fun shouldDecorate(day: CalendarDay?): Boolean {
-//                return datesWithDots.contains(day)
-//            }
-//
-//            override fun decorate(view: DayViewFacade?) {
-//                // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
-//                view?.addSpan(MultiColorDotSpan(8f, colorList))
-//            }
-//        })
-//    }
-
 
     // 필터링된 스케줄 타입에 맞는 색상 추가
     private fun setDot(context: Context, datesWithDots: MutableList<CalendarDay>) {
+        Log.d("setDot 함수","실행")
         // 동그라미를 표시하는 데코레이터를 모두 제거
         binding.calendarView.removeDecorators()
+        // 오늘 날짜 Decorator 추가
+        binding.calendarView.addDecorators(TodayDecorator(requireContext()))
         // 특정 날짜에 한 줄로 나란히 표시할 4개의 점의 색상
         val colorList = ArrayList<Int>()
 
@@ -221,31 +203,31 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         val isExist = sharedPrefsFile.exists()
         // 스케줄 타입 DB가 존재한다면
         if (isExist) {
+            Log.d("스케줄 타입 DB","isExist")
             datesWithDots.forEach { date ->
+                Log.d("datesWithDots 구문","실행")
+                Log.d("for Each", date.toString())
                 isTrueList.clear()
                 if (typeDB.getValue("video") == true) {
-                    Log.d("video", date.toString())
                     isTrueList.add("방송")
                 }
 
                 if (typeDB.getValue("festival") == true) {
-                    Log.d("festival", date.toString())
                     isTrueList.add("행사")
                 }
 
                 if (typeDB.getValue("cake") == true) {
-                    Log.d("cake", date.toString())
                     isTrueList.add("기념일")
                 }
 
                 if (typeDB.getValue("more") == true) {
-                    Log.d("more", date.toString())
                     isTrueList.add("기타")
                 }
                 Log.d("isTrueList", isTrueList.toString())
                 isExistSchedule(isTrueList, colorList, date)
             }
         } else { // 존재하지 않는다면
+            Log.d("스케줄 타입 DB","is not Exist")
             datesWithDots.forEach { date ->
                 isTrueList.add("방송")
                 isTrueList.add("행사")
@@ -253,7 +235,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 isTrueList.add("기타")
                 isExistSchedule(isTrueList, colorList, date)
             }
-
             editor.putBoolean("video", true)
             editor.putBoolean("festival", true)
             editor.putBoolean("cake", true)
@@ -264,6 +245,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
     // 스케줄 타입이 true인 것들 중에 일정이 존재하는지
     private fun isExistSchedule(isTrueList: ArrayList<String>, list: ArrayList<Int>, date: CalendarDay) {
+        Log.d("isExistSchedule 함수","실행")
         val year = date.year
         val month = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
         val formatMonth = formatNum(month)
@@ -277,7 +259,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), month.toString())
 
         if (isExist) {
-            Log.d("isExist", month.toString())
+            Log.d("isExist", month.toString()+"월"+ day2+"일")
             // 특정 키에 대한 값을 가져오기
             val dataString = monthDB.getString(key, null)
             Log.d("dataString2", dataString.toString())
@@ -292,16 +274,26 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                         Log.d("type 일치", type.toString())
                         findCorrectColor(type, list)
                     }
+                    Log.d("findCorrectColor","끝")
                 }
                 Log.d("colorList3", list.toString())
+
+                // 새로운 리스트를 만들어서 해당 날짜의 일정을 추가
+                val newDatesWithDots = mutableListOf<CalendarDay>()
+                // 새로운 날짜를 추가
+                newDatesWithDots.add(date)
+                Log.d("newDatesWithDots", newDatesWithDots.toString())
+
                 // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
                 binding.calendarView.addDecorator(object : DayViewDecorator {
                     override fun shouldDecorate(day: CalendarDay?): Boolean {
                         // 특정 날짜에만 점을 표시하도록 수정
-                        return date == day
+                        return newDatesWithDots.contains(day)
                     }
 
+                    // shouldDecorate의 리턴값이 true이면 실행
                     override fun decorate(view: DayViewFacade?) {
+                        Log.d("decorate", "실행")
                         // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
                         view?.addSpan(MultiColorDotSpan(8f, list, date))
                     }
@@ -345,7 +337,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             lineNumber: Int
         ) {
             val spacing = 9f
-            Log.d("multicolorSpan", "실행")
+            Log.d("MultiColorDotSpan 함수", "실행")
             Log.d("text", text.toString())
 
             // 특정 날짜에 대해서만 동그라미를 그리도록 수정
@@ -364,6 +356,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     // db에서 데이터 들고와 일정 보여주는 함수
     @RequiresApi(Build.VERSION_CODES.O)
     private fun makeSchedule() {
+        Log.d("makeSchedule 함수","실행")
         binding.calendarView.setOnDateChangedListener { _, date, selected ->
             // 날짜 클릭 이벤트 처리
             if (selected) {
@@ -393,6 +386,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getScheduleData(dbFileName: String, isExist: Boolean, key: String) {
+        Log.d("getScheduleData 함수","실행")
         if (isExist) {
             val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
             // 특정 키에 대한 값을 가져오기
@@ -425,6 +419,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
     // 표시된 동그라미와 일치하는 데이터 찾기
     private fun findCorrectData(content: String, type: String, startAt: String) {
+        Log.d("findCorrectData 함수","실행")
         ScheduleTypeDB.init(requireContext())
         val typeDB = ScheduleTypeDB.getInstance().all
         val typeList = arrayListOf<String>()
@@ -433,6 +428,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 typeList.add(key)
             }
         }
+        Log.d("typeList", typeList.toString())
 
         for (item in typeList.indices) {
             if (typeList[item] == "video" && type == "방송") {
@@ -451,9 +447,11 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 continue
             }
         }
-        Log.d("scheduleList", scheduleList.toString())
+        Log.d("scheduleList 최종", scheduleList.toString())
 
         if (scheduleList.size >= 1) {
+            binding.calendarRv.visibility = View.VISIBLE
+            Log.d("scheduleList 개수", scheduleList.size.toString())
             val spanCount = scheduleList.size
             val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
             binding.calendarRv.adapter = calendarAdapter
