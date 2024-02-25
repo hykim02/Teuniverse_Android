@@ -9,24 +9,24 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.teuniverse.databinding.FragmentProfileBinding
-import com.google.gson.Gson
+import com.example.teuniverse.databinding.FragmentProfileUserTabBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-class ProfileFragment : Fragment() {
-    private lateinit var binding: FragmentProfileBinding
+class ProfileUserTabFragment : Fragment() {
+    private lateinit var binding: FragmentProfileUserTabBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentProfileUserTabBinding.inflate(inflater, container, false)
 
         lifecycleScope.launch {
             profileApi()
         }
+
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -103,4 +103,6 @@ class ProfileFragment : Fragment() {
         }
         return accessToken
     }
+
+
 }

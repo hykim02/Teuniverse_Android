@@ -11,9 +11,6 @@
         android:label="홈"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_navigation_home_to_profileFragment2"
-            app:destination="@id/profileFragment" />
-        <action
             android:id="@+id/action_navigation_home_to_navigation_vote"
             app:destination="@id/navigation_vote" />
         <action
@@ -28,6 +25,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_communityDetail"
             app:destination="@id/navigation_communityDetail" />
+        <action
+            android:id="@+id/action_navigation_home_to_newProfileFragment"
+            app:destination="@id/newProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_vote"
@@ -35,8 +35,8 @@
         android:label="투표"
         tools:layout="@layout/fragment_vote" >
         <action
-            android:id="@+id/action_navigation_vote_to_profileFragment2"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_navigation_vote_to_newProfileFragment"
+            app:destination="@id/newProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_community"
@@ -47,8 +47,8 @@
             android:id="@+id/action_navigation_community_to_navigation_communityDetail"
             app:destination="@id/navigation_communityDetail" />
         <action
-            android:id="@+id/action_navigation_community_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_navigation_community_to_newProfileFragment"
+            app:destination="@id/newProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
@@ -56,8 +56,8 @@
         android:label="일정"
         tools:layout="@layout/fragment_calendar" >
         <action
-            android:id="@+id/action_navigation_calendar_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_navigation_calendar_to_newProfileFragment"
+            app:destination="@id/newProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_media"
@@ -65,8 +65,8 @@
         android:label="미디어"
         tools:layout="@layout/fragment_media" >
         <action
-            android:id="@+id/action_navigation_media_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_navigation_media_to_newProfileFragment"
+            app:destination="@id/newProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_communityDetail"
@@ -78,8 +78,8 @@
             app:destination="@id/navigation_community" />
     </fragment>
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.teuniverse.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        android:id="@+id/newProfileFragment"
+        android:name="com.example.teuniverse.NewProfileFragment"
+        android:label="fragment_new_profile"
+        tools:layout="@layout/fragment_new_profile" />
 </navigation>
