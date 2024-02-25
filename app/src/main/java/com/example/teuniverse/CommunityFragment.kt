@@ -235,17 +235,6 @@ class CommunityFragment : Fragment() {
             Log.d("popupVoteMission", "PopupVote dialog dismissed.")
         }
     }
-
-    //요약 보여주기 - 공지 전체내용 중 일부(15자)만 가져옴
-    //15자 이상인 경우 일부를 자르고 "..."을 붙임
-    private fun getContextPreview(context: String): String {
-        return if (context.isNotEmpty()) {
-            val trimmedText = if (context.length >= 85) "${context.substring(0, 85)}..." else context
-            trimmedText
-        } else {
-            ""
-        }
-    }
 }
 
 

@@ -40,10 +40,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
         HeartStateDB.init(holder.itemView.context)
-        val editor = HeartStateDB.getInstance().edit()
-        val getData = HeartStateDB.getInstance().all
         val sharedPrefsFile = File("${holder.itemView.context.filesDir.parent}/shared_prefs/HeartState.xml")
-        val isExist = sharedPrefsFile.exists()
 
         initHeartState(holder, currentItem) // 하트 상태 초기화
 
