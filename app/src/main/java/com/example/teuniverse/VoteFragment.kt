@@ -130,8 +130,10 @@ class VoteFragment : Fragment() {
         fanAll.visibility = View.VISIBLE
         fanBest.visibility = View.VISIBLE
         // 색상 변경
-        fanTab.setTextColor(Color.parseColor("#FFFFFFFF"))
-        artistTab.setTextColor(Color.parseColor("#7C7C7C"))
+        fanTab.setTextColor(Color.parseColor("#5C21A4"))
+        fanTab.setBackgroundResource(R.drawable.custom_background_top)
+        artistTab.setTextColor(Color.parseColor("#FFFFFFFF"))
+        artistTab.setBackgroundResource(R.drawable.vote_tab_unclicked)
         // 팬: 전체
         fanAll.setOnClickListener {
             lifecycleScope.launch {
@@ -158,8 +160,10 @@ class VoteFragment : Fragment() {
             fanAll.visibility = View.GONE
             fanBest.visibility = View.GONE
             // 색상 변경
-            fanTab.setTextColor(Color.parseColor("#7C7C7C"))
+            fanTab.setTextColor(Color.parseColor("#FFFFFFFF"))
+            fanTab.setBackgroundResource(R.drawable.vote_tab_unclicked)
             artistTab.setTextColor(Color.parseColor("#5C21A4"))
+            artistTab.setBackgroundResource(R.drawable.custom_background_top)
         }
     }
 
