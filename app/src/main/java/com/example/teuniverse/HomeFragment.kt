@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
 
         // 프로필
         binding.imgBtnPerson.setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_profileFragment2)
+            findNavController().navigate(R.id.action_navigation_home_to_profileFragment)
         }
     }
 

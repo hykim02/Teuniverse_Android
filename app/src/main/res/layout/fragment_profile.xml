@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".NewProfileFragment">
+    tools:context=".ProfileFragment">
 
     <View
         android:id="@+id/divider"
@@ -76,19 +76,20 @@
             android:orientation="vertical">
 
             <com.google.android.material.tabs.TabLayout
+                android:id="@+id/profile_tablayout"
                 android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
-                app:tabBackground="@drawable/profile_tab_unselected"
-                app:tabTextColor="@color/profile_tab_text_color"
-                app:tabIndicator="@drawable/profile_tab_selected"
                 android:backgroundTint="@color/lg"
-                app:tabTextAppearance="@style/tab_text_appearance"
                 android:translationZ="5dp"
+                app:tabBackground="@drawable/profile_tab_unselected"
+                app:tabIndicator="@drawable/profile_tab_selected"
                 app:tabIndicatorHeight="0dp"
-                app:tabMode="fixed">
+                app:tabMode="fixed"
+                app:tabTextAppearance="@style/tab_text_appearance"
+                app:tabTextColor="@color/profile_tab_text_color">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -102,11 +103,11 @@
             </com.google.android.material.tabs.TabLayout>
 
             <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/tab_view"
+                android:id="@+id/tab_view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/custom_ranking_list"
-                android:translationZ="5dp"/>
+                android:translationZ="5dp" />
         </LinearLayout>
     </ScrollView>
 

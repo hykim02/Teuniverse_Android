@@ -79,7 +79,7 @@ class VoteFragment : Fragment() {
 
         profileBtn = view.findViewById(R.id.img_btn_person)
         profileBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_vote_to_profileFragment2)
+            findNavController().navigate(R.id.action_navigation_vote_to_profileFragment)
         }
 
         // 뷰 숨기기
