@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.view.size
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +31,7 @@ class ProfileCommunityTabFragment : Fragment() {
     private lateinit var binding: FragmentProfileCommunityTabBinding
     private lateinit var feedList: ArrayList<CommunityPostItem>
     private lateinit var communityAdapter: CommunityPostAdapter
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,7 +93,6 @@ class ProfileCommunityTabFragment : Fragment() {
         for (i in feedsData.indices) {
             val feed = feedsData[i]
             if (feed.userProfile.id == userID) {
-                binding.tabCommunityRv.visibility = View.VISIBLE
                 // user
                 val userProfileData = feed.userProfile
                 val userName = userProfileData.nickName
@@ -107,28 +109,21 @@ class ProfileCommunityTabFragment : Fragment() {
                 feedList.add(
                     CommunityPostItem(
                         feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
-            } else { // 작성한 게시물이 없는 경우
-                binding.tabCommunityRv.visibility = GONE
-
-                // TextView 생성 및 텍스트 설정
-                val textView = TextView(requireContext())
-                textView.text = "아직 작성한 게시물이 없습니다"
-                textView.setTextColor(Color.parseColor("#7C7C7C"))
-                textView.textSize = 16f
-                val textView2 = TextView(requireContext())
-                textView2.text = "커뮤니티에서 글을 작성해보세요!"
-                textView2.setTextColor(Color.parseColor("#1A1836"))
-                textView.textSize = 20f
-
-                // 생성한 TextView 레이아웃에 추가
-                val containerLayout = view?.findViewById<ViewGroup>(R.id.tab_ct)
-                containerLayout?.addView(textView)
-                containerLayout?.addView(textView2)
-
             }
         }
-        // 어댑터에 데이터가 변경되었음을 알리기
         communityAdapter.notifyDataSetChanged()
+
+        if (feedList.size >= 1) { // 내가 작성한 게시글이 하나라도 있다면
+            binding.tabCommunityRv.visibility = View.VISIBLE
+            binding.tv.visibility = GONE
+            binding.tv2.visibility = GONE
+            // 어댑터에 데이터가 변경되었음을 알리기
+            communityAdapter.notifyDataSetChanged()
+        } else { // 내가 작성한 게시글이 하나도 없다면
+            binding.tabCommunityRv.visibility = GONE
+            binding.tv.visibility = View.VISIBLE
+            binding.tv2.visibility = View.VISIBLE
+        }
     }
 
     // 일정 시간 추출 함수
