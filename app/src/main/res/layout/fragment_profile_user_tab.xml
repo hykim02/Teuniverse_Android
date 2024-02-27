@@ -75,8 +75,8 @@
 
                 <ImageView
                     android:id="@+id/user_profile"
-                    android:layout_width="86dp"
-                    android:layout_height="86dp"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
                     android:src="@drawable/profile"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                     app:layout_constraintEnd_toEndOf="@+id/imageView3"

@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,6 +26,15 @@ class ProfileUserTabFragment : Fragment() {
 
         lifecycleScope.launch {
             profileApi()
+        }
+
+        // 수정하기 버튼
+        binding.editBtn.setOnClickListener {
+            showPopupEditDialog()
+        }
+
+        binding.editTv.setOnClickListener {
+            showPopupEditDialog()
         }
 
         // Inflate the layout for this fragment
@@ -104,5 +114,13 @@ class ProfileUserTabFragment : Fragment() {
         return accessToken
     }
 
+    // 수정하기 팝업창
+    private fun showPopupEditDialog() {
+        val popupProfileEdit = PopupProfileEdit(requireContext())
+        popupProfileEdit.show()
 
+        popupProfileEdit.setOnDismissListener {
+            Log.d("popupProfileEdit", "popupProfileEdit dialog dismissed.")
+        }
+    }
 }

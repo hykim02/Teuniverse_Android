@@ -99,20 +99,6 @@ class CommunityPostActivity: AppCompatActivity() {
 //        setContents(null)
     }
 
-    // 게시글 내용 타입 설정
-    private fun setContents(imgFile: MultipartBody.Part?) {
-        binding.applyBtn.setOnClickListener {
-            val content = binding.postContent.text.toString() // 게시글 내용
-            val contentBody = RequestBody.create("text/plain".toMediaType(), content)
-            // 서버로 데이터 전송
-            lifecycleScope.launch {
-                postToServerApi(contentBody, imgFile)
-            }
-            navigateToCommunityFragment()
-            finish()
-        }
-    }
-
     // 게시물 등록
     private fun applyBtn() {
         binding.applyBtn.setOnClickListener {
@@ -137,18 +123,6 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
-    private fun createMultipartBody2(selectedImagePath: String?): MultipartBody.Part? {
-        selectedImagePath?.let { path ->
-            val file = File(path)
-            if (file.exists()) {
-                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
-            }
-        }
-        return null
-    }
-
-
     // Uri에서 실제 파일 경로 가져오기
     private fun getPathFromUri(uri: Uri?): String? {
         val projection = arrayOf(MediaStore.Images.Media.DATA)
@@ -159,10 +133,6 @@ class CommunityPostActivity: AppCompatActivity() {
         }
         return null
     }
-
-
-
-
 
     // 이미지 파일 타입 설정
     private fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
@@ -211,8 +181,6 @@ class CommunityPostActivity: AppCompatActivity() {
             }
         })
     }
-
-
 
     // 게시글 데이터 서버로 전송
     private suspend fun postToServerApi(content: RequestBody, imageFile: MultipartBody.Part?) {

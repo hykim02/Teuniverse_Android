@@ -457,5 +457,4 @@ class VoteFragment : Fragment() {
             Log.d("popupVoteMission", "PopupVote dialog dismissed.")
         }
     }
-
 }
