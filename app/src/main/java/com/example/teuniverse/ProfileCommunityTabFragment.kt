@@ -1,17 +1,19 @@
 package com.example.teuniverse
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.teuniverse.databinding.FragmentProfileCommunityTabBinding
 import com.kakao.sdk.user.model.User
@@ -88,6 +90,7 @@ class ProfileCommunityTabFragment : Fragment() {
         for (i in feedsData.indices) {
             val feed = feedsData[i]
             if (feed.userProfile.id == userID) {
+                binding.tabCommunityRv.visibility = View.VISIBLE
                 // user
                 val userProfileData = feed.userProfile
                 val userName = userProfileData.nickName
@@ -104,6 +107,24 @@ class ProfileCommunityTabFragment : Fragment() {
                 feedList.add(
                     CommunityPostItem(
                         feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
+            } else { // 작성한 게시물이 없는 경우
+                binding.tabCommunityRv.visibility = GONE
+
+                // TextView 생성 및 텍스트 설정
+                val textView = TextView(requireContext())
+                textView.text = "아직 작성한 게시물이 없습니다"
+                textView.setTextColor(Color.parseColor("#7C7C7C"))
+                textView.textSize = 16f
+                val textView2 = TextView(requireContext())
+                textView2.text = "커뮤니티에서 글을 작성해보세요!"
+                textView2.setTextColor(Color.parseColor("#1A1836"))
+                textView.textSize = 20f
+
+                // 생성한 TextView 레이아웃에 추가
+                val containerLayout = view?.findViewById<ViewGroup>(R.id.tab_ct)
+                containerLayout?.addView(textView)
+                containerLayout?.addView(textView2)
+
             }
         }
         // 어댑터에 데이터가 변경되었음을 알리기

@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.example.teuniverse.databinding.FragmentProfileBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
@@ -23,6 +25,10 @@ class ProfileFragment : Fragment() {
 
         binding.imgBtnVote.setOnClickListener {
             showPopupMissionDialog()
+        }
+
+        lifecycleScope.launch {
+            getNumberOfVotesApi()
         }
 
         return binding.root
