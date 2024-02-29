@@ -37,6 +37,16 @@ class ProfileUserTabFragment : Fragment() {
             showPopupEditDialog()
         }
 
+        // 최애 아티스트 변경
+        binding.modifyBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SignupSelectArtistActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.modifyTv.setOnClickListener {
+            val intent = Intent(requireContext(), SignupSelectArtistActivity::class.java)
+            startActivity(intent)
+        }
         // Inflate the layout for this fragment
         return binding.root
     }

@@ -1,5 +1,7 @@
 package com.example.teuniverse
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -54,6 +57,10 @@ class CommunityDetailFragment : Fragment() {
         // 하트 클릭이벤트
         binding.like.setOnClickListener {
             setHeartState()
+        }
+
+        binding.btnOption.setOnClickListener {
+            showPopupMenu(requireContext())
         }
 
         // 댓글 리사이클러뷰 어댑터 연결
@@ -380,4 +387,68 @@ class CommunityDetailFragment : Fragment() {
             }
         }
     }
+
+    // 피드 삭제 api
+    private suspend fun deleteFeedApi(feedId: String) {
+        Log.d("deleteFeedsApi 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<SignUpResponse> = withContext(
+                    Dispatchers.IO) {
+                    DeleteFeedInstance.deleteFeedService().deleteFeed(feedId, accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theDeleteFeed: SignUpResponse? = response.body()
+                    if (theDeleteFeed != null) {
+                        Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 피드 삭제 및 수정 옵션
+    private fun showPopupMenu(context: Context) {
+        val popupMenu = PopupMenu(context, binding.btnOption)
+        popupMenu.inflate(R.menu.option_menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.delete -> {
+                    // 삭제 버튼 클릭 시 처리
+                    Log.d("삭제할 feedID", binding.feedID.text.toString())
+                    lifecycleScope.launch {
+                        deleteFeedApi(binding.feedID.text.toString())
+                    }
+                    true
+                }
+                R.id.edit -> {
+                    // 수정 버튼 클릭 시 처리
+//                    editEvent(item)
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+
+//    private fun editEvent(item: CommunityPostItem) {
+//        val intent = Intent(view.context, CommunityEditActivity::class.java)
+//        val bundle = Bundle().apply {
+//            putInt("feedId", item.feedId)
+//            putString("postImg", item.postImg.toString())
+//            putString("postSummary", item.postSummary.toString())
+//        }
+//        intent.putExtras(bundle)
+//        view.context.startActivity(intent)
+//    }
 }
