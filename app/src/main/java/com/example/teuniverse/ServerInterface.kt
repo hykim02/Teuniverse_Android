@@ -77,10 +77,10 @@ interface PopupVoteInterface {
 // 회원 가입 완료
 interface SignUpInterface {
     @POST("user/register")
-    @Headers("accept: application/json",
-        "Content-Type: application/json")
+    @Headers("accept: */*",
+        "Content-Type: multipart/form-data")
     suspend fun signUpSuccess(
-        @Body request: SignUpRequest
+        @Part request: SignUpRequest
     ): Response<SignUpResponse>
 }
 

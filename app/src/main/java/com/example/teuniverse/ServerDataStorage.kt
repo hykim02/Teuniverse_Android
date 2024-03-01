@@ -157,7 +157,8 @@ data class SignUpRequest(
     val id: Long,
     val nickName: String,
     val thumbnailUrl: String,
-    val favoriteArtistId: Int
+    val favoriteArtistId: Int,
+    val imageFile: String?
 )
 
 // 커뮤니티 피드 조회

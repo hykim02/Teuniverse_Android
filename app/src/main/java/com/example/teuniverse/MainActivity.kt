@@ -59,11 +59,11 @@ class MainActivity : AppCompatActivity() {
         val kakaoLogin = findViewById<ImageButton>(R.id.kakao_login)
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
-//        ServiceAccessTokenDB.init(this)
-//        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-//
-//        tokenEditor.clear()
-//        tokenEditor.apply()
+        ServiceAccessTokenDB.init(this)
+        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+
+        tokenEditor.clear()
+        tokenEditor.apply()
 
 //        ScheduleTypeDB.init(this)
 //        val editor = ScheduleTypeDB.getInstance().edit()
@@ -193,6 +193,7 @@ class MainActivity : AppCompatActivity() {
         val userData = serverResponse?.data
 
         if (userData != null) {
+            Log.d("userData", userData.toString())
             // 이미 존재하는 회원 true
             if (userData.isExistUser) {
                 Log.d("isExistUser", userData.isExistUser.toString())

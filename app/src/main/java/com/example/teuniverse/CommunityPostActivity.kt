@@ -39,7 +39,6 @@ class CommunityPostActivity: AppCompatActivity() {
     private lateinit var binding: ActivityCommunityPostBinding
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
-    private val READ_EXTERNAL_STORAGE_REQUEST = 123
     private lateinit var bitmap: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -42,7 +42,6 @@ class PopupProfileEdit(context: Context): Dialog(context) {
                     binding.setNickname.setText(truncatedText)
                     binding.setNickname.setSelection(10)
                 }
-
                 updateButtonColor(s)
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

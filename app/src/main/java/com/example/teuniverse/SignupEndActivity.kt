@@ -3,8 +3,6 @@ package com.example.teuniverse
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +41,7 @@ class SignupEndActivity:AppCompatActivity() {
             lifecycleScope.launch {
                 if (id != null && nickName != null
                     && thumbnailUrl != null && favoriteArtistId != null) {
-                    signUpInfoToServer(id, nickName, thumbnailUrl, favoriteArtistId)
+                    signUpInfoToServer(id, nickName, thumbnailUrl, favoriteArtistId, null)
                 }
             }
             val intent = Intent(this, MenuActivity::class.java)
@@ -52,13 +50,13 @@ class SignupEndActivity:AppCompatActivity() {
         }
     }
 
-    private suspend fun signUpInfoToServer(id: Long, nickName: String, thumbnailUrl: String, favoriteArtistId: Int) {
+    private suspend fun signUpInfoToServer(id: Long, nickName: String, thumbnailUrl: String, favoriteArtistId: Int, imageFile: String?) {
         Log.d("signUpInfoToServer 함수", "호출 성공")
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val signupRequest = SignUpRequest(id = id, nickName = nickName, thumbnailUrl = thumbnailUrl, favoriteArtistId = favoriteArtistId)
+            val signupRequest = SignUpRequest(id = id, nickName = nickName, thumbnailUrl = thumbnailUrl, favoriteArtistId = favoriteArtistId, imageFile = imageFile )
             val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
                 SignUpInstance.signUpSuccessService().signUpSuccess(signupRequest)
             }
