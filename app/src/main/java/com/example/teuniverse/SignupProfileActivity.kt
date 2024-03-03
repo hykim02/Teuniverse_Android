@@ -3,15 +3,12 @@ package com.example.teuniverse
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -19,18 +16,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 
 class SignupProfileActivity:AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 1
@@ -85,10 +72,8 @@ class SignupProfileActivity:AppCompatActivity() {
         }
         // 닉네임 설정
         val nickName = allEntries.getValue("nickName")
-        name.text = Editable.Factory.getInstance().newEditable(nickName.toString())
-        nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
-        textCount.text = name.text.length.toString()
-        countText()
+
+        countText(nickName)
     }
 
     // 갤러리에서 선택한 이미지를 처리하는 메서드
@@ -129,7 +114,17 @@ class SignupProfileActivity:AppCompatActivity() {
         return null
     }
 
-    private fun countText() {
+    private fun countText(nickName: Any?) {
+        name.text = Editable.Factory.getInstance().newEditable(nickName.toString())
+        nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
+        textCount.text = name.text.length.toString()
+
+        nextBtn.setOnClickListener {
+            val intent = Intent(this, SignupApprovalActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         name.addTextChangedListener(object: TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textCount.text = "${s?.length ?: 0}"

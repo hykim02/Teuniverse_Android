@@ -2,6 +2,7 @@ package com.example.teuniverse
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
@@ -36,11 +37,14 @@ class SignupApprovalActivity:AppCompatActivity() {
 
         detail.setOnClickListener {
             val uri = "https://axiomatic-bottle-f3c.notion.site/5652ff1803d24772b8516eb2a95c324e"
-
+            var intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+            startActivity(intent)
         }
 
         detail2.setOnClickListener {
             val uri = "https://axiomatic-bottle-f3c.notion.site/42127cf9966e49d38b50a8190d969852"
+            var intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+            startActivity(intent)
         }
         nextBtn.setOnClickListener {
             if(chk1.isChecked && chk2.isChecked && chk4.isChecked){
