@@ -48,14 +48,12 @@ object MonthlyFanRankingInstance {
 }
 
 
-
 // 로그인 토큰 전송 요청 & 응답
 object LoginInstance {
     fun userLoginService(): LoginInterface {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-//            .client(client)
             .build()
             .create(LoginInterface::class.java)
     }

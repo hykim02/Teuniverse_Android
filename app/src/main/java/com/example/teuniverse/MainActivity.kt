@@ -15,6 +15,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
@@ -59,11 +60,16 @@ class MainActivity : AppCompatActivity() {
         val kakaoLogin = findViewById<ImageButton>(R.id.kakao_login)
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
+        // 최초 로그인 시 필히 실행
         ServiceAccessTokenDB.init(this)
         val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+        UserInfoDB.init(this)
+        val userEditor = UserInfoDB.getInstance().edit()
 
         tokenEditor.clear()
         tokenEditor.apply()
+        userEditor.clear()
+        userEditor.apply()
 
 //        ScheduleTypeDB.init(this)
 //        val editor = ScheduleTypeDB.getInstance().edit()
@@ -72,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
 //        kakaoUnlink()
 
+        // 기존회원인지 여부확인하는 조건 다시 설정하기
         kakaoLogin.setOnClickListener{
             ServiceAccessTokenDB.init(this)
             val serviceToken = ServiceAccessTokenDB.getInstance()
@@ -79,11 +86,13 @@ class MainActivity : AppCompatActivity() {
             val userData = UserInfoDB.getInstance()
 
             if (serviceToken.contains("accessToken") && userData.contains("id")) {
+                Log.d("db확인","회원")
                 // 화면 전환
                 val intent = Intent(this, MenuActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
+                Log.d("db확인","비회원")
                 kakaoLoginApi()
             }
         }
@@ -96,6 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun kakaoLoginApi() {
+        Log.d("kakaoLoginApi", "실행")
         // 카카오계정으로 로그인 공통 callback 구성
         // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -151,35 +161,33 @@ class MainActivity : AppCompatActivity() {
 
     // loginType -> 0: 카카오, 1: 네이버
     private suspend fun pushToken(loginType: Int, accessToken: String) {
-        Log.d("pushToken 함수", "호출 성공")
-
-        try {
-            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
-            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
-            // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val loginRequest = LoginRequest(loginType = loginType, accessToken = accessToken)
-            val response: Response<ServerResponse<LoginData>> = withContext(Dispatchers.IO) {
-                LoginInstance.userLoginService().userLogin(loginRequest)
-            }
-
-            // Response를 처리하는 코드
-            if (response.isSuccessful) {
-                Log.d("서버 연동",response.message() + response.code())
-
-                val serverResponse: ServerResponse<LoginData>? = response.body()
-                if (serverResponse != null) {
-                    Log.d("serverResponse", serverResponse.toString())
-                    handleResponse(serverResponse)
-                } else {
-                    handleError("Response body is null.")
+        Log.d("pushToken 함수", "실행")
+        runBlocking {
+            try {
+                // IO 스레드에서 Retrofit 호출 및 코루틴 실행
+                // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
+                // Response는 Retrofit이 제공하는 HTTP 응답 객체
+                val loginRequest = LoginRequest(loginType = loginType, accessToken = accessToken)
+                val response: Response<ServerResponse<LoginData>> = withContext(Dispatchers.IO) {
+                    LoginInstance.userLoginService().userLogin(loginRequest)
                 }
-            } else {
-                Log.d("error", "서버 연동 실패")
-                handleError("Error: ${response.code()} - ${response.message()}")
+                // Response를 처리하는 코드
+                if (response.isSuccessful) {
+                    Log.d("서버 연동",response.message() + response.code())
+                    val serverResponse: ServerResponse<LoginData>? = response.body()
+                    if (serverResponse != null) {
+                        handleResponse(serverResponse)
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Log.d("error", "서버 연동 실패")
+                    handleError("Error: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                // 예외 처리 코드
+                handleError(e.message ?: "Unknown error occurred.")
             }
-        } catch (e: Exception) {
-            // 예외 처리 코드
-            handleError(e.message ?: "Unknown error occurred.")
         }
     }
 

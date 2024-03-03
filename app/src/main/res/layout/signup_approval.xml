@@ -80,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
 
     <TextView
-        android:id="@+id/name6"
+        android:id="@+id/detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toTopOf="@+id/approval1" />
 
     <TextView
-        android:id="@+id/name11"
+        android:id="@+id/detail2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -108,21 +108,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/approval2"
         app:layout_constraintStart_toEndOf="@+id/approval2"
         app:layout_constraintTop_toTopOf="@+id/approval2" />
-
-    <TextView
-        android:id="@+id/approval_show4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/textview_stroke_ap"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:text="보기"
-        android:textSize="12sp"
-        android:textColor="@color/ap"
-        app:layout_constraintBottom_toBottomOf="@+id/approval4"
-        app:layout_constraintStart_toEndOf="@+id/approval4"
-        app:layout_constraintTop_toTopOf="@+id/approval4" />
 
     <TextView
         android:id="@+id/approval1"

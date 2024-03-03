@@ -9,12 +9,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +39,7 @@ class SignupProfileActivity:AppCompatActivity() {
     private lateinit var profileImg: ImageView
     private lateinit var name: EditText
     private lateinit var nextBtn: Button
+    private lateinit var textCount: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_profile)
@@ -46,6 +49,7 @@ class SignupProfileActivity:AppCompatActivity() {
         val galleryBtn = findViewById<ImageButton>(R.id.gallery_btn)
         profileImg = findViewById(R.id.profile_image)
         name = findViewById(R.id.set_name)
+        textCount = findViewById(R.id.text_count)
 
         setInitialProfile()
 
@@ -69,30 +73,22 @@ class SignupProfileActivity:AppCompatActivity() {
         // 내부 저장소에 저장된 모든 키-값 쌍 가져오기
         val allEntries: Map<String, *> = userDB.all
 
+        // 프로필 설정
         val profileUrl = allEntries.getValue("thumbnailUrl")
-        Log.d("profileUrl", profileUrl.toString())
-        Glide.with(this)
-            .load(profileUrl)
-            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
-            .into(profileImg)
-
-        val nickName = allEntries.getValue("nickName")
-        Log.d("nickName", nickName.toString())
-        name.text = Editable.Factory.getInstance().newEditable(nickName.toString())
-
-        if (name.text != null) {
-            nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
-            nextBtn.setOnClickListener {
-                val intent = Intent(this, SignupApprovalActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+        if (profileUrl != null) {
+            Glide.with(this)
+                .load(profileUrl)
+                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                .into(profileImg)
         } else {
-            nextBtn.setBackgroundColor(Color.parseColor("#BBBBBB"))
-            nextBtn.setOnClickListener {
-                Toast.makeText(this,"이름을 입력하세요", Toast.LENGTH_SHORT).show()
-            }
+            Log.d("thumnailUrl","존재 안함")
         }
+        // 닉네임 설정
+        val nickName = allEntries.getValue("nickName")
+        name.text = Editable.Factory.getInstance().newEditable(nickName.toString())
+        nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
+        textCount.text = name.text.length.toString()
+        countText()
     }
 
     // 갤러리에서 선택한 이미지를 처리하는 메서드
@@ -117,7 +113,7 @@ class SignupProfileActivity:AppCompatActivity() {
 
         MainActivity.UserInfoDB.init(this)
         val editor = MainActivity.UserInfoDB.getInstance().edit()
-        editor.putString("imageFile", selectedImageUri.toString())
+        editor.putString("imageFile", selectedImagePath.toString())
         editor.putString("thumbnailUrl", null)
         editor.apply()
     }
@@ -131,5 +127,45 @@ class SignupProfileActivity:AppCompatActivity() {
             return cursor.getString(columnIndex)
         }
         return null
+    }
+
+    private fun countText() {
+        name.addTextChangedListener(object: TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                textCount.text = "${s?.length ?: 0}"
+
+                // 10자 제한
+                if ((s?.length ?: 0) > 10) {
+                    val truncatedText = s?.substring(0, 10)
+                    name.setText(truncatedText)
+                    name.setSelection(10)
+                }
+                updateButtonColor(s)
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+    }
+
+    private fun updateButtonColor(text: CharSequence?) {
+        if (text.isNullOrBlank()) {
+            // 텍스트가 비어있을 때
+            nextBtn.setBackgroundColor(Color.parseColor("#BBBBBB"))
+            nextBtn.setOnClickListener {
+                Toast.makeText(this, "이름을 입력하세요", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            // 텍스트가 작성되었을 때
+            nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
+            nextBtn.setOnClickListener {
+                val intent = Intent(this, SignupApprovalActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
     }
 }

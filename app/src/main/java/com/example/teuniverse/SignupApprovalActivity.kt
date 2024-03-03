@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -16,6 +17,8 @@ class SignupApprovalActivity:AppCompatActivity() {
     private lateinit var chk1: CheckBox
     private lateinit var chk2: CheckBox
     private lateinit var chk4: CheckBox
+    private lateinit var detail: TextView
+    private lateinit var detail2: TextView
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -26,9 +29,19 @@ class SignupApprovalActivity:AppCompatActivity() {
         chk1 = findViewById(R.id.checkBox)
         chk2 = findViewById(R.id.checkBox2)
         chk4 = findViewById(R.id.checkBox4)
+        detail = findViewById(R.id.detail)
+        detail2 = findViewById(R.id.detail2)
 
         setCheckBoxListeners()
 
+        detail.setOnClickListener {
+            val uri = "https://axiomatic-bottle-f3c.notion.site/5652ff1803d24772b8516eb2a95c324e"
+
+        }
+
+        detail2.setOnClickListener {
+            val uri = "https://axiomatic-bottle-f3c.notion.site/42127cf9966e49d38b50a8190d969852"
+        }
         nextBtn.setOnClickListener {
             if(chk1.isChecked && chk2.isChecked && chk4.isChecked){
                 val intent = Intent(this, SignupSelectArtistActivity::class.java)
