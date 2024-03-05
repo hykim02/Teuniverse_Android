@@ -38,6 +38,11 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     private lateinit var filterSpinner: Spinner
     private lateinit var searchTxt: EditText
     private lateinit var artistList: ArtistServerResponse<ArtistData>
+    private lateinit var finalArtistImg: ImageView
+    private lateinit var finalArtistName: TextView
+    private lateinit var starImg: ImageView
+    private lateinit var removetxt: TextView
+    private lateinit var parentView: ConstraintLayout
 
     object SelectArtistDB {
         private lateinit var sharedPreferences: SharedPreferences
@@ -63,6 +68,11 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         val backBtn = findViewById<ImageButton>(R.id.back_btn_detail)
         filterSpinner = findViewById(R.id.select_spinner)
         searchTxt = findViewById(R.id.search_txt)
+        finalArtistImg = findViewById(R.id.selected_artist)
+        finalArtistName = findViewById(R.id.select_tv3)
+        starImg = findViewById(R.id.select_img_star)
+        removetxt = findViewById(R.id.select_tv4)
+        parentView = findViewById(R.id.select_constLayout)
 
         searchTxt.hint = "아티스트를 검색하세요"
 
@@ -71,29 +81,46 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
             }
-
             override fun afterTextChanged(s: Editable?) {
                 SelectArtistDB.init(this@SignupSelectArtistActivity)
                 val db = SelectArtistDB.getInstance().all
                 val searchText = s.toString()
 
-                for (i in artistList.data.indices) {
-                    // 일치하는 아티스트인 경우 해당 이미지뷰와 텍스트뷰 표시, 그렇지 않으면 숨김
-                    val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
-                    val imageView = findViewById<ImageView>(imageViewId)
+                // 모든 자식 요소에 대해 반복
+                for (i in 0 until gridLayout.childCount) {
+                    val childView = gridLayout.getChildAt(i)
+                    // 각 자식 요소의 visibility를 GONE으로 설정
+                    childView.visibility = View.GONE
+                }
 
-                    val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
-                    val textView = findViewById<TextView>(textViewId)
+                if (searchText.isBlank()) {
+                    // 검색 텍스트가 비어 있을 때, 모든 레이아웃 보이도록 설정
+                    for (i in artistList.data.indices) {
+                        val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
+                        val imageView = findViewById<ImageView>(imageViewId)
 
-                    val artistName = db.getValue("artist${i+1}.name")
-                    val artistImg = db.getValue("artist${i+1}.imageUrl")
+                        val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
+                        val textView = findViewById<TextView>(textViewId)
 
-                    if (artistName != null) {
-                        if (artistName == searchText) {
+                        imageView.visibility = View.VISIBLE
+                        textView.visibility = View.VISIBLE
+                    }
+                } else {
+                    for (i in artistList.data.indices) {
+                        // 일치하는 아티스트인 경우 해당 이미지뷰와 텍스트뷰 표시, 그렇지 않으면 숨김
+                        val imageViewId = resources.getIdentifier("artist11", "id", packageName)
+                        val imageView = findViewById<ImageView>(imageViewId)
+
+                        val textViewId = resources.getIdentifier("name11", "id", packageName)
+                        val textView = findViewById<TextView>(textViewId)
+
+                        val artistName = db.getValue("artist${i+1}.name")
+                        val artistImg = db.getValue("artist${i+1}.imageUrl")
+
+                        if (artistName != null && artistName == searchText) {
                             // 일치하는 경우
                             Glide.with(this@SignupSelectArtistActivity) // 'this' 대신 'this@YourActivity' 사용
                                 .load(artistImg)
@@ -103,10 +130,28 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                             imageView.visibility = View.VISIBLE
                             textView.visibility = View.VISIBLE
                             break
-                        } else {
-                            // 일치하지 않는 경우
-                            imageView.visibility = View.GONE
-                            textView.visibility = View.GONE
+                        }
+
+                        imageView.setOnClickListener {
+                            val clickedText = textView.text
+                            val clickedImg = imageView.drawable
+
+                            Glide.with(this@SignupSelectArtistActivity)
+                                .load(clickedImg)
+                                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                                .into(finalArtistImg)
+
+                            finalArtistName.text = clickedText
+
+                            // 특정 텍스트 뷰 삭제
+                            parentView.removeView(starImg)
+                            parentView.removeView(removetxt)
+
+                            // 텍스트 글씨의 색상 변경
+                            finalArtistName.setTextColor(Color.parseColor("#5C21A4"))
+                            // 텍스트 글씨의 크기 변경
+                            val newSize = 28f
+                            finalArtistName.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize)
                         }
                     }
                 }
@@ -332,11 +377,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         val userEditor = MainActivity.UserInfoDB.getInstance().edit()
         // 선택된 아티스트 이름 저장한 변수
         val clickedName = childView.contentDescription?.toString()
-        val finalArtistImg = findViewById<ImageView>(R.id.selected_artist)
-        val finalArtistName = findViewById<TextView>(R.id.select_tv3)
-        val starImg = findViewById<ImageView>(R.id.select_img_star)
-        val removetxt = findViewById<TextView>(R.id.select_tv4)
-        val parentView = findViewById<ConstraintLayout>(R.id.select_constLayout)
+        Log.d("clickedName", clickedName.toString())
         // 내부 저장소에 저장된 모든 키-값 쌍 가져오기
         val allEntries: Map<String, *> = artistDB.all
         var foundKey: String? = null
