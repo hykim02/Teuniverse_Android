@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -19,6 +21,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.children
 import androidx.gridlayout.widget.GridLayout
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -34,6 +37,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     private lateinit var gridLayout: GridLayout
     private lateinit var filterSpinner: Spinner
     private lateinit var searchTxt: EditText
+    private lateinit var artistList: ArtistServerResponse<ArtistData>
 
     object SelectArtistDB {
         private lateinit var sharedPreferences: SharedPreferences
@@ -61,6 +65,53 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         searchTxt = findViewById(R.id.search_txt)
 
         searchTxt.hint = "아티스트를 검색하세요"
+
+        // 검색 기능 구현
+        searchTxt.addTextChangedListener ( object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                SelectArtistDB.init(this@SignupSelectArtistActivity)
+                val db = SelectArtistDB.getInstance().all
+                val searchText = s.toString()
+
+                for (i in artistList.data.indices) {
+                    // 일치하는 아티스트인 경우 해당 이미지뷰와 텍스트뷰 표시, 그렇지 않으면 숨김
+                    val imageViewId = resources.getIdentifier("artist${i + 1}", "id", packageName)
+                    val imageView = findViewById<ImageView>(imageViewId)
+
+                    val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
+                    val textView = findViewById<TextView>(textViewId)
+
+                    val artistName = db.getValue("artist${i+1}.name")
+                    val artistImg = db.getValue("artist${i+1}.imageUrl")
+
+                    if (artistName != null) {
+                        if (artistName == searchText) {
+                            // 일치하는 경우
+                            Glide.with(this@SignupSelectArtistActivity) // 'this' 대신 'this@YourActivity' 사용
+                                .load(artistImg)
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(imageView)
+                            textView.text = artistName.toString()
+                            imageView.visibility = View.VISIBLE
+                            textView.visibility = View.VISIBLE
+                            break
+                        } else {
+                            // 일치하지 않는 경우
+                            imageView.visibility = View.GONE
+                            textView.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+        })
 
         backBtn.setOnClickListener {
             val intent = Intent(this, SignupApprovalActivity::class.java)
@@ -99,7 +150,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 }
                 // Response를 처리하는 코드
                 if (response.isSuccessful) {
-                    val artistList: ArtistServerResponse<ArtistData>? = response.body()
+                    artistList = response.body()!!
                     if (artistList != null) {
                         Log.d("artistList", "${artistList.statusCode} ${artistList.message}")
                         // 정렬 기준에 따른 순서
@@ -144,15 +195,19 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         Log.d("artistList",artistList.toString())
         //SharedPreferences 초기화
         SelectArtistDB.init(this)
-        Log.d("selectedArtistDB","초기화")
         val editor = SelectArtistDB.getInstance().edit()
+
+        // 모든 자식 요소에 대해 반복
+        for (i in 0 until gridLayout.childCount) {
+            val childView = gridLayout.getChildAt(i)
+            // 각 자식 요소의 visibility를 GONE으로 설정
+            childView.visibility = View.GONE
+        }
 
         // artistList를 처리 코드
         if (artistList != null) {
-            Log.d("artistList","null이 아님")
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in artistList.data.indices) {
-                Log.d("for문","실행")
                 // 이미지 데이터 추출
                 val artistData = artistList.data[i]
                 val imageUrl = artistData.thumbnailUrl
@@ -174,17 +229,17 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 val textViewId = resources.getIdentifier("name${i + 1}", "id", packageName)
                 val textView = findViewById<TextView>(textViewId)
 
+                imageView.visibility = View.VISIBLE
+                textView.visibility = View.VISIBLE
+
                 // Glide를 사용하여 이미지 로딩
                 Glide.with(this)
                     .load(imageUrl)
                     .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
                     .into(imageView)
 
-                // 텍스트뷰에 아티스트 데이터 연결
-                textView.text = nametxt
-
-                // 이미지뷰에 아티스트 데이터 연결
-                imageView.contentDescription = nametxt
+                textView.text = nametxt // 텍스트뷰에 아티스트 데이터 연결
+                imageView.contentDescription = nametxt // 이미지뷰에 아티스트 데이터 연결
             }
             editor.apply()
         } else {
