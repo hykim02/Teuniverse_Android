@@ -58,7 +58,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         gridLayout = findViewById(R.id.artist_gridlayout)
         val backBtn = findViewById<ImageButton>(R.id.back_btn_detail)
         filterSpinner = findViewById(R.id.select_spinner)
-        searchTxt = findViewById<EditText>(R.id.search_txt)
+        searchTxt = findViewById(R.id.search_txt)
 
         searchTxt.hint = "아티스트를 검색하세요"
 
@@ -68,16 +68,16 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             finish()
         }
 
-        var spinnerList = listOf("인기순", "가나다순")
-        var spinnerAdapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerList)
-        filterSpinner.adapter = spinnerAdapter
-        filterSpinner.setSelection(0)
-
         // 코루틴을 사용하여 getArtistList 함수 호출
         lifecycleScope.launch {
             getArtistList()
         }
+
+        val spinnerList = listOf("인기순", "가나다순")
+        val spinnerAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerList)
+        filterSpinner.adapter = spinnerAdapter
+        filterSpinner.setSelection(0)
 
         // 아티스트 선택 함수
         selectedArtist()
@@ -88,28 +88,15 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     // 서버에서 아티스트 데이터 가져오는 함수
     private suspend fun getArtistList() {
         Log.d("getArtistList 함수", "호출 성공")
-
-        MainActivity.ServiceAccessTokenDB.init(this)
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
-        var accessToken: String? = null
-
-        for ((key, value) in serviceTokenDB.all) {
-            if (key == "accessToken") {
-                accessToken = "Bearer " + value.toString()
-//                Log.d("accessToken",accessToken)
-            }
-        }
-
+        val accessToken = getAccessToken()
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
             // Response는 Retrofit이 제공하는 HTTP 응답 객체
-            val serviceToken = R.string.serviceToken
             if (accessToken != null) {
                 val response: Response<ArtistServerResponse<ArtistData>> = withContext(Dispatchers.IO) {
                     SelectArtistInstance.getArtistService().getArtist(accessToken)
                 }
-
                 // Response를 처리하는 코드
                 if (response.isSuccessful) {
                     val artistList: ArtistServerResponse<ArtistData>? = response.body()
@@ -117,6 +104,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                         Log.d("artistList", "${artistList.statusCode} ${artistList.message}")
                         // 정렬 기준에 따른 순서
                         handleResponse(artistList)
+                        // 스피너 정렬 이벤트
                         filterSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(
                                 parent: AdapterView<*>?,
@@ -152,14 +140,19 @@ class SignupSelectArtistActivity:AppCompatActivity() {
     // 받아온 아티스트 목록을 반복문을 통해 출력
     @SuppressLint("DiscouragedApi")
     private fun handleResponse(artistList: ArtistServerResponse<ArtistData>?) {
+        Log.d("handleResponse","실행")
+        Log.d("artistList",artistList.toString())
         //SharedPreferences 초기화
         SelectArtistDB.init(this)
+        Log.d("selectedArtistDB","초기화")
         val editor = SelectArtistDB.getInstance().edit()
 
         // artistList를 처리 코드
         if (artistList != null) {
+            Log.d("artistList","null이 아님")
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
             for (i in artistList.data.indices) {
+                Log.d("for문","실행")
                 // 이미지 데이터 추출
                 val artistData = artistList.data[i]
                 val imageUrl = artistData.thumbnailUrl
@@ -168,7 +161,6 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
                 // 각 아티스트에 대한 고유한 키 생성
                 val artistKey = "artist$id"
-
                 // 내부 저장소에 데이터 저장
                 editor.putInt("$artistKey.id", id)
                 editor.putString("$artistKey.imageUrl", imageUrl)
@@ -195,6 +187,8 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 imageView.contentDescription = nametxt
             }
             editor.apply()
+        } else {
+            Log.d("artistList","null")
         }
     }
 
@@ -385,5 +379,19 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    // db에서 토큰 가져오기
+    private fun getAccessToken(): String? {
+        MainActivity.ServiceAccessTokenDB.init(this)
+        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        var accessToken: String? = null
+
+        for ((key, value) in serviceTokenDB.all) {
+            if (key == "accessToken") {
+                accessToken = "Bearer " + value.toString()
+            }
+        }
+        return accessToken
     }
 }

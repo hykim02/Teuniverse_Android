@@ -30,7 +30,7 @@ class SignupApprovalActivity:AppCompatActivity() {
         chk1 = findViewById(R.id.checkBox)
         chk2 = findViewById(R.id.checkBox2)
         chk4 = findViewById(R.id.checkBox4)
-        detail = findViewById(R.id.detail)
+        detail = findViewById(R.id.name6)
         detail2 = findViewById(R.id.detail2)
 
         setCheckBoxListeners()

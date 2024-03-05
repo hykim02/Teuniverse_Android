@@ -58,10 +58,11 @@ dependencies {
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.14.1")
 
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6") // 네비게이션
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7") // 네비게이션
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
     implementation("com.github.bumptech.glide:glide:4.14.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.14.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
 
     implementation ("com.kakao.sdk:v2-user:2.19.0") // 사용하는 SDK 버전에 맞게 변경

@@ -61,15 +61,15 @@ class MainActivity : AppCompatActivity() {
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
         // 최초 로그인 시 필히 실행
-        ServiceAccessTokenDB.init(this)
-        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-        UserInfoDB.init(this)
-        val userEditor = UserInfoDB.getInstance().edit()
-
-        tokenEditor.clear()
-        tokenEditor.apply()
-        userEditor.clear()
-        userEditor.apply()
+//        ServiceAccessTokenDB.init(this)
+//        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+//        UserInfoDB.init(this)
+//        val userEditor = UserInfoDB.getInstance().edit()
+//
+//        tokenEditor.clear()
+//        tokenEditor.apply()
+//        userEditor.clear()
+//        userEditor.apply()
 
 //        ScheduleTypeDB.init(this)
 //        val editor = ScheduleTypeDB.getInstance().edit()
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             if (serviceToken.contains("accessToken") && userData.contains("id")) {
                 Log.d("db확인","회원")
                 // 화면 전환
-                val intent = Intent(this, MenuActivity::class.java)
+                val intent = Intent(this, SignupSelectArtistActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
