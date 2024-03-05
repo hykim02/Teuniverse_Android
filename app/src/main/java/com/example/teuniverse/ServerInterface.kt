@@ -76,11 +76,15 @@ interface PopupVoteInterface {
 
 // 회원 가입 완료
 interface SignUpInterface {
+    @Multipart
     @POST("user/register")
-    @Headers("accept: */*",
-        "Content-Type: multipart/form-data")
+    @Headers("accept: */*")
     suspend fun signUpSuccess(
-        @Part request: SignUpRequest
+        @Part("id") id: RequestBody,
+        @Part("nickName") nickName: RequestBody,
+        @Part("favoriteArtistId") favoriteArtistId: RequestBody,
+        @Part("thumbnailUrl") thumbnailUrl: RequestBody,
+        @Part imageFile: MultipartBody.Part?
     ): Response<SignUpResponse>
 }
 

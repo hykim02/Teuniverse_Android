@@ -22,7 +22,6 @@ import com.bumptech.glide.request.RequestOptions
 class SignupProfileActivity:AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
-    private lateinit var bitmap: Bitmap
     private lateinit var profileImg: ImageView
     private lateinit var name: EditText
     private lateinit var nextBtn: Button

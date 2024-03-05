@@ -87,8 +87,6 @@ class CommunityPostActivity: AppCompatActivity() {
         val drawable: Drawable? = binding.postImg.drawable
         //Drawable에서 Bitmap으로 변환
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-//        val imageFile = createMultipartBody(bitmap) // MultipartBody 생성 함수
-//        setContents(imageFile)
     }
 
     // 이미지 첨부 안하는 경우 처리
@@ -112,7 +110,6 @@ class CommunityPostActivity: AppCompatActivity() {
                 }
             } else { // 이미지 첨부 안한 경우
                 binding.postImg.visibility = GONE
-
                 lifecycleScope.launch {
                     postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
                 }

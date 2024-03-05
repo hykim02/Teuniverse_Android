@@ -154,11 +154,10 @@ data class PopupVoteData(
 
 // 회원 가입 완료 요청
 data class SignUpRequest(
-    val id: Long,
+    val id: String,
     val nickName: String,
     val thumbnailUrl: String,
-    val favoriteArtistId: Int,
-    val imageFile: String?
+    val favoriteArtistId: String
 )
 
 // 커뮤니티 피드 조회
