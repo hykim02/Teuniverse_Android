@@ -85,6 +85,7 @@ class CommunityPostActivity: AppCompatActivity() {
 
         // 이미지뷰에서 Drawable 얻기
         val drawable: Drawable? = binding.postImg.drawable
+        Log.d("drawable", drawable.toString())
         //Drawable에서 Bitmap으로 변환
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
     }
@@ -93,7 +94,6 @@ class CommunityPostActivity: AppCompatActivity() {
     private fun noneImage() {
         // 이미지뷰를 숨기도록 설정
         binding.postImg.visibility = GONE
-//        setContents(null)
     }
 
     // 게시물 등록

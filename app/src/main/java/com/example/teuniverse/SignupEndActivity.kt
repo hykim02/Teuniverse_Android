@@ -1,12 +1,17 @@
 package com.example.teuniverse
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,14 +29,20 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 class SignupEndActivity:AppCompatActivity() {
+    private val YOUR_PERMISSION_REQUEST_CODE = 123
+    private lateinit var homeButton: Button
     private lateinit var bitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_end)
 
-        val homeButton = findViewById<Button>(R.id.btn_home)
+        homeButton = findViewById(R.id.btn_home)
 
+        continueWithImageFileAccess()
+    }
+
+    private fun continueWithImageFileAccess() {
         MainActivity.UserInfoDB.init(this)
         val userInfo = MainActivity.UserInfoDB.getInstance().all
         val id = userInfo.getValue("id").toString()
@@ -43,10 +54,12 @@ class SignupEndActivity:AppCompatActivity() {
         if (userInfo.containsKey("thumbnailUrl")) {
             thumbnailUrl = userInfo.getValue("thumbnailUrl").toString()
         } else {
-            val imgFile = userInfo.getValue("imageFile").toString()
-            val file = File(imgFile)
-            val requestFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-            imageFile = MultipartBody.Part.createFormData("file", file.name, requestFile)
+            bitmap = userInfo.getValue("imageFile") as Bitmap
+            Log.d("imgFilePath", bitmap.toString())
+            // 파일 경로를 통해 Bitmap으로 변환
+//            bitmap = BitmapFactory.decodeFile(imgFilePath)
+//            Log.d("bitmap", bitmap.toString())
+            imageFile = createMultipartBody(bitmap)
             thumbnailUrl = null.toString()
         }
 
@@ -55,18 +68,38 @@ class SignupEndActivity:AppCompatActivity() {
         val favoriteArtistIdRequestBody = favoriteArtistId.toRequestBody("text/plain".toMediaType())
         val thumbnailUrlRequestBody = thumbnailUrl.toRequestBody("text/plain".toMediaTypeOrNull())
 
-        Log.d("idRequestBody", idRequestBody.toString())
-        Log.d("nickNameRequestBody", nickNameRequestBody.toString())
-        Log.d("favoriteArtistIdRequestBody", favoriteArtistIdRequestBody.toString())
-        Log.d("thumbnailUrl", thumbnailUrlRequestBody.toString())
-        Log.d("imageFile", imageFile.toString())
-
         homeButton.setOnClickListener{
             // 코루틴을 사용하여 pushToken 함수 호출
             lifecycleScope.launch {
                 signUpInfoToServer(idRequestBody, nickNameRequestBody, thumbnailUrlRequestBody, favoriteArtistIdRequestBody, imageFile)
             }
         }
+    }
+
+    // 이미지 파일 타입 설정
+    private fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
+        val file = bitmapToFile(bitmap) // Bitmap을 File로 변환하는 함수
+        // 이미지 파일을 RequestBody로 변환
+        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        // MultipartBody.Part 생성
+        return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+    }
+
+    // Bitmap을 File로 변환하는 함수
+    private fun bitmapToFile(bitmap: Bitmap): File {
+        val filesDir = applicationContext.filesDir
+        val imageFile = File(filesDir, "imageFile.jpg")
+
+        val os: OutputStream
+        try {
+            os = FileOutputStream(imageFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+            os.flush()
+            os.close()
+        } catch (e: Exception) {
+            Log.e("bitmapToFile", "Error writing bitmap to file: $e")
+        }
+        return imageFile
     }
 
     private suspend fun signUpInfoToServer(id: RequestBody, nickName: RequestBody, thumbnailUrl: RequestBody, favoriteArtistId: RequestBody, imageFile: MultipartBody.Part?) {
@@ -100,9 +133,7 @@ class SignupEndActivity:AppCompatActivity() {
     }
 
     private fun handleResponse(signUpSuccess: SignUpResponse) {
-        if (signUpSuccess != null) {
-           Log.d("회원가입", signUpSuccess.toString())
-        }
+        Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)
         finish()

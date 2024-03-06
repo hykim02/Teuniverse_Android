@@ -86,8 +86,12 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             }
             override fun afterTextChanged(s: Editable?) {
                 SelectArtistDB.init(this@SignupSelectArtistActivity)
+                val artistDB = SelectArtistDB.getInstance()
                 val db = SelectArtistDB.getInstance().all
+                MainActivity.UserInfoDB.init(this@SignupSelectArtistActivity)
+                val userEditor = MainActivity.UserInfoDB.getInstance().edit()
                 val searchText = s.toString()
+                var foundKey: String? = null
 
                 // 모든 자식 요소에 대해 반복
                 for (i in 0 until gridLayout.childCount) {
@@ -134,24 +138,48 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
                         imageView.setOnClickListener {
                             val clickedText = textView.text
+                            Log.d("clickedText", clickedText.toString())
                             val clickedImg = imageView.drawable
 
-                            Glide.with(this@SignupSelectArtistActivity)
-                                .load(clickedImg)
-                                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
-                                .into(finalArtistImg)
+                            // 원하는 값과 일치하는 키 찾기
+                            for ((key, value) in db) {
+                                // 해당 키 찾은 경우
+                                if (value == clickedText) {
+                                    foundKey = key // ex) artist2.name
+                                    break
+                                }
+                            }
+                            // 원하는 값과 일치하는 키를 찾았을 때의 처리
+                            if (foundKey != null) {
+                                //artist1.name에서 artist1만 추출
+                                val extractedKey = foundKey!!.substringBefore(".name")
+                                val resultID = "$extractedKey.id"
 
-                            finalArtistName.text = clickedText
+                                // 최애 아티스트 ID
+                                val finalArtistID = artistDB.getInt(resultID, 0)
+                                Log.d("finalArtistID", finalArtistID.toString())
 
-                            // 특정 텍스트 뷰 삭제
-                            parentView.removeView(starImg)
-                            parentView.removeView(removetxt)
+                                // DB에 저장
+                                userEditor.putInt("favoriteArtistId", finalArtistID)
+                                userEditor.apply()
 
-                            // 텍스트 글씨의 색상 변경
-                            finalArtistName.setTextColor(Color.parseColor("#5C21A4"))
-                            // 텍스트 글씨의 크기 변경
-                            val newSize = 28f
-                            finalArtistName.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize)
+                                Glide.with(this@SignupSelectArtistActivity)
+                                    .load(clickedImg)
+                                    .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                                    .into(finalArtistImg)
+
+                                finalArtistName.text = clickedText
+
+                                // 특정 텍스트 뷰 삭제
+                                parentView.removeView(starImg)
+                                parentView.removeView(removetxt)
+
+                                // 텍스트 글씨의 색상 변경
+                                finalArtistName.setTextColor(Color.parseColor("#5C21A4"))
+                                // 텍스트 글씨의 크기 변경
+                                val newSize = 28f
+                                finalArtistName.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize)
+                            }
                         }
                     }
                 }

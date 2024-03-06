@@ -61,7 +61,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         datesWithDots = mutableListOf()
 
         scheduleList = ArrayList()
-        // 리사이클러뷰 어댑터 연결gi
+        // 리사이클러뷰 어댑터 연결
         calendarAdapter = CalendarAdapter(scheduleList)
 
         binding.imgBtnPerson.setOnClickListener {
