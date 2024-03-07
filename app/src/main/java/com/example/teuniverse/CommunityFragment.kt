@@ -14,7 +14,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -25,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -125,6 +125,8 @@ class CommunityFragment : Fragment() {
         Log.d("handleGetFeeds함수","호출 성공")
         val artistProfileData = theFeeds.data.artistProfile
         val feedsData = theFeeds.data.feeds
+        val dataFormat5 = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss")
+        val localTime = dataFormat5.format(System.currentTimeMillis())
 
         // 아티스트 데이터
         Glide.with(this)
@@ -145,9 +147,9 @@ class CommunityFragment : Fragment() {
             val feedImg = feed.thumbnailUrl
             var feedContent = feed.content
             val heartCount = feed.likeCount
-            val time = "11분 전"
+            val time = setTime(feed.createdAt)
             val commentCount = feed.commentCount
-            setTime(feed.createdAt)
+            Log.d("게시물 시간", time)
 
             feedList.add(
                 CommunityPostItem(
@@ -157,22 +159,129 @@ class CommunityFragment : Fragment() {
         communityAdapter.notifyDataSetChanged()
     }
 
-    // 일정 시간 추출 함수
+    // 시간 설정
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun setTime(time: String){
+    private fun setTime(serverTime: String): String {
+        // 서버에서 받아온 시간 문자열
+        val serverDateTime = LocalDateTime.parse(serverTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+        Log.d("serverTime", serverDateTime.toString())
+        // 현재 로컬 시간 가져오기
+        val localDateTime = LocalDateTime.now()
+        Log.d("localTime", localDateTime.toString())
+        // 두 시간 간의 차이 계산
+        val duration = Duration.between(localDateTime, serverDateTime)
+
+        // 차이를 초, 분, 시간, 일, 월, 년으로 계층적으로 나누어 표현
+        return when {
+            duration.seconds < 60 -> "${duration.seconds}초 전"
+            duration.toMinutes() < 60 -> "${duration.toMinutes()}분 전"
+            duration.toHours() < 24 -> "${duration.toHours()}시간 전"
+            duration.toDays() < 31 -> "${duration.toDays()}일 전"
+            duration.toDays() < 365 -> "${duration.toDays() / 30}개월 전"
+            else -> "${duration.toDays() / 365}년 전"
+        }
+    }
+
+    // 일정 시간 추출 함수
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    private fun setTime(time: String){
+//        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+//        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+//        val dateTime = LocalDateTime.parse(time, formatter)
+//        val currentTime : Long = System.currentTimeMillis() // ms로 반환
+//
+//        // LocalDateTime에서 시간과 분 추출
+//        val year = dateTime.year.toString()
+//        val hour = dateTime.hour.toString()
+//        val minute = dateTime.minute.toString()
+//        val month = dateTime.monthValue
+//        val day = dateTime.dayOfMonth
+//        val second = dateTime.second.toString()
+//        val dataFormat5 = SimpleDateFormat("yyyy-M-d-HH:mm:ss")
+//        Log.d("서버 시간", "$year-$month-$day-$hour:$minute:$second") // 2024-3-7-23:5:2
+//        Log.d("로컬 시간", dataFormat5.format(currentTime)) // 2024-3-7-14:44:56
+//    }
+
+    // 초 단위
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun timeSecond(localTime: String, serverTime: String): Int {
         // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        val dateTime = LocalDateTime.parse(time, formatter)
-        val currentTime : Long = System.currentTimeMillis() // ms로 반환
+        val dateTime = LocalDateTime.parse(serverTime, formatter)
+        val serverSecond = dateTime.second
+        val localSecond = localTime.split(":")[2].toInt()
+        Log.d("초 단위", "$serverSecond-$localSecond")
 
-        // LocalDateTime에서 시간과 분 추출
-        val hour = dateTime.hour.toString()
-        val minute = dateTime.minute.toString()
-        val month = dateTime.monthValue
-        val day = dateTime.dayOfMonth
-        val dataFormat5 = SimpleDateFormat("yyyy-MM-dd-hh:mm:ss")
-        Log.d("서버 시간", "$hour-$minute-$month-$day")
-        Log.d("로컬 시간", dataFormat5.format(currentTime))
+        return localSecond - serverSecond
+    }
+
+    // 분 단위
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun timeMinute(localTime: String, serverTime: String): Int {
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(serverTime, formatter)
+        val serverMinute = dateTime.minute
+        val localMinute = localTime.split(":")[1].toInt()
+        Log.d("분 단위", "$serverMinute-$localMinute")
+
+        return localMinute - serverMinute
+    }
+
+    // 시간 단위
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun timeHour(localTime: String, serverTime: String): Int {
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(serverTime, formatter)
+        val serverHour = dateTime.hour
+        val splt = localTime.split(":")[0]
+        val localHour = splt.split("-")[3].toInt()
+        Log.d("시간 단위", "$serverHour-$localHour")
+
+        return localHour - serverHour
+    }
+
+    // day 단위
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun timeDay(localTime: String, serverTime: String): Int {
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(serverTime, formatter)
+        val serverDay = dateTime.hour
+        val splt = localTime.split(":")[0]
+        val localDay = splt.split("-")[2].toInt()
+        Log.d("day 단위", "$serverDay-$localDay")
+
+        return localDay - serverDay
+    }
+
+    // month 단위
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun timeMonth(localTime: String, serverTime: String): Int {
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(serverTime, formatter)
+        val serverMonth = dateTime.hour
+        val splt = localTime.split(":")[0]
+        val localMonth = splt.split("-")[1].toInt()
+        Log.d("Month 단위", "$serverMonth-$localMonth")
+
+        return localMonth - serverMonth
+    }
+
+    // year 단위
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun timeYear(localTime: String, serverTime: String): Int {
+        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val dateTime = LocalDateTime.parse(serverTime, formatter)
+        val serverYear = dateTime.hour
+        val splt = localTime.split(":")[0]
+        val localYear = splt.split("-")[0].toInt()
+        Log.d("Year 단위", "$serverYear-$localYear")
+
+        return localYear - serverYear
     }
 
     // db에서 토큰 가져오기

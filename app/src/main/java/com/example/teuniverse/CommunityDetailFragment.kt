@@ -2,6 +2,7 @@ package com.example.teuniverse
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +26,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.io.File
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class CommunityDetailFragment : Fragment() {
 
@@ -31,6 +38,7 @@ class CommunityDetailFragment : Fragment() {
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var commentList: ArrayList<CommentItem>
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,6 +84,7 @@ class CommunityDetailFragment : Fragment() {
         return bundle?.getString("feedId")
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun detailFeedApi(feedId: String) {
         Log.d("detailFeedsApi 함수", "호출 성공")
         val accessToken = getAccessToken()
@@ -102,6 +111,7 @@ class CommunityDetailFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun detailHandleResponse(detailFeedData: ServerResponse<CommunityDetailData>) {
         val detailData = detailFeedData.data
         val commentData = detailData.comments
@@ -122,8 +132,8 @@ class CommunityDetailFragment : Fragment() {
         } else {
             binding.postImg.visibility = GONE
         }
-
-
+        binding.term.text = setTime(detailData.createdAt)
+        Log.d("상세 피드 시간", binding.term.text.toString())
         binding.postContent.text = detailData.content
         binding.heartCount.text = detailData.likeCount.toString()
         binding.commentCount.text = detailData.commentCount.toString()
@@ -134,7 +144,8 @@ class CommunityDetailFragment : Fragment() {
             val userImg = comment.userProfile.thumbnailUrl
             val nickname = comment.userProfile.nickName
             val content = comment.content
-            val time = "7분 전"
+            val time = setTime(comment.createdAt)
+            Log.d("댓글 시간", time)
             val commentId = comment.id
             commentList.add(CommentItem(userImg, nickname, time, content, commentId))
         }
@@ -148,7 +159,39 @@ class CommunityDetailFragment : Fragment() {
         commentAdapter.notifyDataSetChanged()
     }
 
+    // 시간 설정
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setTime(serverTime: String): String {
+        // 서버에서 받아온 시간 문자열
+        val serverDateTime = LocalDateTime.parse(serverTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+            .atZone(ZoneOffset.UTC) // UTC로 변환
+
+        Log.d("serverTime", serverDateTime.toString())
+
+        // 현재 로컬 시간 가져오기 (24시간 형식)
+        val localDateTime = LocalDateTime.now() // 로컬 시간
+
+        // 두 시간 간의 차이 계산
+        val duration = Duration.between(serverDateTime.toLocalDateTime(), localDateTime)
+
+        Log.d("localDateTime", localDateTime.toString())
+
+        // 차이를 초, 분, 시간, 일, 월, 년으로 계층적으로 나누어 표현
+        return when {
+            duration.seconds < 0 -> "방금 전"
+            duration.seconds < 60 -> "${duration.seconds}초 전"
+            duration.toMinutes() < 60 -> "${duration.toMinutes()}분 전"
+            duration.toHours() < 24 -> "${duration.toHours()}시간 전"
+            duration.toDays() < 31 -> "${duration.toDays()}일 전"
+            duration.toDays() < 365 -> "${duration.toDays() / 30}개월 전"
+            else -> "${duration.toDays() / 365}년 전"
+        }
+    }
+
+
+
     // 댓글 생성 api
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun createCommentApi(feedId: String, content: String) {
         Log.d("createCommentApi 함수", "호출 성공")
         val accessToken = getAccessToken()
@@ -193,6 +236,7 @@ class CommunityDetailFragment : Fragment() {
                 }
             }
 
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun afterTextChanged(s: Editable?) {
                 // 텍스트 변경 후에 호출되는 메서드
                 binding.btnEnroll.setOnClickListener {
@@ -215,6 +259,7 @@ class CommunityDetailFragment : Fragment() {
     }
 
     // 댓글 생성
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun handleResponse(theComment: ServerResponse<CreateCommentResponse>) {
         MainActivity.UserInfoDB.init(requireContext())
         val getData = MainActivity.UserInfoDB.getInstance().all
@@ -225,7 +270,8 @@ class CommunityDetailFragment : Fragment() {
         val userImg = getData.getValue("thumbnailUrl").toString()
         val content = response.comment.content
         val commentId = response.comment.id
-        val time = "1분 전"
+        val time = setTime(response.comment.createdAt)
+        Log.d("댓글 생성 후 시간", time)
 
         commentList.add(CommentItem(userImg, nickname, time, content, commentId))
 
