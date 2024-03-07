@@ -1,19 +1,43 @@
 package com.example.teuniverse
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.teuniverse.databinding.PopupProfileEditBinding
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 class PopupProfileEdit(context: Context): Dialog(context) {
     private lateinit var binding: PopupProfileEditBinding
+    private val PICK_IMAGE_REQUEST = 1
+    private var selectedImagePath: String? = null
+    private lateinit var bitmap: Bitmap
+
+    companion object {
+        private const val PICK_IMAGE_REQUEST_CODE = 100
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +52,20 @@ class PopupProfileEdit(context: Context): Dialog(context) {
         binding.close.setOnClickListener {
             dismiss()
         }
+
+        binding.galleryBtn.setOnClickListener {
+            openGallery()
+        }
+    }
+
+    private fun openGallery() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        (context as? Activity)?.startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
+    }
+
+    fun setUserProfileImage(uri: Uri) {
+        // 이미지뷰에 선택한 이미지 설정
+        binding.userProfile.setImageURI(uri)
     }
 
     // 글자수 세기

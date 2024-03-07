@@ -1,6 +1,8 @@
 package com.example.teuniverse
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +20,11 @@ import retrofit2.Response
 
 class ProfileUserTabFragment : Fragment() {
     private lateinit var binding: FragmentProfileUserTabBinding
+
+    companion object {
+        private const val PICK_IMAGE_REQUEST_CODE = 100
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,11 +46,21 @@ class ProfileUserTabFragment : Fragment() {
 
         // 최애 아티스트 변경
         binding.modifyBtn.setOnClickListener {
+            MainActivity.UserInfoDB.init(requireContext())
+            val editor = MainActivity.UserInfoDB.getInstance().edit()
+            editor.putInt("edit", 1)
+            editor.apply()
+
             val intent = Intent(requireContext(), SignupSelectArtistActivity::class.java)
             startActivity(intent)
         }
 
         binding.modifyTv.setOnClickListener {
+            MainActivity.UserInfoDB.init(requireContext())
+            val editor = MainActivity.UserInfoDB.getInstance().edit()
+            editor.putInt("edit", 1)
+            editor.apply()
+
             val intent = Intent(requireContext(), SignupSelectArtistActivity::class.java)
             startActivity(intent)
         }
@@ -127,10 +144,22 @@ class ProfileUserTabFragment : Fragment() {
     // 수정하기 팝업창
     private fun showPopupEditDialog() {
         val popupProfileEdit = PopupProfileEdit(requireContext())
+        // 다이얼로그가 닫힌 후에 결과를 받기 위해 프래그먼트의 childFragmentManager를 사용
         popupProfileEdit.show()
-
         popupProfileEdit.setOnDismissListener {
             Log.d("popupProfileEdit", "popupProfileEdit dialog dismissed.")
         }
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (requestCode == PICK_IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+//            val selectedImageUri: Uri? = data.data
+//            selectedImageUri?.let {
+//                // 이미지뷰에 선택한 이미지 설정
+//                PopupProfileEdit(requireContext()).setUserProfileImage(it)
+//            }
+//        }
+//    }
 }

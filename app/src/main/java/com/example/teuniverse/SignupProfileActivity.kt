@@ -98,44 +98,22 @@ class SignupProfileActivity:AppCompatActivity() {
         Log.d("path", selectedImagePath.toString())
 
         Glide.with(this)
-            .asBitmap()
             .load(selectedImageUri)
             .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
-            .into(object : SimpleTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    // Glide에서 비트맵을 얻어와서 필요한 처리를 수행
-                    // resource 변수에 비트맵이 들어 있습니다.
+            .into(profileImg)
 
-                    // 예시: 비트맵을 서버로 전송하거나 필요한 작업을 진행할 수 있습니다.
+        // 이미지뷰에서 Drawable 얻기
+        val drawable: Drawable? = profileImg.drawable
+        Log.d("drawable", drawable.toString())
+        //Drawable에서 Bitmap으로 변환
+        bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
+        Log.d("bitmap", bitmap.toString())
 
-                    // 이미지 파일 경로를 SharedPreferences에 저장
-                    MainActivity.UserInfoDB.init(this@YourActivity)
-                    val editor = MainActivity.UserInfoDB.getInstance().edit()
-                    editor.putString("imageFile", selectedImagePath.toString())
-                    editor.putString("thumbnailUrl", null)
-                    editor.apply()
-                }
-            })
-
-
-
-//        Glide.with(this)
-//            .load(selectedImageUri)
-//            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
-//            .into(profileImg)
-//
-//        // 이미지뷰에서 Drawable 얻기
-//        val drawable: Drawable? = profileImg.drawable
-//        Log.d("drawable", drawable.toString())
-//        //Drawable에서 Bitmap으로 변환
-//        bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-//        Log.d("bitmap", bitmap.toString())
-//
-//        MainActivity.UserInfoDB.init(this)
-//        val editor = MainActivity.UserInfoDB.getInstance().edit()
-//        editor.putString("imageFile", selectedImagePath.toString())
-//        editor.putString("thumbnailUrl", null)
-//        editor.apply()
+        MainActivity.UserInfoDB.init(this)
+        val editor = MainActivity.UserInfoDB.getInstance().edit()
+        editor.putString("imageFile", selectedImagePath.toString())
+        editor.putString("thumbnailUrl", null)
+        editor.apply()
     }
 
     // Uri에서 실제 파일 경로 가져오기

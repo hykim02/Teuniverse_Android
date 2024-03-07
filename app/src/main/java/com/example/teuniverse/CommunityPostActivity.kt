@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.View.GONE
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -99,23 +100,26 @@ class CommunityPostActivity: AppCompatActivity() {
     // 게시물 등록
     private fun applyBtn() {
         binding.applyBtn.setOnClickListener {
-            Log.d("applyBtn", "Clicked!")
             val content = binding.postContent.text.toString() // 게시글 내용
-
-            // 이미지 첨부한 경우
-            if (selectedImagePath != null) {
-                val imageFile = createMultipartBody(bitmap)
-                lifecycleScope.launch {
-                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
+            // 게시글 내용은 10글자 이상이어야 함
+            if (content.length < 10) { // 10글자 미만인 경우
+                Toast.makeText(this,"10글자 이상 작성 해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                // 이미지 첨부한 경우
+                if (selectedImagePath != null) {
+                    val imageFile = createMultipartBody(bitmap)
+                    lifecycleScope.launch {
+                        postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
+                    }
+                } else { // 이미지 첨부 안한 경우
+                    binding.postImg.visibility = GONE
+                    lifecycleScope.launch {
+                        postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
+                    }
                 }
-            } else { // 이미지 첨부 안한 경우
-                binding.postImg.visibility = GONE
-                lifecycleScope.launch {
-                    postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
-                }
+                // 이후에 네비게이션 등 필요한 로직 추가
+                navigateToCommunityFragment()
             }
-            // 이후에 네비게이션 등 필요한 로직 추가
-            navigateToCommunityFragment()
         }
     }
 
@@ -173,7 +177,7 @@ class CommunityPostActivity: AppCompatActivity() {
                 // Not used in this example
             }
             override fun afterTextChanged(s: Editable?) {
-                // Not used in this example
+
             }
         })
     }
@@ -221,16 +225,10 @@ class CommunityPostActivity: AppCompatActivity() {
 
     // close 버튼 클릭 시 호출되는 함수
     private fun navigateToCommunityFragment() {
-        // MenuActivity로 이동하여 CommunityFragment로 이동하는 코드
-        // CommunityFragment로 이동하는 Intent 생성
-        val intent = Intent(this@CommunityPostActivity, MenuActivity::class.java)
-        intent.putExtra("destinationFragment", R.id.navigation_community)
-        // 기존의 액티비티 스택을 모두 지우고 새로운 액티비티 스택을 시작
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        // Intent를 사용하여 CommunityFragment로 이동
-        startActivity(intent)
-        // 현재 액티비티 종료 (선택적)
-        finish()
+        val menuActivityIntent = Intent(this, MenuActivity::class.java)
+        // Intent에 프래그먼트로 이동할 것임을 표시
+        menuActivityIntent.putExtra("goToCommunityFragment", true)
+        startActivity(menuActivityIntent)
     }
 
     // db에서 토큰 가져오기

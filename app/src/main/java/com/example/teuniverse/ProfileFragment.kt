@@ -1,5 +1,8 @@
 package com.example.teuniverse
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -38,9 +41,8 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val profilePagerAdapter = ProfilePagerAdapter(childFragmentManager, lifecycle)
-        profilePagerAdapter.addFragment(ProfileCommunityTabFragment(), "커뮤니티")
         profilePagerAdapter.addFragment(ProfileUserTabFragment(), "회원정보")
-
+        profilePagerAdapter.addFragment(ProfileCommunityTabFragment(), "커뮤니티")
         binding.tabViewPager.adapter = profilePagerAdapter
 
         TabLayoutMediator(binding.profileTablayout, binding.tabViewPager) { tab, position ->

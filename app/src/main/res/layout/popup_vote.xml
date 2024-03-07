@@ -257,6 +257,7 @@
                 android:background="@drawable/btn_solid_mp"
                 android:gravity="center"
                 android:text="투표하기"
+                android:layout_marginRight="10dp"
                 android:textAlignment="center"
                 android:textColor="@color/w"
                 android:textStyle="bold" />

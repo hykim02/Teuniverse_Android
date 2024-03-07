@@ -43,6 +43,42 @@ class MenuActivity: AppCompatActivity() {
             }
             true
         }
+
+        if (intent.getBooleanExtra("goToProfileFragment", false)) {
+            // 프래그먼트 트랜잭션 시작
+            val transaction = supportFragmentManager.beginTransaction()
+            // 프래그먼트 인스턴스 찾기
+            val profileFragment = supportFragmentManager.findFragmentByTag("profileFragment") as? ProfileFragment
+
+            if (profileFragment == null) {
+                // 프래그먼트가 없는 경우 새로 생성
+                val newProfileFragment = ProfileFragment()
+                transaction.replace(R.id.nav_host_fragment, newProfileFragment, "profileFragment")
+            } else {
+                // 프래그먼트가 이미 있는 경우 해당 프래그먼트로 이동
+                transaction.replace(R.id.nav_host_fragment, profileFragment)
+            }
+            // 트랜잭션 커밋
+            transaction.commit()
+        } else if (intent.getBooleanExtra("goToCommunityFragment", false)) {
+            // 프래그먼트 트랜잭션 시작
+            val transaction = supportFragmentManager.beginTransaction()
+            // 프래그먼트 인스턴스 찾기
+            val communityFragment = supportFragmentManager.findFragmentByTag("communityFragment") as? CommunityFragment
+
+            if (communityFragment == null) {
+                // 프래그먼트가 없는 경우 새로 생성
+                val newCommunityFragment = CommunityFragment()
+                transaction.replace(R.id.nav_host_fragment, newCommunityFragment, "communityFragment")
+            } else {
+                // 프래그먼트가 이미 있는 경우 해당 프래그먼트로 이동
+                transaction.replace(R.id.nav_host_fragment, communityFragment)
+            }
+            // 트랜잭션 커밋
+            transaction.commit()
+        }
+
+
     }
 }
 

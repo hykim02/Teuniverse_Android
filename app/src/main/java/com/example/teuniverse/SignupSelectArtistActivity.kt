@@ -187,9 +187,22 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         })
 
         backBtn.setOnClickListener {
-            val intent = Intent(this, SignupApprovalActivity::class.java)
-            startActivity(intent)
-            finish()
+            MainActivity.UserInfoDB.init(this)
+            val db = MainActivity.UserInfoDB.getInstance().all
+            val editor = MainActivity.UserInfoDB.getInstance().edit()
+
+            if (db.getValue("edit") == 1) {
+                val menuActivityIntent = Intent(this, MenuActivity::class.java)
+                // Intent에 프래그먼트로 이동할 것임을 표시
+                menuActivityIntent.putExtra("goToProfileFragment", true)
+                startActivity(menuActivityIntent)
+                editor.putInt("edit", 0)
+                editor.apply()
+            } else {
+                val intent = Intent(this, SignupApprovalActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
         // 코루틴을 사용하여 getArtistList 함수 호출
@@ -497,10 +510,23 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         val nextBtn = findViewById<Button>(R.id.next_btn)
         if (trueCount == 1) {
             nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
+            MainActivity.UserInfoDB.init(this)
+            val db = MainActivity.UserInfoDB.getInstance().all
+            val editor = MainActivity.UserInfoDB.getInstance().edit()
+
             nextBtn.setOnClickListener {
-                val intent = Intent(this, SignupEndActivity::class.java)
-                startActivity(intent)
-                finish()
+                if (db.getValue("edit") == 1) {
+                    val menuActivityIntent = Intent(this, MenuActivity::class.java)
+                    // Intent에 프래그먼트로 이동할 것임을 표시
+                    menuActivityIntent.putExtra("goToProfileFragment", true)
+                    startActivity(menuActivityIntent)
+                    editor.putInt("edit", 0)
+                    editor.apply()
+                } else {
+                    val intent = Intent(this, SignupEndActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             }
         }
     }
