@@ -53,12 +53,7 @@ class CommunityPostActivity: AppCompatActivity() {
         }
 
         binding.closeBtn.setOnClickListener {
-//            val manager: FragmentManager = supportFragmentManager
-//            val transaction: FragmentTransaction = manager.beginTransaction()
-//            transaction.replace(R.id.post_activity, CommunityFragment).commit()
-            val intent = Intent(this, CommunityFragment::class.java)
-            startActivity(intent)
-            finish()
+            navigateToCommunityFragment()
         }
 
         countPostContent() // 글자수 세기 및 500자 제한
@@ -86,7 +81,6 @@ class CommunityPostActivity: AppCompatActivity() {
 
         // 이미지뷰에서 Drawable 얻기
         val drawable: Drawable? = binding.postImg.drawable
-        Log.d("drawable", drawable.toString())
         //Drawable에서 Bitmap으로 변환
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
     }
@@ -159,7 +153,6 @@ class CommunityPostActivity: AppCompatActivity() {
         }
         return imageFile
     }
-
 
     // 글자수 세기
     private fun countPostContent() {

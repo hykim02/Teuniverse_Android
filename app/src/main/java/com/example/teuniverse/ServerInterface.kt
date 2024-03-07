@@ -135,7 +135,7 @@ interface EditFeedInterface {
     @PUT("community/{feedId}")
     @Headers("accept: */*")
     suspend fun editFeed(
-        @Path("feedId") feedId: Int,
+        @Path("feedId") feedId: String,
         @Header("Authorization") authorization: String?,
         @Part("content") content: RequestBody,
         @Part imageFile: MultipartBody.Part?

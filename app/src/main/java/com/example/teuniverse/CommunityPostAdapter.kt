@@ -216,6 +216,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                 R.id.edit -> {
                     // 수정 버튼 클릭 시 처리
                     editEvent(item, view)
+                    Log.d("수정할 피드id", item.feedId.toString())
                     true
                 }
                 else -> false

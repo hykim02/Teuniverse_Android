@@ -10,11 +10,13 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.teuniverse.databinding.CommunityEditItemBinding
+import com.example.teuniverse.databinding.ActivityCommunityEditBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,14 +31,14 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 class CommunityEditActivity : AppCompatActivity() {
-    private lateinit var binding: CommunityEditItemBinding
+    private lateinit var binding: ActivityCommunityEditBinding
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
     private lateinit var bitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = CommunityEditItemBinding.inflate(layoutInflater)
+        binding = ActivityCommunityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.closeBtn.setOnClickListener {
@@ -54,6 +56,7 @@ class CommunityEditActivity : AppCompatActivity() {
 
         editEvent()
         countPostContent() // 글자수 세기
+        applyBtn()
     }
 
     // 게시물 수정 시 넘겨 받은 데이터 처리
@@ -63,87 +66,87 @@ class CommunityEditActivity : AppCompatActivity() {
         if (bundle != null) {
             val postImg = bundle.getString("postImg")
             val postSummary = bundle.getString("postSummary")
+            val feedId = bundle.getInt("feedId")
+
+            binding.feedId.text = feedId.toString()
+            binding.feedId.visibility = View.GONE
+
             // 이미지 로딩
             Glide.with(this)
                 .load(postImg)
-                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
                 .into(binding.postImg)
+
             // 게시글 내용 넣기
             binding.postContent.setText(postSummary)
-            Log.d("bundle;postImg", postImg.toString())
-            Log.d("bundle;postSummary", postSummary.toString())
         } else {
             Log.e("CommunityPostActivity", "Bundle is null")
         }
-        editBtn()
     }
 
-    private fun editBtn() {
-        // editBtn 클릭 리스너 등록
-        binding.editBtn.setOnClickListener {
-            Log.d("editBtn", "Clicked!")
-            val content = binding.postContent.text.toString() // 게시글 내용
-            val bundle = intent.extras
-            val feedId = bundle?.getInt("feedId")
+    // 갤러리에서 선택한 이미지를 처리하는 메서드
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // 이미지 첨부한 경우
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            putImage(data)
+        } else { // 이미지 첨부 안하는 경우
+            noneImage()
+        }
+    }
 
-            // 이미지 첨부한 경우
-            if (selectedImagePath != null) {
-                val imageFile = createMultipartBody(bitmap)
-                lifecycleScope.launch {
-                    if (feedId != null) {
+    // 이미지 첨부한 경우 처리
+    private fun putImage(data: Intent?) {
+        val selectedImageUri = data?.data // 이미지 들고옴
+        Log.d("selectedImageUri", selectedImageUri.toString())
+        selectedImagePath = getPathFromUri(selectedImageUri) // 실제 경로 가져옴
+        Log.d("selectedImagePath", selectedImagePath.toString())
+        binding.postImg.setImageURI(selectedImageUri) // 게시물 작성 페이지에 이미지 넣음
+
+        binding.postImg.visibility = View.VISIBLE // 이미지뷰를 보이도록 설정
+
+        // 이미지뷰에서 Drawable 얻기
+        val drawable: Drawable? = binding.postImg.drawable
+        Log.d("drawable", drawable.toString())
+        //Drawable에서 Bitmap으로 변환
+        bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
+        Log.d("bitmap", bitmap.toString())
+    }
+
+    // 이미지 첨부 안하는 경우 처리
+    private fun noneImage() {
+        // 이미지뷰를 숨기도록 설정
+        binding.postImg.visibility = View.GONE
+    }
+
+    // 게시물 등록
+    private fun applyBtn() {
+        binding.editBtn.setOnClickListener {
+            val content = binding.postContent.text.toString() // 게시글 내용
+            val feedId = binding.feedId.text.toString()
+            // 게시글 내용은 10글자 이상이어야 함
+            if (content.length < 10) { // 10글자 미만인 경우
+                Toast.makeText(this,"10글자 이상 작성 해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                // 이미지 첨부한 경우
+                if (selectedImagePath != null) {
+                    val imageFile = createMultipartBody(bitmap)
+                    lifecycleScope.launch {
                         editFeedApi(RequestBody.create("text/plain".toMediaType(), content), imageFile, feedId)
                     }
-                }
-//            } else if (binding.postImg.drawable != null) { // 이미지 첨부 안한 경우, 이미지뷰에 이미지가 있는지 확인
-//                val imageUri = getImageUriFromDrawable(binding.postImg.drawable)
-//                val imageFilePart = createMultipartBodyFile(imageUri)
-//
-//                lifecycleScope.launch {
-//                    if (feedId != null) {
-//                        if (imageFilePart != null) {
-//                            editFeedApi(RequestBody.create("text/plain".toMediaType(), content), imageFilePart, feedId)
-//                        }
-//                    }
-//                }
-            } else { // 이미지 첨부 안한 경우
-                val emptyImageFile = createEmptyImageFile()
-                val imageFilePart = createMultipartBodyFile(emptyImageFile)
-
-                lifecycleScope.launch {
-                    if (feedId != null) {
-                        editFeedApi(RequestBody.create("text/plain".toMediaType(), content), imageFilePart, feedId)
+                } else { // 이미지 첨부 안한 경우
+                    binding.postImg.visibility = View.GONE
+                    lifecycleScope.launch {
+                        editFeedApi(RequestBody.create("text/plain".toMediaType(), content), null, feedId )
                     }
                 }
+                // 이후에 네비게이션 등 필요한 로직 추가
+                navigateToCommunityFragment()
             }
-
-            // 이후에 네비게이션 등 필요한 로직 추가
-            navigateToCommunityFragment()
-            finish()
         }
-    }
-
-    // Drawable에서 이미지 URI 얻기
-    private fun getImageUriFromDrawable(drawable: Drawable): Uri {
-        val bitmap = (drawable as BitmapDrawable).bitmap
-        val imagesFolder = File(cacheDir, "images")
-        imagesFolder.mkdirs()
-        val file = File(imagesFolder, "temp_image.png")
-
-        val os: OutputStream
-        try {
-            os = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
-            os.flush()
-            os.close()
-        } catch (e: Exception) {
-            Log.e("getImageUriFromDrawable", "Error writing bitmap to file: $e")
-        }
-
-        return Uri.fromFile(file)
     }
 
     // 게시글 수정 API 호출
-    private suspend fun editFeedApi(content: RequestBody, imageFile: MultipartBody.Part, feedId: Int) {
+    private suspend fun editFeedApi(content: RequestBody, imageFile: MultipartBody.Part?, feedId: String) {
         Log.d("editFeedApi 함수", "호출 성공")
         val accessToken = getAccessToken()
         try {
@@ -183,43 +186,27 @@ class CommunityEditActivity : AppCompatActivity() {
         Log.d("Error", errorMessage)
     }
 
-    // 빈 이미지 파일 생성
-    private fun createEmptyImageFile(): File {
-        val emptyBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        return bitmapToFile(emptyBitmap)
+    // Uri에서 실제 파일 경로 가져오기
+    private fun getPathFromUri(uri: Uri?): String? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        contentResolver.query(uri!!, projection, null, null, null)?.use { cursor ->
+            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            return cursor.getString(columnIndex)
+        }
+        return null
     }
 
-    // 이미지 파일을 MultipartBody.Part로 변환
-    private fun createMultipartBodyFile(file: File): MultipartBody.Part {
-        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
-    }
-
-    private fun createMultipartBodyFile(uri: Uri): MultipartBody.Part {
-        val file = File(getPathFromUri(uri)) // Convert Uri to File
-        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
-    }
-
-//    private fun createMultipartBodyFile(uri: Uri?): MultipartBody.Part? {
-//        uri?.let {
-//            val filePath = getPathFromUri(it)
-//            val file = File(filePath)
-//            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-//            return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
-//        }
-//        return null
-//    }
-
-
-    // Bitmap을 File로 변환
+    // 이미지 파일 타입 설정
     private fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
-        val file = bitmapToFile(bitmap)
+        val file = bitmapToFile(bitmap) // Bitmap을 File로 변환하는 함수
+        // 이미지 파일을 RequestBody로 변환
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        // MultipartBody.Part 생성
         return MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
     }
 
-    // Bitmap을 File로 변환
+    // Bitmap을 File로 변환하는 함수
     private fun bitmapToFile(bitmap: Bitmap): File {
         val filesDir = applicationContext.filesDir
         val imageFile = File(filesDir, "imageFile.jpg")
@@ -233,9 +220,9 @@ class CommunityEditActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("bitmapToFile", "Error writing bitmap to file: $e")
         }
-
         return imageFile
     }
+
 
     // 글자수 세기
     private fun countPostContent() {
@@ -261,23 +248,12 @@ class CommunityEditActivity : AppCompatActivity() {
         })
     }
 
-    // Uri에서 실제 파일 경로 가져오기
-    private fun getPathFromUri(uri: Uri?): String {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri!!, projection, null, null, null)
-        val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
-        val path = cursor.getString(columnIndex)
-        cursor.close()
-        return path
-    }
-
     // close 버튼 클릭 시 호출되는 함수
     private fun navigateToCommunityFragment() {
-        // MenuActivity로 이동하여 CommunityFragment로 이동하는 코드
-        val menuIntent = Intent(this, MenuActivity::class.java)
-        menuIntent.putExtra("destinationFragment", R.id.navigation_community)
-        startActivity(menuIntent)
+        val menuActivityIntent = Intent(this, MenuActivity::class.java)
+        // Intent에 프래그먼트로 이동할 것임을 표시
+        menuActivityIntent.putExtra("goToCommunityFragment", true)
+        startActivity(menuActivityIntent)
     }
 
     // db에서 토큰 가져오기

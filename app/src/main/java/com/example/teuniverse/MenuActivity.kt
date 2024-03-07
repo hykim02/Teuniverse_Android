@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -67,9 +68,9 @@ class MenuActivity: AppCompatActivity() {
             val communityFragment = supportFragmentManager.findFragmentByTag("communityFragment") as? CommunityFragment
 
             if (communityFragment == null) {
-                // 프래그먼트가 없는 경우 새로 생성
-                val newCommunityFragment = CommunityFragment()
-                transaction.replace(R.id.nav_host_fragment, newCommunityFragment, "communityFragment")
+                val intent = Intent(this, MenuActivity::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 // 프래그먼트가 이미 있는 경우 해당 프래그먼트로 이동
                 transaction.replace(R.id.nav_host_fragment, communityFragment)
