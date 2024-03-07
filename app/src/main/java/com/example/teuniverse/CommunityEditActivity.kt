@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.teuniverse.databinding.ActivityCommunityEditBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,9 +41,7 @@ class CommunityEditActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.closeBtn.setOnClickListener {
-            val intent = Intent(this, CommunityFragment::class.java)
-            startActivity(intent)
-            finish()
+            navigateToCommunityFragment()
         }
 
         // 갤러리에서 이미지를 선택하기 위한 버튼 클릭 이벤트 등록
@@ -71,10 +68,15 @@ class CommunityEditActivity : AppCompatActivity() {
             binding.feedId.text = feedId.toString()
             binding.feedId.visibility = View.GONE
 
-            // 이미지 로딩
-            Glide.with(this)
-                .load(postImg)
-                .into(binding.postImg)
+            if (postImg != null) {
+                binding.postImg.visibility = View.VISIBLE
+                // 이미지 로딩
+                Glide.with(this)
+                    .load(postImg)
+                    .into(binding.postImg)
+            } else { // 글만 있는 피드인 경우
+                binding.postImg.visibility = View.GONE
+            }
 
             // 게시글 내용 넣기
             binding.postContent.setText(postSummary)
@@ -100,9 +102,8 @@ class CommunityEditActivity : AppCompatActivity() {
         Log.d("selectedImageUri", selectedImageUri.toString())
         selectedImagePath = getPathFromUri(selectedImageUri) // 실제 경로 가져옴
         Log.d("selectedImagePath", selectedImagePath.toString())
-        binding.postImg.setImageURI(selectedImageUri) // 게시물 작성 페이지에 이미지 넣음
-
         binding.postImg.visibility = View.VISIBLE // 이미지뷰를 보이도록 설정
+        binding.postImg.setImageURI(selectedImageUri) // 게시물 작성 페이지에 이미지 넣음
 
         // 이미지뷰에서 Drawable 얻기
         val drawable: Drawable? = binding.postImg.drawable
@@ -154,18 +155,18 @@ class CommunityEditActivity : AppCompatActivity() {
             val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
                 EditFeedInstance.editFeedService().editFeed(feedId, accessToken, content, imageFile)
             }
-
             // Response를 처리하는 코드
             if (response.isSuccessful) {
                 val editFeedSuccess: SignUpResponse? = response.body()
                 if (editFeedSuccess != null) {
                     Log.d("게시물 수정", "${editFeedSuccess.statusCode} ${editFeedSuccess.message}")
-                    handleResponse(editFeedSuccess)
+                    handleResponse()
                 } else {
+                    Toast.makeText(this, "피드 수정 실패", Toast.LENGTH_SHORT).show()
                     handleError("Response body is null.")
                 }
             } else {
-                Log.d("error", "서버 연동 실패")
+                Toast.makeText(this, "피드 수정 실패", Toast.LENGTH_SHORT).show()
                 handleError("Error: ${response.code()} - ${response.message()}")
             }
         } catch (e: Exception) {
@@ -175,10 +176,8 @@ class CommunityEditActivity : AppCompatActivity() {
     }
 
     // 성공적인 응답 처리
-    private fun handleResponse(postSuccess: SignUpResponse) {
-        if (postSuccess != null) {
-            Log.d("게시물 수정", postSuccess.toString())
-        }
+    private fun handleResponse() {
+        Toast.makeText(this, "피드 수정 성공", Toast.LENGTH_SHORT).show()
     }
 
     // 에러 응답 처리

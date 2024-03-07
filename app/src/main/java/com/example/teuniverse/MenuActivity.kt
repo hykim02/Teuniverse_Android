@@ -52,9 +52,10 @@ class MenuActivity: AppCompatActivity() {
             val profileFragment = supportFragmentManager.findFragmentByTag("profileFragment") as? ProfileFragment
 
             if (profileFragment == null) {
-                // 프래그먼트가 없는 경우 새로 생성
-                val newProfileFragment = ProfileFragment()
-                transaction.replace(R.id.nav_host_fragment, newProfileFragment, "profileFragment")
+                // 프래그먼트가 없는 경우
+                val intent = Intent(this, MenuActivity::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 // 프래그먼트가 이미 있는 경우 해당 프래그먼트로 이동
                 transaction.replace(R.id.nav_host_fragment, profileFragment)
@@ -78,8 +79,6 @@ class MenuActivity: AppCompatActivity() {
             // 트랜잭션 커밋
             transaction.commit()
         }
-
-
     }
 }
 

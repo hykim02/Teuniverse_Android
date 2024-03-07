@@ -1,7 +1,6 @@
 package com.example.teuniverse
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -15,10 +14,6 @@ import android.view.View
 import android.view.View.GONE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import com.example.teuniverse.databinding.ActivityCommunityPostBinding
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +24,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
@@ -74,15 +68,19 @@ class CommunityPostActivity: AppCompatActivity() {
     // 이미지 첨부한 경우 처리
     private fun putImage(data: Intent?) {
         val selectedImageUri = data?.data // 이미지 들고옴
+        Log.d("selectedImageUri", selectedImageUri.toString())
         selectedImagePath = getPathFromUri(selectedImageUri) // 실제 경로 가져옴
+        Log.d("selectedImagePath", selectedImagePath.toString())
         binding.postImg.setImageURI(selectedImageUri) // 게시물 작성 페이지에 이미지 넣음
 
         binding.postImg.visibility = View.VISIBLE // 이미지뷰를 보이도록 설정
 
         // 이미지뷰에서 Drawable 얻기
         val drawable: Drawable? = binding.postImg.drawable
+        Log.d("drawable", drawable.toString())
         //Drawable에서 Bitmap으로 변환
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
+        Log.d("bitmap", bitmap.toString())
     }
 
     // 이미지 첨부 안하는 경우 처리
@@ -191,12 +189,12 @@ class CommunityPostActivity: AppCompatActivity() {
                 val postSuccess: SignUpResponse? = response.body()
                 if (postSuccess != null) {
                     Log.d("artistList", "${postSuccess.statusCode} ${postSuccess.message}")
-                    handleResponse(postSuccess)
+                    handleResponse()
                 } else {
                     handleError("Response body is null.")
                 }
             } else {
-                Log.d("error", "서버 연동 실패")
+                Toast.makeText(this, "피드 생성 실패", Toast.LENGTH_SHORT).show()
                 handleError("Error: ${response.code()} - ${response.message()}")
             }
         } catch (e: Exception) {
@@ -205,10 +203,8 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
-    private fun handleResponse(postSuccess: SignUpResponse) {
-        if (postSuccess != null) {
-            Log.d("게시물 작성", postSuccess.toString())
-        }
+    private fun handleResponse() {
+        Toast.makeText(this, "피드 생성 성공", Toast.LENGTH_SHORT).show()
     }
 
     private fun handleError(errorMessage: String) {
