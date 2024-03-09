@@ -58,7 +58,7 @@ class CommunityEditActivity : AppCompatActivity() {
 
     // 게시물 수정 시 넘겨 받은 데이터 처리
     private fun editEvent() {
-        Log.d("editEvent함수", "실행")
+        Log.d("EditActivity의 editEvent함수", "실행")
         val bundle = intent.extras
         if (bundle != null) {
             val postImg = bundle.getString("postImg")

@@ -3,6 +3,10 @@ package com.example.teuniverse
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,14 +31,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -499,7 +500,7 @@ class CommunityDetailFragment : Fragment() {
                 }
                 R.id.edit -> {
                     // 수정 버튼 클릭 시 처리
-                    editEvent()
+                    editEvent(context)
                     Log.d("수정할 피드id", binding.feedID.text.toString())
                     true
                 }
@@ -509,14 +510,21 @@ class CommunityDetailFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun editEvent(item: CommunityPostItem, view: View) {
-        val intent = Intent(view.context, CommunityEditActivity::class.java)
+    private fun editEvent(context: Context) {
+        val intent = Intent(context, CommunityEditActivity::class.java)
+        val bundleAdapter = arguments
         val bundle = Bundle().apply {
-            putInt("feedId", item.feedId)
-            putString("postImg", item.postImg.toString())
-            putString("postSummary", item.postSummary.toString())
+            putInt("feedId", binding.feedID.text.toString().toInt())
+            putString("postSummary", binding.postContent.text.toString())
+
+            if (bundleAdapter != null) {
+                val postImg = bundleAdapter.getString("postImg")
+                putString("postImg", postImg)
+            } else {
+                Log.d("bundleAdapter", "null")
+            }
         }
         intent.putExtras(bundle)
-        view.context.startActivity(intent)
+        context.startActivity(intent)
     }
 }

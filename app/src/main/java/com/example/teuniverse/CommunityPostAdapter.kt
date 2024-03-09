@@ -40,7 +40,6 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
     override fun onBindViewHolder(holder: CommunityPostViewHolder, position: Int) {
         val currentItem = itemList[position]
         HeartStateDB.init(holder.itemView.context)
-        val sharedPrefsFile = File("${holder.itemView.context.filesDir.parent}/shared_prefs/HeartState.xml")
 
         initHeartState(holder, currentItem) // 하트 상태 초기화
 
@@ -191,6 +190,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                     val feedId = itemList[pos].feedId
                     val bundle = Bundle().apply {
                         putString("feedId", feedId.toString())
+                        putString("postImg", itemList[pos].postImg)
                     }
                     navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail, bundle)
                 }
@@ -229,8 +229,8 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         val intent = Intent(view.context, CommunityEditActivity::class.java)
         val bundle = Bundle().apply {
             putInt("feedId", item.feedId)
-            putString("postImg", item.postImg.toString())
-            putString("postSummary", item.postSummary.toString())
+            putString("postImg", item.postImg)
+            putString("postSummary", item.postSummary)
         }
         intent.putExtras(bundle)
         view.context.startActivity(intent)
