@@ -515,13 +515,19 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             val editor = MainActivity.UserInfoDB.getInstance().edit()
 
             nextBtn.setOnClickListener {
-                if (db.getValue("edit") == 1) {
-                    val menuActivityIntent = Intent(this, MenuActivity::class.java)
-                    // Intent에 프래그먼트로 이동할 것임을 표시
-                    menuActivityIntent.putExtra("goToProfileFragment", true)
-                    startActivity(menuActivityIntent)
-                    editor.putInt("edit", 0)
-                    editor.apply()
+                if (db.containsKey("edit")) {
+                    if (db.getValue("edit") == 1) {
+                        val menuActivityIntent = Intent(this, MenuActivity::class.java)
+                        // Intent에 프래그먼트로 이동할 것임을 표시
+                        menuActivityIntent.putExtra("goToProfileFragment", true)
+                        startActivity(menuActivityIntent)
+                        editor.putInt("edit", 0)
+                        editor.apply()
+                    } else {
+                        val intent = Intent(this, SignupEndActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
                     val intent = Intent(this, SignupEndActivity::class.java)
                     startActivity(intent)

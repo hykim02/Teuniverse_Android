@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import androidx.constraintlayout.core.motion.utils.Utils
 import androidx.lifecycle.lifecycleScope
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -70,6 +71,8 @@ class MainActivity : AppCompatActivity() {
 //        tokenEditor.apply()
 //        userEditor.clear()
 //        userEditor.apply()
+//
+//        kakaoLogout()
 
 //        ScheduleTypeDB.init(this)
 //        val editor = ScheduleTypeDB.getInstance().edit()
@@ -223,9 +226,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun kakaoLogout() {
+        // 로그아웃
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e("Hello", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+            } else {
+                Log.i("Hello", "로그아웃 성공. SDK에서 토큰 삭제됨")
+            }
+        }
+    }
 
     // 연결 끊기
     private fun kakaoUnlink() {
+        Log.d("kakaoUnlink","실행")
         UserApiClient.instance.unlink { error ->
             if (error != null) {
                 Log.e("Hello", "연결 끊기 실패", error)

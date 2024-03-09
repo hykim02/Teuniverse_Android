@@ -62,6 +62,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
     implementation("com.github.bumptech.glide:glide:4.14.1")
+    implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.14.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
 

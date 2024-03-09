@@ -99,18 +99,14 @@ class CommunityEditActivity : AppCompatActivity() {
     // 이미지 첨부한 경우 처리
     private fun putImage(data: Intent?) {
         val selectedImageUri = data?.data // 이미지 들고옴
-        Log.d("selectedImageUri", selectedImageUri.toString())
         selectedImagePath = getPathFromUri(selectedImageUri) // 실제 경로 가져옴
-        Log.d("selectedImagePath", selectedImagePath.toString())
         binding.postImg.visibility = View.VISIBLE // 이미지뷰를 보이도록 설정
         binding.postImg.setImageURI(selectedImageUri) // 게시물 작성 페이지에 이미지 넣음
 
         // 이미지뷰에서 Drawable 얻기
         val drawable: Drawable? = binding.postImg.drawable
-        Log.d("drawable", drawable.toString())
         //Drawable에서 Bitmap으로 변환
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-        Log.d("bitmap", bitmap.toString())
     }
 
     // 이미지 첨부 안하는 경우 처리

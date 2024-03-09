@@ -499,7 +499,8 @@ class CommunityDetailFragment : Fragment() {
                 }
                 R.id.edit -> {
                     // 수정 버튼 클릭 시 처리
-//                    editEvent(item)
+                    editEvent()
+                    Log.d("수정할 피드id", binding.feedID.text.toString())
                     true
                 }
                 else -> false
@@ -508,14 +509,14 @@ class CommunityDetailFragment : Fragment() {
         popupMenu.show()
     }
 
-//    private fun editEvent(item: CommunityPostItem) {
-//        val intent = Intent(view.context, CommunityEditActivity::class.java)
-//        val bundle = Bundle().apply {
-//            putInt("feedId", item.feedId)
-//            putString("postImg", item.postImg.toString())
-//            putString("postSummary", item.postSummary.toString())
-//        }
-//        intent.putExtras(bundle)
-//        view.context.startActivity(intent)
-//    }
+    private fun editEvent(item: CommunityPostItem, view: View) {
+        val intent = Intent(view.context, CommunityEditActivity::class.java)
+        val bundle = Bundle().apply {
+            putInt("feedId", item.feedId)
+            putString("postImg", item.postImg.toString())
+            putString("postSummary", item.postSummary.toString())
+        }
+        intent.putExtras(bundle)
+        view.context.startActivity(intent)
+    }
 }
