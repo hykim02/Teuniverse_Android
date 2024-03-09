@@ -242,3 +242,12 @@ interface VoteSummaryInterface {
         @Header("Authorization") authorization: String?
     ): Response<ArtistServerResponse<VotesItem>>
 }
+
+interface GiveVoteInterface {
+    @POST("vote/give-vote")
+    @Headers("accept: */*",
+        "Content-Type: application/json")
+    suspend fun giveVote(
+        @Header("Authorization") authorization: String?
+    )
+}
