@@ -157,7 +157,7 @@ interface CreateCommentInterface {
 // 댓글 수정
 interface EditCommentInterface {
     @PUT("community/comment/{commentId}")
-    @Headers("accept: */*",
+    @Headers("accept: application/json",
         "Content-Type: application/json")
     suspend fun editComment(
         @Path("commentId") commentId: Int,
@@ -169,7 +169,7 @@ interface EditCommentInterface {
 // 댓글 삭제
 interface DeleteCommentInterface {
     @DELETE("community/comment/{commentId}")
-    @Headers("accept: */*")
+    @Headers("accept: application/json'")
     suspend fun deleteComment(
         @Path("commentId") commentId: Int,
         @Header("Authorization") authorization: String?

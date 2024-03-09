@@ -71,7 +71,7 @@ data class CommentItem(
     val userImg: String,
     val nickName: String,
     val postTime: String,
-    val comment: String,
+    var comment: String,
     val commendId: Int
 )
 

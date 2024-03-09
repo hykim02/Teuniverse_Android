@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
@@ -29,7 +30,7 @@ import java.io.File
 
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                            private val navController: NavController,
-                           private val lifecycleOwner: LifecycleOwner):
+                           private val lifecycleOwner: LifecycleOwner,):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
@@ -249,11 +250,14 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                 if (response.isSuccessful) {
                     val theDeleteFeed: SignUpResponse? = response.body()
                     if (theDeleteFeed != null) {
+                        Toast.makeText(view.context, "피드 삭제 성공", Toast.LENGTH_SHORT).show()
                         Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
                     } else {
+                        Toast.makeText(view.context, "피드 삭제 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
                     }
                 } else {
+                    Toast.makeText(view.context, "피드 삭제 실패", Toast.LENGTH_SHORT).show()
                     handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
                 }
             }

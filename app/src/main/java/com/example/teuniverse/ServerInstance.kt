@@ -245,6 +245,17 @@ object CommunityDetailInstance {
         }
     }
 
+// 댓글 수정
+object EditCommentInstance {
+    fun editCommentService(): EditCommentInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(EditCommentInterface::class.java)
+    }
+}
+
     // 좋아요 생성
     object ClickLikeInstance {
         fun clickLikeService(): ClickLikeInterface {

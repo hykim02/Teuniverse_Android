@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-class CommunityDetailFragment : Fragment() {
+class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
 
     private lateinit var binding: FragmentCommunityDetailBinding
     private lateinit var commentAdapter: CommentAdapter
@@ -78,7 +78,7 @@ class CommunityDetailFragment : Fragment() {
         }
 
         // 댓글 리사이클러뷰 어댑터 연결
-        commentAdapter = CommentAdapter(commentList, viewLifecycleOwner, binding.commentCount)
+        commentAdapter = CommentAdapter(commentList, viewLifecycleOwner, binding.commentCount, this)
 
         return binding.root
     }
@@ -276,7 +276,6 @@ class CommunityDetailFragment : Fragment() {
                 }
             }
         })
-
     }
 
     // 댓글 생성
@@ -469,11 +468,14 @@ class CommunityDetailFragment : Fragment() {
                 if (response.isSuccessful) {
                     val theDeleteFeed: SignUpResponse? = response.body()
                     if (theDeleteFeed != null) {
+                        Toast.makeText(requireContext(), "피드 삭제 성공", Toast.LENGTH_SHORT).show()
                         Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
                     } else {
+                        Toast.makeText(requireContext(), "피드 삭제 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
                     }
                 } else {
+                    Toast.makeText(requireContext(), "피드 삭제 실패", Toast.LENGTH_SHORT).show()
                     handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
                 }
             }
@@ -526,5 +528,45 @@ class CommunityDetailFragment : Fragment() {
         }
         intent.putExtras(bundle)
         context.startActivity(intent)
+    }
+
+    // 댓글 수정 버튼 클릭 시 호출되는 메서드
+    override fun onEditClick(comment: String, commentId: Int) {
+        // 댓글 수정 버튼이 클릭되었을 때 처리할 로직을 여기에 추가
+        binding.commentTxt.setText(comment)
+        binding.commentTxt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // 텍스트 변경 전에 호출되는 메서드
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // 텍스트가 변경될 때 호출되는 메서드
+                val currentText = s.toString()
+                if (currentText.length >= 10) {
+                    binding.btnEnroll.setBackgroundResource(R.drawable.enroll_button_event)
+                } else {
+                    binding.btnEnroll.setBackgroundResource(R.drawable.custom_comment_enroll)
+                }
+            }
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun afterTextChanged(s: Editable?) {
+                // 텍스트 변경 후에 호출되는 메서드
+                binding.btnEnroll.setOnClickListener {
+                    val id = commentId
+                    val content = binding.commentTxt.text.toString()
+                    if (content.length < 10 && view != null) {
+                        Toast.makeText(view!!.context,"10글자 이상 작성 해주세요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        if (id != null) {
+                            lifecycleScope.launch {
+                                commentAdapter.editCommentApi(id, requireView(), content)
+                            }
+                        }
+                        binding.commentTxt.setText("")
+                    }
+                }
+            }
+        })
     }
 }

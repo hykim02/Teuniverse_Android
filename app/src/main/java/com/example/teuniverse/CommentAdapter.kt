@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,8 +22,14 @@ import retrofit2.Response
 
 class CommentAdapter(private val itemList: MutableList<CommentItem>,
                      private val lifecycleOwner: LifecycleOwner,
-                     private val fragment: TextView
+                     private val fragment: TextView,
+                     private val onEditClickListener: OnEditClickListener
 ): RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+
+    // 인터페이스 정의
+    interface OnEditClickListener {
+        fun onEditClick(comment: String, commentId: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.comment_rv_item, parent, false)
@@ -88,6 +95,42 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
         }
     }
 
+    // 댓글 수정 api
+    suspend fun editCommentApi(commentId: Int, view: View, content: String) {
+        Log.d("editCommentApi 함수", "호출 성공")
+        val accessToken = getAccessToken(view)
+        val comment = CreateComment(content = content)
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<CommentAfterCreate>> = withContext(Dispatchers.IO) {
+                    EditCommentInstance.editCommentService().editComment(commentId, accessToken, comment)
+                }
+                if (response.isSuccessful) {
+                    val theComment: ServerResponse<CommentAfterCreate>? = response.body()
+                    handleResponse(theComment)
+                    if (theComment != null) {
+                        Log.d("editCommentApi 함수 response", "${theComment.statusCode} ${theComment.message}")
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("editCommentApi 함수 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleResponse(theComment: ServerResponse<CommentAfterCreate>?) {
+        val newComment = theComment?.data?.content
+        val id = theComment?.data?.id
+        if (id != null && newComment != null) {
+            updateEditComment(id, newComment)
+        }
+    }
+
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
         Log.d("Api 함수 Error", errorMessage)
@@ -102,7 +145,7 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
             when (menuItem.itemId) {
                 R.id.delete -> {
                     // 삭제 버튼 클릭 시 처리
-                    updateComment(item.commendId) // 댓글 삭제
+                    updateDeleteComment(item.commendId) // 댓글 삭제
                     lifecycleOwner.lifecycleScope.launch {
                         deleteCommentApi(item.commendId, view)
                     }
@@ -111,6 +154,7 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
                 }
                 R.id.edit -> {
                     // 수정 버튼 클릭 시 처리
+                    onEditClickListener.onEditClick(item.comment, item.commendId)
                     true
                 }
                 else -> false
@@ -119,8 +163,23 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
         popupMenu.show()
     }
 
+    // 댓글 수정 후 댓글 내용 업데이트
+    private fun updateEditComment(commentId: Int, editComment: String) {
+        val iterator = itemList.iterator()
+        while (iterator.hasNext()) {
+            val comment = iterator.next()
+
+            if (comment.commendId == commentId) {
+                comment.comment = editComment
+                break
+            }
+        }
+        // Adapter에게 데이터 변경을 알림
+        notifyDataSetChanged()
+    }
+
     // 댓글 삭제 후 댓글 내용 업데이트
-    private fun updateComment(commentId: Int) {
+    private fun updateDeleteComment(commentId: Int) {
         // 댓글 삭제 후에 데이터 세트에서 해당 댓글을 제거
         val iterator = itemList.iterator()
         while (iterator.hasNext()) {
