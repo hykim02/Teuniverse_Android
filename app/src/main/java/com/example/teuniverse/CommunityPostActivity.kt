@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.teuniverse.databinding.ActivityCommunityPostBinding
@@ -90,6 +92,7 @@ class CommunityPostActivity: AppCompatActivity() {
     }
 
     // 게시물 등록
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun applyBtn() {
         binding.applyBtn.setOnClickListener {
             val content = binding.postContent.text.toString() // 게시글 내용
@@ -102,11 +105,13 @@ class CommunityPostActivity: AppCompatActivity() {
                     val imageFile = createMultipartBody(bitmap)
                     lifecycleScope.launch {
                         postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
+                        voteMissionApi(10, 4) // 글쓰기 미션 10표(3회)
                     }
                 } else { // 이미지 첨부 안한 경우
                     binding.postImg.visibility = GONE
                     lifecycleScope.launch {
                         postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
+                        voteMissionApi(10, 4) // 글쓰기 미션 10표(3회)
                     }
                 }
                 // 이후에 네비게이션 등 필요한 로직 추가
@@ -203,13 +208,44 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
+    // 투표권 지급 미션 api
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+        Log.d("voteMissionApi", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(
+                    Dispatchers.IO) {
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                }
+                if (response.isSuccessful) {
+                    val theVotes: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVotes != null) {
+                        Toast.makeText(this, "일일미션 글쓰기 완료", Toast.LENGTH_SHORT).show()
+                        Log.d("피드생성 미션", "${theVotes.statusCode} ${theVotes.message}")
+                    } else {
+                        Toast.makeText(this, "일일미션 글쓰기 실패", Toast.LENGTH_SHORT).show()
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Toast.makeText(this, "일일미션 글쓰기 실패", Toast.LENGTH_SHORT).show()
+                    handleError("피드생성 미션 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
     private fun handleResponse() {
         Toast.makeText(this, "피드 생성 성공", Toast.LENGTH_SHORT).show()
     }
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
-        Log.d("Error", errorMessage)
+        Log.d("Api Error", errorMessage)
     }
 
     // close 버튼 클릭 시 호출되는 함수

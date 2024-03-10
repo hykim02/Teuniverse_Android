@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import PopupVoteCheck
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -31,7 +32,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.util.Calendar
 
-class VoteFragment : Fragment() {
+class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
     private lateinit var fanTab: TextView
     private lateinit var fanAll: TextView
     private lateinit var fanBest: TextView
@@ -425,7 +426,7 @@ class VoteFragment : Fragment() {
 
     // 숫자 천 단위마다 ',' 넣는 함수
     private fun addCommasToNumber(number: String): String {
-        val numberString = number.toString()
+        val numberString = number
         val formattedNumber = StringBuilder()
 
         var count = 0
@@ -456,5 +457,10 @@ class VoteFragment : Fragment() {
         popupVoteMission.setOnDismissListener {
             Log.d("popupVoteMission", "PopupVote dialog dismissed.")
         }
+    }
+
+    // 인터페이스 구현
+    override fun giveVote(voteCount: Int) {
+        numberOfVote.text = voteCount.toString()
     }
 }

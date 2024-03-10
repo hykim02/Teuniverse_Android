@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import PopupVoteCheck
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -26,7 +28,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var calendarAdapter: CalendarAdapter
@@ -49,6 +51,11 @@ class HomeFragment : Fragment() {
 
         binding.voteBtn.setOnClickListener {
             showPopupVoteDialog()
+        }
+
+        // 출석 체크 3표 지급(1회)
+        lifecycleScope.launch {
+            voteMissionApi(3, 1)
         }
 
         // 일정 리사이클러뷰 어댑터 연결
@@ -132,6 +139,38 @@ class HomeFragment : Fragment() {
                         handleError("Response body is null.")
                     }
                 } else {
+                    handleError("homeApi Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    // 투표권 지급 미션 api
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+        Log.d("voteMissionApi", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(
+                    Dispatchers.IO) {
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                }
+                if (response.isSuccessful) {
+                    val theVotes: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVotes != null) {
+                        Toast.makeText(requireContext(), "일일미션 출석체크 완료", Toast.LENGTH_SHORT).show()
+                        Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
+                        binding.voteCount.text = theVotes.data.voteCount.toString()
+                    } else {
+                        Toast.makeText(requireContext(), "일일미션 출석체크 실패", Toast.LENGTH_SHORT).show()
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "일일미션 출석체크 실패", Toast.LENGTH_SHORT).show()
                     handleError("homeApi Error: ${response.code()} - ${response.message()}")
                 }
             }
@@ -356,6 +395,11 @@ class HomeFragment : Fragment() {
         popupVote.setOnDismissListener {
             Log.d("VoteFragment", "PopupVote dialog dismissed.")
         }
+    }
+
+    // 인터페이스 구현
+    override fun giveVote(voteCount: Int) {
+        binding.voteCount.text = voteCount.toString()
     }
 
 }

@@ -332,3 +332,13 @@ object EditCommentInstance {
                 .create(VoteSummaryInterface::class.java)
         }
     }
+
+object GiveVoteInstance {
+    fun giveVoteService(): GiveVoteInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(GiveVoteInterface::class.java)
+    }
+}

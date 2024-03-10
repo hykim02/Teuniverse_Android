@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 // 뷰를 띄워야하므로 Dialog 클래스는 context를 인자로 받음
-class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dialog(context) {
+class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dialog(context), PopupVoteCheck.VoteMissionListener {
 
     private lateinit var binding : PopupVoteBinding
 
@@ -66,7 +66,8 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
                 binding.tvArtistName.text.toString(),
                 binding.tvMonth.text.toString(),
                 binding.tvPercent.text.toString(),
-                okCallback
+                okCallback,
+                this@PopupVote
             )
             popupVoteCheck.show()
             dismiss()
@@ -132,5 +133,9 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
             }
         }
         return accessToken
+    }
+
+    override fun giveVote(voteCount: Int) {
+        TODO("Not yet implemented")
     }
 }

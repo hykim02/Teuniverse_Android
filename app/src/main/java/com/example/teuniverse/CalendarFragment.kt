@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -85,6 +86,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         makeSchedule()
 
         lifecycleScope.launch {
+            voteMissionApi(5, 2) // 최애 일정 확인 5표(1회)
             getNumberOfVotes()
         }
 
@@ -567,6 +569,38 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         }
         catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.",month)
+        }
+    }
+
+    // 투표권 지급 미션 api
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+        Log.d("voteMissionApi", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(
+                    Dispatchers.IO) {
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                }
+                if (response.isSuccessful) {
+                    val theVotes: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVotes != null) {
+                        Toast.makeText(requireContext(), "일일미션 최애일정 확인 완료", Toast.LENGTH_SHORT).show()
+                        Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
+                        binding.voteCount.text = theVotes.data.voteCount.toString()
+                    } else {
+                        Toast.makeText(requireContext(), "일일미션 최애일정 확인 실패", Toast.LENGTH_SHORT).show()
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "일일미션 최애일정 확인 실패", Toast.LENGTH_SHORT).show()
+                    handleError("homeApi Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
         }
     }
 

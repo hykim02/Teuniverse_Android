@@ -269,6 +269,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                         if (feedId != null) {
                             lifecycleScope.launch {
                                 createCommentApi(feedId, content)
+                                voteMissionApi(1, 3) // 댓글쓰기 미션 1표(5회)
                             }
                         }
                         binding.commentTxt.setText("")
@@ -485,6 +486,37 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
         }
     }
 
+    // 투표권 지급 미션 api
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+        Log.d("voteMissionApi", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<NumberOfVote>> = withContext(
+                    Dispatchers.IO) {
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                }
+                if (response.isSuccessful) {
+                    val theVotes: ServerResponse<NumberOfVote>? = response.body()
+                    if (theVotes != null) {
+                        Toast.makeText(requireContext(), "일일미션 댓글쓰기 완료", Toast.LENGTH_SHORT).show()
+                        Log.d("댓글쓰기 미션", "${theVotes.statusCode} ${theVotes.message}")
+                    } else {
+                        Toast.makeText(requireContext(), "일일미션 댓글쓰기 실패", Toast.LENGTH_SHORT).show()
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "일일미션 댓글쓰기 실패", Toast.LENGTH_SHORT).show()
+                    handleError("댓글쓰기 미션 Error: ${response.code()} - ${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
     // 피드 삭제 및 수정 옵션
     private fun showPopupMenu(context: Context) {
         val popupMenu = PopupMenu(context, binding.btnOption)
@@ -512,6 +544,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
         popupMenu.show()
     }
 
+    // 댓글 수정
     private fun editEvent(context: Context) {
         val intent = Intent(context, CommunityEditActivity::class.java)
         val bundleAdapter = arguments
