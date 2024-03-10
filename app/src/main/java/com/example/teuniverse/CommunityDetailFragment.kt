@@ -491,11 +491,12 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
     private suspend fun voteMissionApi(voteCount: Int, type: Int) {
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
+        val params = VoteMission(voteCount = voteCount, type = type)
         try {
             if (accessToken != null) {
                 val response: Response<ServerResponse<NumberOfVote>> = withContext(
                     Dispatchers.IO) {
-                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, params)
                 }
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()

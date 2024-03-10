@@ -37,6 +37,7 @@ class CommunityPostActivity: AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImagePath: String? = null
     private lateinit var bitmap: Bitmap
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityPostBinding.inflate(layoutInflater)
@@ -213,11 +214,12 @@ class CommunityPostActivity: AppCompatActivity() {
     private suspend fun voteMissionApi(voteCount: Int, type: Int) {
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
+        val params = VoteMission(voteCount = voteCount, type = type)
         try {
             if (accessToken != null) {
                 val response: Response<ServerResponse<NumberOfVote>> = withContext(
                     Dispatchers.IO) {
-                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, params)
                 }
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()

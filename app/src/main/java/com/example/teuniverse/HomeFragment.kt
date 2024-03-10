@@ -53,11 +53,6 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             showPopupVoteDialog()
         }
 
-        // 출석 체크 3표 지급(1회)
-        lifecycleScope.launch {
-            voteMissionApi(3, 1)
-        }
-
         // 일정 리사이클러뷰 어댑터 연결
         scheduleList = ArrayList()
         calendarAdapter = CalendarAdapter(scheduleList)
@@ -74,6 +69,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         lifecycleScope.launch {
             homeApi()
             getNumberOfVotes()
+            voteMissionApi(3, 1) // 출석 체크 3표 지급(1회)
         }
 
         return binding.root
@@ -153,11 +149,12 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
     private suspend fun voteMissionApi(voteCount: Int, type: Int) {
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
+        val params = VoteMission(voteCount = voteCount, type = type)
         try {
             if (accessToken != null) {
                 val response: Response<ServerResponse<NumberOfVote>> = withContext(
                     Dispatchers.IO) {
-                    GiveVoteInstance.giveVoteService().giveVote(accessToken, voteCount, type)
+                    GiveVoteInstance.giveVoteService().giveVote(accessToken, params)
                 }
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()

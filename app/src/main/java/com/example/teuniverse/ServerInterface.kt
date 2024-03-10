@@ -249,7 +249,6 @@ interface GiveVoteInterface {
         "Content-Type: application/json")
     suspend fun giveVote(
         @Header("Authorization") authorization: String?,
-        @Body voteCount: Int,
-        @Body type: Int
+        @Body voteMission: VoteMission
         ): Response<ServerResponse<NumberOfVote>>
 }

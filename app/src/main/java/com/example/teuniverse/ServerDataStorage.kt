@@ -315,3 +315,8 @@ data class FavoriteArtist(
     val name: String,
     val imgUrl: String
 )
+
+data class VoteMission(
+    val voteCount: Int,
+    val type: Int
+)
