@@ -3,10 +3,6 @@ package com.example.teuniverse
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -20,7 +16,6 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -259,6 +253,11 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
 
             @RequiresApi(Build.VERSION_CODES.O)
             override fun afterTextChanged(s: Editable?) {
+                VoteMissionDB.init(requireContext())
+                val db = VoteMissionDB.getInstance()
+                val count = db.getInt("comment", 0)
+                Log.d("comment", count.toString())
+
                 // 텍스트 변경 후에 호출되는 메서드
                 binding.btnEnroll.setOnClickListener {
                     val feedId = getFeedId()
@@ -269,7 +268,10 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                         if (feedId != null) {
                             lifecycleScope.launch {
                                 createCommentApi(feedId, content)
-                                voteMissionApi(1, 3) // 댓글쓰기 미션 1표(5회)
+
+                                if(count <= 4) {
+                                    voteMissionApi(1, 3) // 댓글쓰기 미션 1표(5회)
+                                }
                             }
                         }
                         binding.commentTxt.setText("")
@@ -503,6 +505,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                     if (theVotes != null) {
                         Toast.makeText(requireContext(), "일일미션 댓글쓰기 완료", Toast.LENGTH_SHORT).show()
                         Log.d("댓글쓰기 미션", "${theVotes.statusCode} ${theVotes.message}")
+                        handleMission()
                     } else {
                         Toast.makeText(requireContext(), "일일미션 댓글쓰기 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
@@ -516,6 +519,16 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
         catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.")
         }
+    }
+
+    private fun handleMission() {
+        VoteMissionDB.init(requireContext())
+        val db = VoteMissionDB.getInstance()
+        val editor = db.edit()
+        var count = db.getInt("comment", 0)
+        count += 1
+        editor.putInt("comment", count)
+        editor.apply()
     }
 
     // 피드 삭제 및 수정 옵션

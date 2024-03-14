@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         val kakaoLogin = findViewById<ImageButton>(R.id.kakao_login)
         val naverLogin = findViewById<ImageButton>(R.id.naver_login)
 
+        initMissionDB()
+
         // 최초 로그인 시 필히 실행
 //        ServiceAccessTokenDB.init(this)
 //        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
@@ -83,27 +86,65 @@ class MainActivity : AppCompatActivity() {
 
         // 기존회원인지 여부확인하는 조건 다시 설정하기
         kakaoLogin.setOnClickListener{
-            ServiceAccessTokenDB.init(this)
-            val serviceToken = ServiceAccessTokenDB.getInstance()
-            UserInfoDB.init(this)
-            val userData = UserInfoDB.getInstance()
-
-            if (serviceToken.contains("accessToken") && userData.contains("id")) {
-                Log.d("db확인","회원")
-                // 화면 전환
-                val intent = Intent(this, MenuActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                Log.d("db확인","비회원")
-                kakaoLoginApi()
-            }
+            kakaoCheck()
         }
 
         naverLogin.setOnClickListener{
             val intent = Intent(this, SignupProfileActivity::class.java)
             startActivity(intent)
             finish()
+        }
+    }
+
+    private fun kakaoCheck() {
+        ServiceAccessTokenDB.init(this)
+        val serviceToken = ServiceAccessTokenDB.getInstance()
+        UserInfoDB.init(this)
+        val userData = UserInfoDB.getInstance()
+
+        if (serviceToken.contains("accessToken") && userData.contains("id")) {
+            Log.d("db확인","회원")
+            // 화면 전환
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            Log.d("db확인","비회원")
+            kakaoLoginApi()
+        }
+    }
+
+    // 투표권 미션 DB 초기화
+    private fun initMissionDB() {
+        val isExist = VoteMissionDB.doesFileExist(this)
+        VoteMissionDB.init(this)
+        val editor = VoteMissionDB.getInstance().edit()
+        val db = VoteMissionDB.getInstance()
+        val calendar = Calendar.getInstance()
+        val today = calendar.get(Calendar.DAY_OF_YEAR)
+        Log.d("today", today.toString())
+
+        if(isExist) {
+            val day = db.getInt("today", today-1)
+            if(day != today) { // 날짜가 바뀌었다면 초기화
+                Log.d("미션 db","초기화 완료")
+                editor.putInt("vote", 0)
+                editor.putInt("attend", 0)
+                editor.putInt("calendar", 0)
+                editor.putInt("comment", 0)
+                editor.putInt("feed", 0)
+                editor.putInt("today", today)
+                editor.apply()
+            }
+        } else {
+            Log.d("미션 db","파일 없음 초기화 진행")
+            editor.putInt("vote", 0)
+            editor.putInt("attend", 0)
+            editor.putInt("calendar", 0)
+            editor.putInt("comment", 0)
+            editor.putInt("feed", 0)
+            editor.putInt("today", today)
+            editor.apply()
         }
     }
 

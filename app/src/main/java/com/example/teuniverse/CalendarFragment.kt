@@ -85,9 +85,17 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 //        makeDot(datesWithDots)
         makeSchedule()
 
+        VoteMissionDB.init(requireContext())
+        val db = VoteMissionDB.getInstance()
+        val count = db.getInt("calendar", 0)
+        Log.d("calendar", count.toString())
+
         lifecycleScope.launch {
-            voteMissionApi(5, 2) // 최애 일정 확인 5표(1회)
             getNumberOfVotes()
+
+            if(count == 0) {
+                voteMissionApi(5, 2) // 최애 일정 확인 5표(1회)
+            }
         }
 
         return binding.root
@@ -589,7 +597,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                     if (theVotes != null) {
                         Toast.makeText(requireContext(), "일일미션 최애일정 확인 완료", Toast.LENGTH_SHORT).show()
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
-                        binding.voteCount.text = theVotes.data.voteCount.toString()
+                        handleMission(theVotes)
                     } else {
                         Toast.makeText(requireContext(), "일일미션 최애일정 확인 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
@@ -602,6 +610,18 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         }
         catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleMission(theVotes: ServerResponse<NumberOfVote>?) {
+        VoteMissionDB.init(requireContext())
+        val editor = VoteMissionDB.getInstance().edit()
+
+        if (theVotes != null) {
+            binding.voteCount.text = theVotes.data.voteCount.toString()
+
+            editor.putInt("calendar", 1)
+            editor.apply()
         }
     }
 

@@ -12,6 +12,7 @@ import com.example.teuniverse.MainActivity
 import com.example.teuniverse.NumberOfVote
 import com.example.teuniverse.ServerResponse
 import com.example.teuniverse.VoteMission
+import com.example.teuniverse.VoteMissionDB
 import com.example.teuniverse.databinding.PopupVoteCheckBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,9 +50,16 @@ class PopupVoteCheck(
         binding.tvArtistName2.text = artistName
         binding.tvPercent.text = rank
 
+        VoteMissionDB.init(context)
+        val db = VoteMissionDB.getInstance()
+
         binding.bntOk.setOnClickListener {
-            GlobalScope.launch {
-                voteMissionApi(2, 0) // 투표하기 미션 2표(1회)
+            val count = db.getInt("vote", 0)
+            Log.d("vote", count.toString())
+            if(count == 0) {
+                GlobalScope.launch {
+                    voteMissionApi(2, 0) // 투표하기 미션 2표(1회)
+                }
             }
             dismiss()
         }
@@ -86,7 +94,7 @@ class PopupVoteCheck(
                     if (theVotes != null) {
                         Toast.makeText(context, "일일미션 투표하기 완료", Toast.LENGTH_SHORT).show()
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
-                        theVotes.data.voteCount?.let { voteMissionListener.giveVote(it) } // 리스너 호출
+                        handleResponse(theVotes)
                     } else {
                         Toast.makeText(context, "일일미션 투표하기 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
@@ -99,6 +107,17 @@ class PopupVoteCheck(
         }
         catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleResponse(theVotes: ServerResponse<NumberOfVote>?) {
+        VoteMissionDB.init(context)
+        val editor = VoteMissionDB.getInstance().edit()
+        if (theVotes != null) {
+            theVotes.data.voteCount?.let { voteMissionListener.giveVote(it) } // 리스너 호출
+
+            editor.putInt("vote", 1)
+            editor.apply()
         }
     }
 

@@ -66,10 +66,18 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
         navigate()
 
+        VoteMissionDB.init(requireContext())
+        val db = VoteMissionDB.getInstance()
+        val count = db.getInt("attend", 0)
+        Log.d("attend", count.toString())
+
         lifecycleScope.launch {
             homeApi()
             getNumberOfVotes()
-            voteMissionApi(3, 1) // 출석 체크 3표 지급(1회)
+
+            if(count == 0) {
+                voteMissionApi(3, 1) // 출석 체크 3표 지급(1회)
+            }
         }
 
         return binding.root
@@ -161,7 +169,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
                     if (theVotes != null) {
                         Toast.makeText(requireContext(), "일일미션 출석체크 완료", Toast.LENGTH_SHORT).show()
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
-                        binding.voteCount.text = theVotes.data.voteCount.toString()
+                        handleMission(theVotes)
                     } else {
                         Toast.makeText(requireContext(), "일일미션 출석체크 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
@@ -174,6 +182,17 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         }
         catch (e: Exception) {
             handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handleMission(theVotes: ServerResponse<NumberOfVote>?) {
+        VoteMissionDB.init(requireContext())
+        val editor = VoteMissionDB.getInstance().edit()
+
+        if (theVotes != null) {
+            binding.voteCount.text = theVotes.data.voteCount.toString()
+            editor.putInt("attend", 1)
+            editor.apply()
         }
     }
 

@@ -66,3 +66,25 @@ object HeartStateDB {
         return sharedPreferences
     }
 }
+
+// 미션 제한 설정 DB
+object VoteMissionDB {
+    private lateinit var sharedPreferences: SharedPreferences
+    // 초기화
+    fun init(context: Context) {
+        sharedPreferences = context.getSharedPreferences("VoteMission", Context.MODE_PRIVATE)
+    }
+
+    // 객체 반환
+    fun getInstance(): SharedPreferences {
+        if(!this::sharedPreferences.isInitialized) {
+            throw IllegalStateException("SharedPreferencesSingleton is not initialized")
+        }
+        return sharedPreferences
+    }
+
+    fun doesFileExist(context: Context): Boolean {
+        val sharedPrefsFile = File("${context.filesDir.parent}/shared_prefs/VoteMission.xml")
+        return sharedPrefsFile.exists()
+    }
+}

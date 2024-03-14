@@ -95,6 +95,11 @@ class CommunityPostActivity: AppCompatActivity() {
     // 게시물 등록
     @RequiresApi(Build.VERSION_CODES.O)
     private fun applyBtn() {
+        VoteMissionDB.init(this)
+        val db = VoteMissionDB.getInstance()
+        val count = db.getInt("feed", 0)
+        Log.d("feed", count.toString())
+
         binding.applyBtn.setOnClickListener {
             val content = binding.postContent.text.toString() // 게시글 내용
             // 게시글 내용은 10글자 이상이어야 함
@@ -106,13 +111,19 @@ class CommunityPostActivity: AppCompatActivity() {
                     val imageFile = createMultipartBody(bitmap)
                     lifecycleScope.launch {
                         postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
-                        voteMissionApi(10, 4) // 글쓰기 미션 10표(3회)
+
+                        if(count <= 2) {
+                            voteMissionApi(10, 4) // 글쓰기 미션 10표(3회)
+                        }
                     }
                 } else { // 이미지 첨부 안한 경우
                     binding.postImg.visibility = GONE
                     lifecycleScope.launch {
                         postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
-                        voteMissionApi(10, 4) // 글쓰기 미션 10표(3회)
+
+                        if(count <= 2) {
+                            voteMissionApi(10, 4) // 글쓰기 미션 10표(3회)
+                        }
                     }
                 }
                 // 이후에 네비게이션 등 필요한 로직 추가
@@ -226,6 +237,7 @@ class CommunityPostActivity: AppCompatActivity() {
                     if (theVotes != null) {
                         Toast.makeText(this, "일일미션 글쓰기 완료", Toast.LENGTH_SHORT).show()
                         Log.d("피드생성 미션", "${theVotes.statusCode} ${theVotes.message}")
+                        handleMission()
                     } else {
                         Toast.makeText(this, "일일미션 글쓰기 실패", Toast.LENGTH_SHORT).show()
                         handleError("Response body is null.")
@@ -241,6 +253,15 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
+    private fun handleMission() {
+        VoteMissionDB.init(this)
+        val db = VoteMissionDB.getInstance()
+        val editor = db.edit()
+        var count = db.getInt("feed", 0)
+        count += 1
+        editor.putInt("feed", count)
+        editor.apply()
+    }
     private fun handleResponse() {
         Toast.makeText(this, "피드 생성 성공", Toast.LENGTH_SHORT).show()
     }
