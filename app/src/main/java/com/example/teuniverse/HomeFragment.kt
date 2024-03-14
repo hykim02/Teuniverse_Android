@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 
 class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
@@ -229,25 +230,36 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             }
         }
 
+        val localDateTime: LocalDateTime = LocalDateTime.now() //2024-02-16
+
+
         // 일정
         val schedules = response.data.schedules.values
+        binding.noSchedule.visibility = View.GONE
         scheduleList.clear()
-        schedules.forEachIndexed { _, events ->
-            for (i in events.indices) {
-                val content = events[i].content
-                val startAt = setTime(events[i].startAt)
-                val type = setTypeImg(events[i].type)
 
-                scheduleList.add(Event(content, type.toString(), startAt))
+        if(schedules.isEmpty()) {
+            binding.noSchedule.visibility = View.VISIBLE
+            binding.scheduleRv.visibility = View.GONE
+        } else {
+            binding.scheduleRv.visibility = View.VISIBLE
+            schedules.forEachIndexed { _, events ->
+                for (i in events.indices) {
+                    val content = events[i].content
+                    val startAt = setTime(events[i].startAt)
+                    val type = setTypeImg(events[i].type)
+
+                    scheduleList.add(Event(content, type.toString(), startAt))
+                }
+                // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
+                val spanCount = scheduleList.size
+                val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
+                binding.scheduleRv.adapter = calendarAdapter
+                binding.scheduleRv.layoutManager = layoutManager
+
+                // 어댑터에 데이터가 변경되었음을 알리기
+                calendarAdapter.notifyDataSetChanged()
             }
-            // 리사이클러뷰 어댑터 연결(아이템 개수만큼 생성)
-            val spanCount = scheduleList.size
-            val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.HORIZONTAL, false)
-            binding.scheduleRv.adapter = calendarAdapter
-            binding.scheduleRv.layoutManager = layoutManager
-
-            // 어댑터에 데이터가 변경되었음을 알리기
-            calendarAdapter.notifyDataSetChanged()
         }
 
         // 커뮤니티

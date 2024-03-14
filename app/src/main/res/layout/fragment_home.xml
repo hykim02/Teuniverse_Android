@@ -377,7 +377,18 @@
                         android:background="@android:color/transparent"
                         android:scaleType="fitCenter"
                         android:src="@drawable/right_arrow" />
+
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/noSchedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="임박한 일정이 없어요" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/schedule_rv"
