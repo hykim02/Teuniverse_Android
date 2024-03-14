@@ -24,9 +24,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 
 
 class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
@@ -230,8 +231,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             }
         }
 
-        val localDateTime: LocalDateTime = LocalDateTime.now() //2024-02-16
-
+        val localDateTime: LocalDateTime = LocalDateTime.now() //2024-03-14
 
         // 일정
         val schedules = response.data.schedules.values
@@ -246,8 +246,11 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             schedules.forEachIndexed { _, events ->
                 for (i in events.indices) {
                     val content = events[i].content
+                    val server = setDate(events[i].startAt) // 서버 날짜 ex)14
+                    val local = localDateTime.dayOfMonth // 로컬 날짜 ex)14
                     val startAt = setTime(events[i].startAt)
-                    val type = setTypeImg(events[i].type)
+                    val type = setTypeImg(server, local, startAt)
+//                    val type2 = setTypeImg2(events[i].type)
 
                     scheduleList.add(Event(content, type.toString(), startAt))
                 }
@@ -297,7 +300,26 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         }
     }
 
-    private fun setTypeImg(type: String): Int {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setTypeImg(server: Int, local: Int, startAt: String): Int {
+        val currentTime : Long = System.currentTimeMillis()
+        val localTime = SimpleDateFormat("HH:mm").format(currentTime).split(":") //12:05
+        val serverTime = startAt.split(":")
+
+        if(local == server) {
+            // 일정이 진행되기 전
+            if((localTime[0] < serverTime[0]) ||
+                (localTime[0] == serverTime[0]) && (localTime[1] < serverTime[1])) {
+                return R.drawable.today_colored
+            } else {
+                return R.drawable.today
+            }
+        } else {
+            return R.drawable.tomorrow
+        }
+    }
+
+    private fun setTypeImg2(type: String): Int {
         if (type == "기념일") {
             return R.drawable.cake_on
         } else if (type == "행사") {
@@ -308,6 +330,8 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             return R.drawable.more_on
         }
     }
+
+
 
     // 투표권 개수 가져오기
     private suspend fun getNumberOfVotes() {
@@ -358,6 +382,15 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         val extractedMinute = String.format("%02d", minute.toInt())
 
         return "$extractedHour:$extractedMinute"
+    }
+
+    // 날짜 부분만 추출
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setDate(dateTimeString: String): Int {
+        // ISO 8601 형식의 문자열을 LocalDateTime 객체로 변환
+        val dateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME)
+
+        return dateTime.toLocalDate().dayOfMonth //14
     }
 
     //요약 보여주기 - 공지 전체내용 중 일부(15자)만 가져옴
