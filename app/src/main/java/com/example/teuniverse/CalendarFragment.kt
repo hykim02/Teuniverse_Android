@@ -20,6 +20,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.teuniverse.databinding.FragmentCalendarBinding
 import com.google.gson.Gson
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -77,6 +79,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             showPopupMissionDialog()
         }
 
+        callApi(2024)
         customCalendar()
         motionCalendar()
 

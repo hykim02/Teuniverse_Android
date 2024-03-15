@@ -1,22 +1,16 @@
 package com.example.teuniverse
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -116,7 +110,7 @@ class SignupEndActivity:AppCompatActivity() {
                 val signUpSuccess: SignUpResponse? = response.body()
                 if (signUpSuccess != null) {
                     Log.d("artistList", "${signUpSuccess.statusCode} ${signUpSuccess.message}")
-                    handleResponse(signUpSuccess)
+                    handleResponse()
                 } else {
                     handleError("Response body is null.")
                 }
@@ -132,7 +126,7 @@ class SignupEndActivity:AppCompatActivity() {
         }
     }
 
-    private fun handleResponse(signUpSuccess: SignUpResponse) {
+    private fun handleResponse() {
         Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)

@@ -193,7 +193,15 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                         putString("feedId", feedId.toString())
                         putString("postImg", itemList[pos].postImg)
                     }
-                    navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail, bundle)
+                    // 현재 프래그먼트에 따라서 다른 목적지로 이동하도록 처리
+                    when (navController.currentDestination?.id) {
+                        R.id.navigation_community -> {
+                            navController.navigate(R.id.action_navigation_community_to_navigation_communityDetail, bundle)
+                        }
+                        R.id.navigation_profile -> {
+                            navController.navigate(R.id.action_navigation_profile_to_navigation_communityDetail, bundle)
+                        }
+                    }
                 }
             }
         }
