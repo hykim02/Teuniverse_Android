@@ -2,19 +2,22 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/custom_ranking_list">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout7"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/calendar_item_custom"
         android:backgroundTint="@color/ow"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout6"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout6"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
 
         <ImageView
@@ -24,18 +27,20 @@
             android:layout_marginStart="20dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/cake_red" />
 
         <TextView
             android:id="@+id/textView32"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="기념일"
             android:textColor="@color/b"
             app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+            app:layout_constraintEnd_toStartOf="@+id/cake_chk"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
@@ -43,13 +48,15 @@
             android:id="@+id/cake_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
             android:clickable="true"
             android:focusable="true"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView32"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/checkbox" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -68,28 +75,32 @@
 
     <TextView
         android:id="@+id/filter_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="40dp"
         android:text="스케줄 타입 필터"
+        android:textAlignment="center"
         android:textColor="@color/mp"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/close_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/close_btn"
         app:layout_constraintTop_toTopOf="@+id/close_btn" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/calendar_item_custom"
         android:backgroundTint="@color/ow"
-        app:layout_constraintEnd_toEndOf="@+id/filter_title"
-        app:layout_constraintStart_toStartOf="@+id/filter_title"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filter_title">
 
         <ImageView
@@ -99,18 +110,20 @@
             android:layout_marginStart="20dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView30"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/video_blue" />
 
         <TextView
             android:id="@+id/textView30"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="방송"
             android:textColor="@color/b"
             app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintEnd_toStartOf="@+id/video_chk"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
@@ -118,27 +131,31 @@
             android:id="@+id/video_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
             android:clickable="true"
             android:focusable="true"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView30"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/checkbox"
-            />
+            app:srcCompat="@drawable/checkbox" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout6"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/calendar_item_custom"
         android:backgroundTint="@color/ow"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout4"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout4"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
         <ImageView
@@ -148,18 +165,20 @@
             android:layout_marginStart="20dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView31"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/festival_green" />
 
         <TextView
             android:id="@+id/textView31"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="행사"
             android:textColor="@color/b"
             app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+            app:layout_constraintEnd_toStartOf="@+id/festival_chk"
             app:layout_constraintStart_toEndOf="@+id/imageView5"
             app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
@@ -167,26 +186,32 @@
             android:id="@+id/festival_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
             android:clickable="true"
             android:focusable="true"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView31"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/checkbox" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout8"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/calendar_item_custom"
         android:backgroundTint="@color/ow"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout7"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout7"
+        app:layout_constraintBottom_toTopOf="@+id/reset_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout7">
 
         <ImageView
@@ -196,18 +221,20 @@
             android:layout_marginStart="20dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView33"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/more_yellow" />
 
         <TextView
             android:id="@+id/textView33"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="기타"
             android:textColor="@color/b"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+            app:layout_constraintEnd_toStartOf="@+id/more_chk"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/imageView8"
             app:layout_constraintVertical_bias="0.666" />
@@ -216,22 +243,25 @@
             android:id="@+id/more_chk"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
             android:clickable="true"
             android:focusable="true"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView33"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/checkbox" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/reset_btn"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/textview_stroke_mp"
         android:gravity="center"
@@ -240,13 +270,15 @@
         android:textColor="@color/mp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout8"
+        app:layout_constraintEnd_toStartOf="@+id/complete_btn"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout8" />
 
     <TextView
         android:id="@+id/complete_btn"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/btn_solid_mp"
         android:gravity="center"
         android:text="완료"
@@ -254,7 +286,8 @@
         android:textColor="@color/w"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/reset_btn"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/reset_btn"
         app:layout_constraintTop_toTopOf="@+id/reset_btn"
         app:layout_constraintVertical_bias="1.0" />
 

@@ -26,7 +26,7 @@
             android:id="@+id/scrollView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:fillViewport="true"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +101,7 @@
 
                     <TextView
                         android:id="@+id/post_content"
-                        android:layout_width="360dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="게시물 내용"
@@ -198,9 +198,10 @@
 
             <EditText
                 android:id="@+id/comment_txt"
-                android:layout_width="310dp"
+                android:layout_width="0dp"
                 android:layout_height="38dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/custom_comment"
                 android:ems="10"
@@ -208,6 +209,7 @@
                 android:hint="최대 300자"
                 android:inputType="textMultiLine"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_enroll"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -215,14 +217,14 @@
                 android:id="@+id/btn_enroll"
                 android:layout_width="60dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/custom_comment_enroll"
                 android:gravity="center"
                 android:text="등록"
                 android:textAlignment="center"
                 android:textColor="@color/w"
                 app:layout_constraintBottom_toBottomOf="@+id/comment_txt"
-                app:layout_constraintStart_toEndOf="@+id/comment_txt"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/comment_txt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

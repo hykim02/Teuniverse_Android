@@ -7,7 +7,7 @@
         <item name="android:backgroundTint">@color/g</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:radius">50dp</item>
+        <item name="android:radius">100dp</item>
     </style>
 
     <style name="CalendarDay_Saturday">

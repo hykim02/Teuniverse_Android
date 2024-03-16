@@ -65,15 +65,15 @@ class MainActivity : AppCompatActivity() {
         initMissionDB()
 
         // 최초 로그인 시 필히 실행
-//        ServiceAccessTokenDB.init(this)
-//        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-//        UserInfoDB.init(this)
-//        val userEditor = UserInfoDB.getInstance().edit()
-//
-//        tokenEditor.clear()
-//        tokenEditor.apply()
-//        userEditor.clear()
-//        userEditor.apply()
+        ServiceAccessTokenDB.init(this)
+        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+        UserInfoDB.init(this)
+        val userEditor = UserInfoDB.getInstance().edit()
+
+        tokenEditor.clear()
+        tokenEditor.apply()
+        userEditor.clear()
+        userEditor.apply()
 //
 //        kakaoLogout()
 

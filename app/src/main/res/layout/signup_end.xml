@@ -9,10 +9,13 @@
 
     <TextView
         android:id="@+id/end_tv1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="100dp"
         android:text="가입이 완료되었습니다!"
+        android:textAlignment="center"
         android:textColor="@color/w"
         android:textSize="24sp"
         android:textStyle="bold"

@@ -16,7 +16,7 @@
             android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
             android:id="@+id/img_btn_person"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
@@ -61,7 +61,7 @@
             android:id="@+id/divider"
             android:layout_width="409dp"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:background="@color/g"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,7 +139,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout5"
-                    android:layout_width="360dp"
+                    android:layout_width="match_parent"
                     android:layout_height="210dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="20dp"
@@ -150,12 +150,14 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/ct_1"
-                        android:layout_width="70dp"
+                        android:layout_width="0dp"
                         android:layout_height="150dp"
-                        android:layout_marginStart="18dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/ct_2"
                         app:layout_constraintStart_toStartOf="parent">
 
                         <TextView
@@ -195,8 +197,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/ct_2"
-                        android:layout_width="70dp"
+                        android:layout_width="0dp"
                         android:layout_height="130dp"
+                        android:layout_marginEnd="20dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -240,13 +243,14 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/ct_3"
-                        android:layout_width="70dp"
+                        android:layout_width="0dp"
                         android:layout_height="110dp"
-                        android:layout_marginEnd="14dp"
+                        android:layout_marginEnd="20dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/ct_4">
+                        app:layout_constraintEnd_toStartOf="@+id/ct_4"
+                        app:layout_constraintStart_toEndOf="@+id/ct_2">
 
                         <TextView
                             android:id="@+id/txt_3"
@@ -285,13 +289,14 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/ct_4"
-                        android:layout_width="70dp"
+                        android:layout_width="0dp"
                         android:layout_height="90dp"
-                        android:layout_marginEnd="18dp"
+                        android:layout_marginEnd="20dp"
                         android:background="@drawable/chartbox_custom"
                         android:backgroundTint="@color/dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent">
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/ct_3">
 
                         <TextView
                             android:id="@+id/txt_4"
@@ -344,19 +349,21 @@
 
                 <TextView
                     android:id="@+id/vote_btn"
-                    android:layout_width="360dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="투표하기"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round_btn_mp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="center"
-                    android:textColor="@color/w"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textAlignment="center"
                     android:padding="5dp"
-                    android:background="@drawable/round_btn_mp"/>
+                    android:text="투표하기"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/w"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -412,13 +419,14 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/ct_rank_1to3"
                             android:layout_width="match_parent"
-                            android:layout_height="170dp"
+                            android:layout_height="200dp"
                             android:background="@drawable/custom_ranking_list">
 
                             <ImageView
                                 android:id="@+id/raking_1th_img"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
+                                android:layout_marginTop="8dp"
                                 android:background="@drawable/custom_circle_mp"
                                 android:padding="1dp"
                                 android:scaleType="fitCenter"

@@ -9,10 +9,13 @@
 
     <TextView
         android:id="@+id/tv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="70dp"
         android:text="아직 작성한 게시물이 없습니다"
+        android:textAlignment="center"
         android:textColor="@color/dg"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,10 +25,13 @@
 
     <TextView
         android:id="@+id/tv2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="커뮤니티에서 글을 작성해보세요!"
+        android:textAlignment="center"
         android:textColor="@color/b"
         android:textSize="20sp"
         android:textStyle="bold"
