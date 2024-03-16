@@ -78,7 +78,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             getNumberOfVotes()
 
             if(count == 0) {
-                voteMissionApi(3, 1) // 출석 체크 3표 지급(1회)
+                voteMissionApi(3, 1, count) // 출석 체크 3표 지급(1회)
             }
         }
 
@@ -156,7 +156,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
     // 투표권 지급 미션 api
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+    private suspend fun voteMissionApi(voteCount: Int, type: Int, count: Int) {
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
         val params = VoteMission(voteCount = voteCount, type = type)
@@ -169,7 +169,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()
                     if (theVotes != null) {
-                        Toast.makeText(requireContext(), "일일미션 출석체크 완료", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "일일미션 출석체크 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
                         handleMission(theVotes)
                     } else {
@@ -250,7 +250,6 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
                     val local = localDateTime.dayOfMonth // 로컬 날짜 ex)14
                     val startAt = setTime(events[i].startAt)
                     val type = setTypeImg(server, local, startAt)
-//                    val type2 = setTypeImg2(events[i].type)
 
                     scheduleList.add(Event(content, type.toString(), startAt))
                 }

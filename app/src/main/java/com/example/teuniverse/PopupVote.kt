@@ -136,6 +136,6 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
     }
 
     override fun giveVote(voteCount: Int) {
-        TODO("Not yet implemented")
+        Log.d("PopupVote", "giveVote override")
     }
 }

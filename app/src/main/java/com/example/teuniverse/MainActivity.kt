@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
     // 투표권 미션 DB 초기화
     private fun initMissionDB() {
+        Log.d("initMissionDB", "실행")
         val isExist = VoteMissionDB.doesFileExist(this)
         VoteMissionDB.init(this)
         val editor = VoteMissionDB.getInstance().edit()
@@ -135,6 +136,8 @@ class MainActivity : AppCompatActivity() {
                 editor.putInt("feed", 0)
                 editor.putInt("today", today)
                 editor.apply()
+            } else {
+                Log.d("미션 참석 여부","존재함")
             }
         } else {
             Log.d("미션 db","파일 없음 초기화 진행")

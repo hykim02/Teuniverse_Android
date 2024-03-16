@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -58,12 +60,11 @@ class PopupVoteCheck(
             Log.d("vote", count.toString())
             if(count == 0) {
                 GlobalScope.launch {
-                    voteMissionApi(2, 0) // 투표하기 미션 2표(1회)
+                    voteMissionApi(2, 0, count) // 투표하기 미션 2표(1회)
                 }
             }
             dismiss()
         }
-
         initViews()
     }
 
@@ -79,7 +80,7 @@ class PopupVoteCheck(
 
     // 투표권 지급 미션 api
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+    private suspend fun voteMissionApi(voteCount: Int, type: Int, count: Int) {
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
         val params = VoteMission(voteCount = voteCount, type = type)
@@ -92,7 +93,9 @@ class PopupVoteCheck(
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()
                     if (theVotes != null) {
-                        Toast.makeText(context, "일일미션 투표하기 완료", Toast.LENGTH_SHORT).show()
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.postDelayed({ Toast.makeText(context, "일일미션 투표하기 완료(${count+1}회)", Toast.LENGTH_SHORT).show() }, 0)
+//                        Toast.makeText(context, "일일미션 투표하기 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
                         handleResponse(theVotes)
                     } else {

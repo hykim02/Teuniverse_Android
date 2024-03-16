@@ -270,7 +270,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                                 createCommentApi(feedId, content)
 
                                 if(count <= 4) {
-                                    voteMissionApi(1, 3) // 댓글쓰기 미션 1표(5회)
+                                    voteMissionApi(1, 3, count) // 댓글쓰기 미션 1표(5회)
                                 }
                             }
                         }
@@ -490,7 +490,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
 
     // 투표권 지급 미션 api
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun voteMissionApi(voteCount: Int, type: Int) {
+    private suspend fun voteMissionApi(voteCount: Int, type: Int, count: Int) {
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
         val params = VoteMission(voteCount = voteCount, type = type)
@@ -503,7 +503,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()
                     if (theVotes != null) {
-                        Toast.makeText(requireContext(), "일일미션 댓글쓰기 완료", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "일일미션 댓글쓰기 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         Log.d("댓글쓰기 미션", "${theVotes.statusCode} ${theVotes.message}")
                         handleMission()
                     } else {
