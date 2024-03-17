@@ -79,10 +79,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             showPopupMissionDialog()
         }
 
-        callApi(2024)
         customCalendar()
         motionCalendar()
-
         findDate()
         setDot(requireContext(), datesWithDots)
 //        makeDot(datesWithDots)
@@ -102,15 +100,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         }
 
         return binding.root
-    }
-
-    // 1-12월까지 api 모두 호출
-    private fun callApi(year: Int) {
-        for (i in 1..12) {
-            lifecycleScope.launch {
-                scheduleApi(year, i)
-            }
-        }
     }
 
     // 달력 커스텀 모음
@@ -555,34 +544,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     }
 
     /* api 관련 함수 */
-    // 1-12월 일정 받아오기
-    private suspend fun scheduleApi(year: Int, month: Int) {
-        Log.d("scheduleApi $month", "호출 성공")
-        val accessToken = getAccessToken()
-        try {
-            if (accessToken != null) {
-                val response: Response<EventResponse> = withContext(
-                    Dispatchers.IO) {
-                    CalendarInstance.scheduleService().getSchedule(year, month, accessToken)
-                }
-                if (response.isSuccessful) {
-                    val theSchedule: EventResponse? = response.body()
-                    if (theSchedule != null) {
-                        Log.d("scheduleApi $month", "${theSchedule.statusCode} ${theSchedule.message}")
-                        handleResponse(theSchedule, month)
-                    } else {
-                        handleError("Response body is null.",month)
-                    }
-                } else {
-                    handleError("scheduleApi $month Error: ${response.code()} - ${response.message()}",month)
-                }
-            }
-        }
-        catch (e: Exception) {
-            handleError(e.message ?: "Unknown error occurred.",month)
-        }
-    }
-
     // 투표권 지급 미션 api
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun voteMissionApi(voteCount: Int, type: Int, count: Int) {
@@ -626,28 +587,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             editor.putInt("calendar", 1)
             editor.apply()
         }
-    }
-
-    private fun handleResponse(response: EventResponse, month: Int) {
-        MonthDBManager.initMonth(requireContext(), month) // 초기화
-        val monthDB = MonthDBManager.getMonthInstance(month) // 객체 얻기
-
-        // DB에 데이터 저장
-        if (response.data.isNotEmpty()) {
-            Log.d("일정api", response.data.toString())
-            response.data.forEach { (date, events) ->
-                val jsonString = Gson().toJson(events) // Convert events List to JSON String
-                with(monthDB.edit()) {
-                    putString(date, jsonString)
-                    apply()
-                }
-            }
-        }
-    }
-
-    private fun handleError(errorMessage: String, month: Int) {
-        // 에러를 처리하는 코드
-        Log.d("일정Api $month Error", errorMessage)
     }
 
     // db에서 토큰 가져오기

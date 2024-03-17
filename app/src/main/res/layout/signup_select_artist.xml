@@ -110,7 +110,7 @@
                     android:id="@+id/select_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="16dp"
                     android:popupBackground="@color/w"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -120,11 +120,11 @@
                     android:id="@+id/imageView7"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.2"
+                    app:layout_constraintEnd_toStartOf="@+id/select_tv3"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/custom_circle_ap" />
@@ -141,14 +141,16 @@
 
                 <TextView
                     android:id="@+id/select_tv3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
+                    android:layout_marginStart="32dp"
                     android:text="당신의"
+                    android:textAlignment="center"
                     android:textColor="@color/ap"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView7"
+                    app:layout_constraintEnd_toStartOf="@+id/select_img_star"
                     app:layout_constraintStart_toEndOf="@+id/imageView7"
                     app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
@@ -157,7 +159,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="70dp"
+                    android:layout_marginEnd="16dp"
                     android:text="는?"
                     android:textColor="@color/ap"
                     android:textSize="20sp"
@@ -171,8 +173,8 @@
                     android:id="@+id/select_img_star"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
                     app:layout_constraintBottom_toBottomOf="@+id/select_tv3"
+                    app:layout_constraintEnd_toStartOf="@+id/select_tv4"
                     app:layout_constraintStart_toEndOf="@+id/select_tv3"
                     app:layout_constraintTop_toTopOf="@+id/select_tv3"
                     app:srcCompat="@drawable/star" />
@@ -183,13 +185,13 @@
                 android:id="@+id/artist_gridlayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:alignmentMode="alignMargins"
                 app:columnCount="3"
                 app:orientation="horizontal"
-                app:rowCount="4"
-                android:layout_gravity="center"
-                app:alignmentMode="alignMargins">
+                app:rowCount="4">
 
                 <ImageView
                     android:id="@+id/artist1"
@@ -205,22 +207,22 @@
                     android:id="@+id/artist2"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
-                    android:onClick="onImageViewClick"
                     android:focusable="true"
-                    app:layout_gravity="center_horizontal"/>
+                    android:onClick="onImageViewClick"
+                    android:padding="6dp"
+                    android:src="@drawable/profile"
+                    app:layout_gravity="center_horizontal" />
 
                 <ImageView
                     android:id="@+id/artist3"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
+                    android:focusable="true"
                     android:onClick="onImageViewClick"
-                    android:focusable="true" />
+                    android:padding="6dp"
+                    android:src="@drawable/profile" />
 
                 <TextView
                     android:id="@+id/name1"
@@ -228,7 +230,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name2"
@@ -236,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name3"
@@ -244,38 +246,38 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <ImageView
                     android:id="@+id/artist4"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
+                    android:focusable="true"
                     android:onClick="onImageViewClick"
-                    android:focusable="true" />
+                    android:padding="6dp"
+                    android:src="@drawable/profile" />
 
                 <ImageView
                     android:id="@+id/artist5"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
-                    android:onClick="onImageViewClick"
                     android:focusable="true"
-                    app:layout_gravity="center_horizontal"/>
+                    android:onClick="onImageViewClick"
+                    android:padding="6dp"
+                    android:src="@drawable/profile"
+                    app:layout_gravity="center_horizontal" />
 
                 <ImageView
                     android:id="@+id/artist6"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
                     android:focusable="true"
+                    android:onClick="onImageViewClick"
                     android:padding="6dp"
-                    android:onClick="onImageViewClick" />
+                    android:src="@drawable/profile" />
 
                 <TextView
                     android:id="@+id/name4"
@@ -283,7 +285,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name5"
@@ -291,7 +293,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name6"
@@ -305,32 +307,32 @@
                     android:id="@+id/artist7"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
+                    android:focusable="true"
                     android:onClick="onImageViewClick"
-                    android:focusable="true" />
+                    android:padding="6dp"
+                    android:src="@drawable/profile" />
 
                 <ImageView
                     android:id="@+id/artist8"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
                     android:focusable="true"
                     android:onClick="onImageViewClick"
-                    app:layout_gravity="center_horizontal"/>
+                    android:padding="6dp"
+                    android:src="@drawable/profile"
+                    app:layout_gravity="center_horizontal" />
 
                 <ImageView
                     android:id="@+id/artist9"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
                     android:focusable="true"
-                    android:onClick="onImageViewClick" />
+                    android:onClick="onImageViewClick"
+                    android:padding="6dp"
+                    android:src="@drawable/profile" />
 
                 <TextView
                     android:id="@+id/name7"
@@ -338,7 +340,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name8"
@@ -346,7 +348,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name9"
@@ -354,38 +356,38 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <ImageView
                     android:id="@+id/artist10"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
                     android:focusable="true"
-                    android:onClick="onImageViewClick"/>
+                    android:onClick="onImageViewClick"
+                    android:padding="6dp"
+                    android:src="@drawable/profile" />
 
                 <ImageView
                     android:id="@+id/artist11"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
                     android:focusable="true"
                     android:onClick="onImageViewClick"
-                    app:layout_gravity="center_horizontal"/>
+                    android:padding="6dp"
+                    android:src="@drawable/profile"
+                    app:layout_gravity="center_horizontal" />
 
                 <ImageView
                     android:id="@+id/artist12"
                     android:layout_width="105dp"
                     android:layout_height="105dp"
-                    android:src="@drawable/profile"
                     android:clickable="true"
-                    android:padding="6dp"
                     android:focusable="true"
-                    android:onClick="onImageViewClick" />
+                    android:onClick="onImageViewClick"
+                    android:padding="6dp"
+                    android:src="@drawable/profile" />
 
                 <TextView
                     android:id="@+id/name10"
@@ -393,7 +395,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name11"
@@ -401,7 +403,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/name12"
@@ -409,7 +411,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="16sp"
-                    app:layout_gravity="center_horizontal"/>
+                    app:layout_gravity="center_horizontal" />
 
             </androidx.gridlayout.widget.GridLayout>
 

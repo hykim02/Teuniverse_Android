@@ -18,8 +18,8 @@ class SignupApprovalActivity:AppCompatActivity() {
     private lateinit var chk1: CheckBox
     private lateinit var chk2: CheckBox
     private lateinit var chk4: CheckBox
-    private lateinit var detail: TextView
-    private lateinit var detail2: TextView
+    private lateinit var detail: ImageButton
+    private lateinit var detail2: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -34,6 +34,7 @@ class SignupApprovalActivity:AppCompatActivity() {
         detail2 = findViewById(R.id.detail2)
 
         setCheckBoxListeners()
+        scheduleTypeDB()
 
         detail.setOnClickListener {
             val uri = "https://axiomatic-bottle-f3c.notion.site/5652ff1803d24772b8516eb2a95c324e"
@@ -61,6 +62,17 @@ class SignupApprovalActivity:AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun scheduleTypeDB() {
+        ScheduleTypeDB.init(this)
+        val editor = ScheduleTypeDB.getInstance().edit()
+
+        editor.putBoolean("video", true)
+        editor.putBoolean("cake", true)
+        editor.putBoolean("festival", true)
+        editor.putBoolean("more", true)
+        editor.apply()
     }
 
     private fun setCheckBoxListeners() {

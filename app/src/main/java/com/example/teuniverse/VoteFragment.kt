@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -98,8 +99,13 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
         // 투표하기 버튼 클릭 이벤트
         votingBtn.setOnClickListener {
-            // 여기에서 투표하기 버튼을 눌렀을 때, PopupVote 다이얼로그를 띄움
-            showPopupVoteDialog()
+            val count = numberOfVote.text.toString()
+
+            if(count.toInt() >= 1) {
+                showPopupVoteDialog()
+            } else {
+                Toast.makeText(context, "보유한 투표권이 없습니다", Toast.LENGTH_SHORT).show()
+            }
         }
 
         voteMission.setOnClickListener {

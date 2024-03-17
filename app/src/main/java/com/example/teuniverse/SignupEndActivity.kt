@@ -37,8 +37,8 @@ class SignupEndActivity:AppCompatActivity() {
     }
 
     private fun continueWithImageFileAccess() {
-        MainActivity.UserInfoDB.init(this)
-        val userInfo = MainActivity.UserInfoDB.getInstance().all
+        UserInfoDB.init(this)
+        val userInfo = UserInfoDB.getInstance().all
         val id = userInfo.getValue("id").toString()
         val nickName = userInfo.getValue("nickName").toString()
         val favoriteArtistId = userInfo.getValue("favoriteArtistId").toString()

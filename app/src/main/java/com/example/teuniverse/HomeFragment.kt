@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.teuniverse.databinding.FragmentHomeBinding
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,7 +53,13 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         }
 
         binding.voteBtn.setOnClickListener {
-            showPopupVoteDialog()
+            val count = binding.voteCount.text.toString()
+
+            if(count.toInt() >= 1) {
+                showPopupVoteDialog()
+            } else {
+                Toast.makeText(context, "보유한 투표권이 없습니다", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // 일정 리사이클러뷰 어댑터 연결
@@ -73,6 +80,8 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         val count = db.getInt("attend", 0)
         Log.d("attend", count.toString())
 
+        callApi(2024) // 스케줄 데이터 db에 저장
+
         lifecycleScope.launch {
             homeApi()
             getNumberOfVotes()
@@ -83,6 +92,15 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         }
 
         return binding.root
+    }
+
+    // 1-12월까지 api 모두 호출
+    private fun callApi(year: Int) {
+        for (i in 1..12) {
+            lifecycleScope.launch {
+                scheduleApi(year, i)
+            }
+        }
     }
 
     // 화면 전환 함수
@@ -318,20 +336,6 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         }
     }
 
-    private fun setTypeImg2(type: String): Int {
-        if (type == "기념일") {
-            return R.drawable.cake_on
-        } else if (type == "행사") {
-            return R.drawable.festival_on
-        } else if (type == "방송") {
-            return R.drawable.video_on
-        } else { // 기타
-            return R.drawable.more_on
-        }
-    }
-
-
-
     // 투표권 개수 가져오기
     private suspend fun getNumberOfVotes() {
         Log.d("getNumberOfVotes 함수", "호출 성공")
@@ -363,6 +367,56 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
     private fun handleTheVotes(votes: ServerResponse<NumberOfVote>) {
         Log.d("handleTheVotes 함수","호출 성공" )
         binding.voteCount.text = votes.data.voteCount.toString()
+    }
+
+    // 1-12월 일정 받아오기
+    private suspend fun scheduleApi(year: Int, month: Int) {
+        Log.d("scheduleApi $month", "호출 성공")
+        val accessToken = getAccessToken()
+        try {
+            if (accessToken != null) {
+                val response: Response<EventResponse> = withContext(
+                    Dispatchers.IO) {
+                    CalendarInstance.scheduleService().getSchedule(year, month, accessToken)
+                }
+                if (response.isSuccessful) {
+                    val theSchedule: EventResponse? = response.body()
+                    if (theSchedule != null) {
+                        Log.d("scheduleApi $month", "${theSchedule.statusCode} ${theSchedule.message}")
+                        handleResponse(theSchedule, month)
+                    } else {
+                        handleError("Response body is null.",month)
+                    }
+                } else {
+                    handleError("scheduleApi $month Error: ${response.code()} - ${response.message()}",month)
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.",month)
+        }
+    }
+
+    private fun handleResponse(response: EventResponse, month: Int) {
+        MonthDBManager.initMonth(requireContext(), month) // 초기화
+        val monthDB = MonthDBManager.getMonthInstance(month) // 객체 얻기
+
+        // DB에 데이터 저장
+        if (response.data.isNotEmpty()) {
+            Log.d("일정api", response.data.toString())
+            response.data.forEach { (date, events) ->
+                val jsonString = Gson().toJson(events) // Convert events List to JSON String
+                with(monthDB.edit()) {
+                    putString(date, jsonString)
+                    apply()
+                }
+            }
+        }
+    }
+
+    private fun handleError(errorMessage: String, month: Int) {
+        // 에러를 처리하는 코드
+        Log.d("일정Api $month Error", errorMessage)
     }
 
     // 일정 시간 추출 함수

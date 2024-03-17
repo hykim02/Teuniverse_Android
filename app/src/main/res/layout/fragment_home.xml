@@ -407,6 +407,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="전체 순위"
                         android:textColor="@color/b" />
@@ -416,6 +417,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
                         android:background="@android:color/transparent"
                         android:gravity="center"
                         android:scaleType="fitCenter"
@@ -431,6 +433,7 @@
                     android:layout_weight="1"
                     android:text="임박한 일정이 없어요"
                     android:textSize="20sp"
+                    android:layout_marginTop="5dp"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -467,6 +470,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="전체 순위"
                         android:textColor="@color/b" />
@@ -476,6 +480,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
                         android:background="@android:color/transparent"
                         android:gravity="center"
                         android:scaleType="fitCenter"
@@ -518,6 +523,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="전체 순위"
                         android:textColor="@color/b" />
@@ -527,6 +533,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
                         android:background="@android:color/transparent"
                         android:gravity="center"
                         android:scaleType="fitCenter"

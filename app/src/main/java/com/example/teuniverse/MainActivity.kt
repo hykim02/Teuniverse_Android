@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.constraintlayout.core.motion.utils.Utils
 import androidx.lifecycle.lifecycleScope
 import com.kakao.sdk.auth.model.OAuthToken
@@ -23,38 +24,7 @@ import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity() {
-    // 서버에서 받은 서비스 access 토큰 저장
-    object ServiceAccessTokenDB {
-        private lateinit var sharedPreferences: SharedPreferences
-        // 초기화
-        fun init(context: Context) {
-            sharedPreferences = context.getSharedPreferences("ServiceToken", Context.MODE_PRIVATE)
-        }
 
-        // 객체 반환
-        fun getInstance(): SharedPreferences {
-            if(!this::sharedPreferences.isInitialized) {
-                throw IllegalStateException("SharedPreferencesSingleton is not initialized")
-            }
-            return sharedPreferences
-        }
-    }
-    // 로그인 후 서버에서 유저ID 받아와서 저장
-    object UserInfoDB {
-        private lateinit var sharedPreferences: SharedPreferences
-        // 초기화
-        fun init(context: Context) {
-            sharedPreferences = context.getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
-        }
-
-        // 객체 반환
-        fun getInstance(): SharedPreferences {
-            if(!this::sharedPreferences.isInitialized) {
-                throw IllegalStateException("SharedPreferencesSingleton is not initialized")
-            }
-            return sharedPreferences
-        }
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -64,18 +34,16 @@ class MainActivity : AppCompatActivity() {
 
         initMissionDB()
 
-        // 최초 로그인 시 필히 실행
-        ServiceAccessTokenDB.init(this)
-        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-        UserInfoDB.init(this)
-        val userEditor = UserInfoDB.getInstance().edit()
-
-        tokenEditor.clear()
-        tokenEditor.apply()
-        userEditor.clear()
-        userEditor.apply()
+        // 최초 로그인 시 필히 실행(회원가입 테스트용)
+//        ServiceAccessTokenDB.init(this)
+//        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+//        UserInfoDB.init(this)
+//        val userEditor = UserInfoDB.getInstance().edit()
 //
-//        kakaoLogout()
+//        tokenEditor.clear()
+//        tokenEditor.apply()
+//        userEditor.clear()
+//        userEditor.apply()
 
 //        ScheduleTypeDB.init(this)
 //        val editor = ScheduleTypeDB.getInstance().edit()
@@ -97,20 +65,157 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun kakaoCheck() {
-        ServiceAccessTokenDB.init(this)
+        ServiceAccessTokenDB.init(this) // 토큰 db 초기화 및 생성
         val serviceToken = ServiceAccessTokenDB.getInstance()
-        UserInfoDB.init(this)
+        UserInfoDB.init(this) // 유저 db 초기화 및 생성
         val userData = UserInfoDB.getInstance()
 
-        if (serviceToken.contains("accessToken") && userData.contains("id")) {
+        // 유저 DB 파일이 존재한다면 (회원가입 한적 있는 경우)
+        if(UserInfoDB.doesFileExist(this)){
             Log.d("db확인","회원")
-            // 화면 전환
-            val intent = Intent(this, MenuActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
+
+        } else { // 회원가입 한적 없는 경우
             Log.d("db확인","비회원")
             kakaoLoginApi()
+        }
+    }
+
+    // 카카오 로그인 api
+    private fun kakaoLoginApi() {
+        Log.d("kakaoLoginApi", "실행")
+        // 카카오계정으로 로그인 공통 callback 구성
+        // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
+        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            if (error != null) {
+                Log.e(TAG, "카카오계정으로 로그인 실패", error)
+            } else if (token != null) {
+                Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+
+                // 코루틴을 사용하여 pushToken 함수 호출
+                lifecycleScope.launch {
+                    pushToken(0, token.accessToken)
+                }
+                // 화면 전환
+                val intent = Intent(this, SignupProfileActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
+
+        // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                if (error != null) { // 에러 발생한 경우
+                    Log.e(TAG, "카카오톡으로 로그인 실패", error)
+                    // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+                    // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
+                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                        return@loginWithKakaoTalk
+                    }
+                    // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
+                    UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+
+                } else if (token != null) { // 로그인 성공 후 토큰 발급된 경우
+                    Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
+
+                    lifecycleScope.launch {
+                        pushToken(0, token.accessToken)
+                    }
+                }
+            }
+        } else { // 카카오톡이 설치되어 있지 않은 경우
+            try {
+                Log.d("카카오계정 로그인 시도","콜백")
+                UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+            } catch (e: Exception) {
+                pushTokenError("Exception during loginWithKakaoAccount: ${e.message}", null)
+            }
+        }
+    }
+
+    // loginType -> 0: 카카오, 1: 네이버
+    private suspend fun pushToken(loginType: Int, accessToken: String) {
+        Log.d("pushToken 함수", "실행")
+        try {
+            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
+            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
+            // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val loginRequest = LoginRequest(loginType = loginType, accessToken = accessToken)
+            val response: Response<ServerResponse<LoginData>> = withContext(Dispatchers.IO) {
+                LoginInstance.userLoginService().userLogin(loginRequest)
+            }
+            val serverResponse: ServerResponse<LoginData>? = response.body()
+
+            // Response를 처리하는 코드
+            if (response.isSuccessful) { // success가 true일 때
+                Log.d("서버 연동 성공", response.toString())
+                if (serverResponse != null) {
+                    pushTokenResponse(serverResponse)
+                } else {
+                    pushTokenError("Response body is null.", null)
+                }
+            } else { // success가 false일 때
+                Log.d("pushToken 함수 에러", "로그인 실패")
+                pushTokenError("Error: ${response.code()} - ${response.message()}", serverResponse)
+            }
+        } catch (e: Exception) {
+            // 예외 처리 코드
+            pushTokenError(e.message ?: "Unknown error occurred.", null)
+        }
+    }
+
+    private fun pushTokenResponse(serverResponse: ServerResponse<LoginData>?) {
+        Log.d("pushTokenResponse 함수","실행")
+
+        UserInfoDB.init(this) // 유저 db 초기화 및 생성
+        val userEditor = UserInfoDB.getInstance().edit()
+        ServiceAccessTokenDB.init(this) // 토큰 db 초기화 및 생성
+        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
+
+        val userData = serverResponse?.data // 서버 응답 데이터
+
+        if (userData != null) {
+            Log.d("userData", userData.toString())
+            Log.d("isExistUser", userData.isExistUser.toString())
+
+            // 이미 존재하는 회원 true (토큰 재발급)
+            if (userData.isExistUser) {
+                tokenEditor.putString("accessToken", userData.accessToken)
+                tokenEditor.putString("refreshToken", userData.refreshToken)
+
+                // 홈 화면으로 이동
+                val intent = Intent(this, MenuActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            else { // 신규 회원 false (처음 회원 가입 시)
+                tokenEditor.putString("accessToken", userData.accessToken)
+                tokenEditor.putString("refreshToken", userData.refreshToken)
+                userEditor.putLong("id", userData.userProfileData.id)
+                userEditor.putString("nickName", userData.userProfileData.nickName)
+                userEditor.putString("thumbnailUrl", userData.userProfileData.thumbnailUrl)
+
+                // 회원 가입 진행
+                val intent = Intent(this, SignupProfileActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            userEditor.apply()
+            tokenEditor.apply()
+            } else {
+                Log.d("userData","null")
+            }
+        }
+
+    private fun pushTokenError(errorMessage: String, response: ServerResponse<LoginData>?) {
+        // 에러를 처리하는 코드
+        Log.d("pushTokenError", errorMessage)
+
+        // 로그인 실패한 경우 (토큰 만료 시)
+        if (response != null) {
+            if(!response.success) {
+                kakaoLogout() // 로그 아웃
+            }
         }
     }
 
@@ -151,125 +256,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun kakaoLoginApi() {
-        Log.d("kakaoLoginApi", "실행")
-        // 카카오계정으로 로그인 공통 callback 구성
-        // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
-        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if (error != null) {
-                Log.e(TAG, "카카오계정으로 로그인 실패", error)
-            } else if (token != null) {
-                Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
-                // 코루틴을 사용하여 pushToken 함수 호출
-                lifecycleScope.launch {
-                    pushToken(0, token.accessToken)
-                }
-                // 화면 전환
-                val intent = Intent(this, SignupProfileActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-        }
-
-        // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-                if (error != null) {
-                    Log.e(TAG, "카카오톡으로 로그인 실패", error)
-                    // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                    // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
-                    }
-
-                    // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                    UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-                } else if (token != null) {
-                    Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    // 코루틴을 사용하여 getArtistList 함수 호출
-                    lifecycleScope.launch {
-                        pushToken(0, token.accessToken)
-                    }
-                    // 화면 전환
-                    val intent = Intent(this, SignupProfileActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
-        } else {
-            try {
-                Log.d("카카오계정 로그인","콜백")
-                UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-            } catch (e: Exception) {
-                handleError("Exception during loginWithKakaoAccount: ${e.message}")
-            }
-        }
-    }
-
-    // loginType -> 0: 카카오, 1: 네이버
-    private suspend fun pushToken(loginType: Int, accessToken: String) {
-        Log.d("pushToken 함수", "실행")
-        runBlocking {
-            try {
-                // IO 스레드에서 Retrofit 호출 및 코루틴 실행
-                // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
-                // Response는 Retrofit이 제공하는 HTTP 응답 객체
-                val loginRequest = LoginRequest(loginType = loginType, accessToken = accessToken)
-                val response: Response<ServerResponse<LoginData>> = withContext(Dispatchers.IO) {
-                    LoginInstance.userLoginService().userLogin(loginRequest)
-                }
-                // Response를 처리하는 코드
-                if (response.isSuccessful) {
-                    Log.d("서버 연동",response.message() + response.code())
-                    val serverResponse: ServerResponse<LoginData>? = response.body()
-                    if (serverResponse != null) {
-                        handleResponse(serverResponse)
-                    } else {
-                        handleError("Response body is null.")
-                    }
-                } else {
-                    Log.d("error", "서버 연동 실패")
-                    handleError("Error: ${response.code()} - ${response.message()}")
-                }
-            } catch (e: Exception) {
-                // 예외 처리 코드
-                handleError(e.message ?: "Unknown error occurred.")
-            }
-        }
-    }
-
-    private fun handleResponse(serverResponse: ServerResponse<LoginData>?) {
-        Log.d("handleResponse 함수","실행")
-        //SharedPreferences 초기화
-        UserInfoDB.init(this)
-        val userEditor = UserInfoDB.getInstance().edit()
-        ServiceAccessTokenDB.init(this)
-        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-        val userData = serverResponse?.data
-
-        if (userData != null) {
-            Log.d("userData", userData.toString())
-            // 이미 존재하는 회원 true
-            if (userData.isExistUser) {
-                Log.d("isExistUser", userData.isExistUser.toString())
-                tokenEditor.putString("accessToken", userData.accessToken)
-                tokenEditor.putString("refreshToken", userData.refreshToken)
-                // 신규 회원 false
-            } else {
-                Log.d("isExistUser",userData.isExistUser.toString())
-                tokenEditor.putString("accessToken", userData.accessToken)
-                tokenEditor.putString("refreshToken", userData.refreshToken)
-                userEditor.putLong("id", userData.userProfileData.id)
-                userEditor.putString("nickName", userData.userProfileData.nickName)
-                userEditor.putString("thumbnailUrl", userData.userProfileData.thumbnailUrl)
-            }
-            userEditor.apply()
-            tokenEditor.apply()
-            } else {
-                handleError("userData is null.")
-            }
-        }
-    }
     private fun kakaoLogout() {
         // 로그아웃
         UserApiClient.instance.logout { error ->
@@ -277,6 +263,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("Hello", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
             } else {
                 Log.i("Hello", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                Toast.makeText(this, "로그아웃 되었습니다", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -293,8 +280,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+}
 
-    private fun handleError(errorMessage: String) {
-        // 에러를 처리하는 코드
-        Log.d("Error", errorMessage)
-    }

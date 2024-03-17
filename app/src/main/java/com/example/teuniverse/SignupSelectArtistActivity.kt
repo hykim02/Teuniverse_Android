@@ -126,7 +126,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
                         if (artistName != null && artistName == searchText) {
                             // 일치하는 경우
-                            Glide.with(this@SignupSelectArtistActivity) // 'this' 대신 'this@YourActivity' 사용
+                            Glide.with(this@SignupSelectArtistActivity)
                                 .load(artistImg)
                                 .apply(RequestOptions.circleCropTransform())
                                 .into(imageView)
@@ -140,6 +140,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                             val clickedText = textView.text
                             Log.d("clickedText", clickedText.toString())
                             val clickedImg = imageView.drawable
+
+                            val nextBtn = findViewById<Button>(R.id.next_btn)
+                            nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
 
                             // 원하는 값과 일치하는 키 찾기
                             for ((key, value) in db) {
