@@ -5,9 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.provider.Settings
 import android.transition.Transition
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +21,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -81,6 +85,7 @@ class SignupProfileActivity:AppCompatActivity() {
     }
 
     // 갤러리에서 선택한 이미지를 처리하는 메서드
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // 이미지 첨부한 경우
@@ -92,28 +97,26 @@ class SignupProfileActivity:AppCompatActivity() {
     }
 
     // 이미지 첨부한 경우 처리
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun putImage(data: Intent?) {
         val selectedImageUri = data?.data // 이미지 들고옴
         selectedImagePath = getPathFromUri(selectedImageUri) // 실제 경로 가져옴
         Log.d("path", selectedImagePath.toString())
 
-        Glide.with(this)
-            .load(selectedImageUri)
-            .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
-            .into(profileImg)
+        selectedImageUri?.let { uri ->
+            Glide.with(this)
+                .load(uri)
+                .apply(RequestOptions.circleCropTransform()) // 이미지뷰 모양에 맞추기
+                .into(profileImg)
 
-        // 이미지뷰에서 Drawable 얻기
-        val drawable: Drawable? = profileImg.drawable
-        Log.d("drawable", drawable.toString())
-        //Drawable에서 Bitmap으로 변환
-        bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
-        Log.d("bitmap", bitmap.toString())
+            UserInfoDB.init(this)
+            val editor = UserInfoDB.getInstance().edit()
+            editor.putString("imageFile", selectedImagePath.toString())
+            editor.putString("thumbnailUrl", null)
+            editor.apply()
 
-        UserInfoDB.init(this)
-        val editor = UserInfoDB.getInstance().edit()
-        editor.putString("imageFile", selectedImagePath.toString())
-        editor.putString("thumbnailUrl", null)
-        editor.apply()
+            checkExternalStorageAccess()
+        } ?: Log.e("putImage", "Selected image URI is null")
     }
 
     // Uri에서 실제 파일 경로 가져오기
@@ -127,6 +130,18 @@ class SignupProfileActivity:AppCompatActivity() {
         return null
     }
 
+    // 외부 저장소 액세스 권한 확인 및 요청
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun checkExternalStorageAccess() {
+        if (Environment.isExternalStorageManager()) {
+            // 파일에 접근하는 코드
+        } else {
+            // 사용자에게 외부 저장소 액세스 권한을 요청합니다.
+            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            startActivity(intent)
+        }
+    }
+
     private fun countText(nickName: Any?) {
         name.text = Editable.Factory.getInstance().newEditable(nickName.toString())
         nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
@@ -138,6 +153,9 @@ class SignupProfileActivity:AppCompatActivity() {
             finish()
         }
 
+        UserInfoDB.init(this)
+        val editor = UserInfoDB.getInstance().edit()
+
         name.addTextChangedListener(object: TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textCount.text = "${s?.length ?: 0}"
@@ -148,6 +166,9 @@ class SignupProfileActivity:AppCompatActivity() {
                     name.setText(truncatedText)
                     name.setSelection(10)
                 }
+
+                editor.putString("nickName", name.text.toString())
+                editor.apply()
                 updateButtonColor(s)
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

@@ -83,7 +83,7 @@ interface SignUpInterface {
         @Part("id") id: RequestBody,
         @Part("nickName") nickName: RequestBody,
         @Part("favoriteArtistId") favoriteArtistId: RequestBody,
-        @Part("thumbnailUrl") thumbnailUrl: RequestBody,
+        @Part("thumbnailUrl") thumbnailUrl: RequestBody?,
         @Part imageFile: MultipartBody.Part?
     ): Response<SignUpResponse>
 }

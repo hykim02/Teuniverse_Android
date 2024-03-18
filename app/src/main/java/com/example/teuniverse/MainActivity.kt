@@ -233,7 +233,8 @@ class MainActivity : AppCompatActivity() {
                     Log.d("토큰 검증 api isSuccessful", response.toString())
                     checkTokenResponse(serverResponse)
                 } else { // success가 false일 때
-                    Log.d("checkToken 함수 에러", "토큰 검증 실패")
+                    Log.d("checkToken 함수 에러", response.toString())
+                    kakaoLoginApi()
                 }
             } else {
                 Log.d("accessToken","null")

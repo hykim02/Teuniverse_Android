@@ -43,32 +43,66 @@ class SignupEndActivity:AppCompatActivity() {
         val nickName = userInfo.getValue("nickName").toString()
         val favoriteArtistId = userInfo.getValue("favoriteArtistId").toString()
 
-        var thumbnailUrl: String
+        var thumbnailUrl: RequestBody? = null
         var imageFile: MultipartBody.Part? = null
-        if (userInfo.containsKey("thumbnailUrl")) {
-            thumbnailUrl = userInfo.getValue("thumbnailUrl").toString()
-        } else {
-            bitmap = userInfo.getValue("imageFile") as Bitmap
-            Log.d("imgFilePath", bitmap.toString())
-            // 파일 경로를 통해 Bitmap으로 변환
-//            bitmap = BitmapFactory.decodeFile(imgFilePath)
-//            Log.d("bitmap", bitmap.toString())
-            imageFile = createMultipartBody(bitmap)
-            thumbnailUrl = null.toString()
+
+        if (userInfo.containsKey("thumbnailUrl")) { // 카카오 프로필 이용하는 경우
+            val url = userInfo.getValue("thumbnailUrl").toString()
+            thumbnailUrl = url.toRequestBody("text/plain".toMediaTypeOrNull())
+        } else if (userInfo.containsKey("imageFile")) { // 갤러리에서 선택한 경우
+            val imagePath = userInfo.getValue("imageFile").toString()
+            val file = File(imagePath)
+            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+            imageFile = MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
         }
 
         val idRequestBody = id.toRequestBody("text/plain".toMediaType())
         val nickNameRequestBody = nickName.toRequestBody("text/plain".toMediaType())
         val favoriteArtistIdRequestBody = favoriteArtistId.toRequestBody("text/plain".toMediaType())
-        val thumbnailUrlRequestBody = thumbnailUrl.toRequestBody("text/plain".toMediaTypeOrNull())
 
-        homeButton.setOnClickListener{
-            // 코루틴을 사용하여 pushToken 함수 호출
+        homeButton.setOnClickListener {
+            // 코루틴을 사용하여 서버로 회원가입 정보 전송
             lifecycleScope.launch {
-                signUpInfoToServer(idRequestBody, nickNameRequestBody, thumbnailUrlRequestBody, favoriteArtistIdRequestBody, imageFile)
+                signUpInfoToServer(idRequestBody, nickNameRequestBody, thumbnailUrl, favoriteArtistIdRequestBody, imageFile)
             }
         }
     }
+
+
+
+
+//    private fun continueWithImageFileAccess() {
+//        UserInfoDB.init(this)
+//        val userInfo = UserInfoDB.getInstance().all
+//        val id = userInfo.getValue("id").toString()
+//        val nickName = userInfo.getValue("nickName").toString()
+//        val favoriteArtistId = userInfo.getValue("favoriteArtistId").toString()
+//
+//        var thumbnailUrl: String? = null
+//        var imageFile: MultipartBody.Part? = null
+//
+//        if (userInfo.containsKey("thumbnailUrl")) {
+//            thumbnailUrl = userInfo.getValue("thumbnailUrl").toString()
+//        } else if (userInfo.containsKey("imageFile")) {
+//            val imagePath = userInfo.getValue("imageFile").toString()
+//            val file = File(imagePath)
+//            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+//            imageFile = MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+//        }
+//
+//        val idRequestBody = id.toRequestBody("text/plain".toMediaType())
+//        val nickNameRequestBody = nickName.toRequestBody("text/plain".toMediaType())
+//        val favoriteArtistIdRequestBody = favoriteArtistId.toRequestBody("text/plain".toMediaType())
+//        val thumbnailUrlRequestBody = thumbnailUrl?.toRequestBody("text/plain".toMediaTypeOrNull())
+//
+//        homeButton.setOnClickListener {
+//            // 코루틴을 사용하여 서버로 회원가입 정보 전송
+//            lifecycleScope.launch {
+//                signUpInfoToServer(idRequestBody, nickNameRequestBody, thumbnailUrlRequestBody, favoriteArtistIdRequestBody, imageFile)
+//            }
+//        }
+//    }
+
 
     // 이미지 파일 타입 설정
     private fun createMultipartBody(bitmap: Bitmap): MultipartBody.Part {
@@ -96,7 +130,7 @@ class SignupEndActivity:AppCompatActivity() {
         return imageFile
     }
 
-    private suspend fun signUpInfoToServer(id: RequestBody, nickName: RequestBody, thumbnailUrl: RequestBody, favoriteArtistId: RequestBody, imageFile: MultipartBody.Part?) {
+    private suspend fun signUpInfoToServer(id: RequestBody, nickName: RequestBody, thumbnailUrl: RequestBody?, favoriteArtistId: RequestBody, imageFile: MultipartBody.Part?) {
         Log.d("signUpInfoToServer 함수", "호출 성공")
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
