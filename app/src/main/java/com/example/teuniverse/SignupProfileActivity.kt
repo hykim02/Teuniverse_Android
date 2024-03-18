@@ -59,8 +59,8 @@ class SignupProfileActivity:AppCompatActivity() {
 
     private fun setInitialProfile() {
         Log.d("setInitialProfile 함수","실행")
-        MainActivity.UserInfoDB.init(this)
-        val userDB = MainActivity.UserInfoDB.getInstance()
+        UserInfoDB.init(this)
+        val userDB = UserInfoDB.getInstance()
         // 내부 저장소에 저장된 모든 키-값 쌍 가져오기
         val allEntries: Map<String, *> = userDB.all
 
@@ -109,8 +109,8 @@ class SignupProfileActivity:AppCompatActivity() {
         bitmap = (drawable as BitmapDrawable).bitmap // bitmap에 이미지 저장되어 있음
         Log.d("bitmap", bitmap.toString())
 
-        MainActivity.UserInfoDB.init(this)
-        val editor = MainActivity.UserInfoDB.getInstance().edit()
+        UserInfoDB.init(this)
+        val editor = UserInfoDB.getInstance().edit()
         editor.putString("imageFile", selectedImagePath.toString())
         editor.putString("thumbnailUrl", null)
         editor.apply()

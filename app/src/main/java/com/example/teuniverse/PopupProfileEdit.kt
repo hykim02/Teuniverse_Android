@@ -110,8 +110,8 @@ class PopupProfileEdit(context: Context): Dialog(context) {
 
     // 유저 이미지 넣기
     private fun getProfileImg() {
-        MainActivity.UserInfoDB.init(context)
-        val db = MainActivity.UserInfoDB.getInstance().all
+        UserInfoDB.init(context)
+        val db = UserInfoDB.getInstance().all
         val userImg = db.getValue("thumbnailUrl")
 
         Glide.with(context)

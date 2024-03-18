@@ -65,15 +65,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun kakaoCheck() {
-        ServiceAccessTokenDB.init(this) // 토큰 db 초기화 및 생성
-        val serviceToken = ServiceAccessTokenDB.getInstance()
-        UserInfoDB.init(this) // 유저 db 초기화 및 생성
-        val userData = UserInfoDB.getInstance()
-
         // 유저 DB 파일이 존재한다면 (회원가입 한적 있는 경우)
         if(UserInfoDB.doesFileExist(this)){
             Log.d("db확인","회원")
-
+            // 토큰 검증 api
+            lifecycleScope.launch {
+                checkToken()
+            }
         } else { // 회원가입 한적 없는 경우
             Log.d("db확인","비회원")
             kakaoLoginApi()
@@ -95,10 +93,6 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     pushToken(0, token.accessToken)
                 }
-                // 화면 전환
-                val intent = Intent(this, SignupProfileActivity::class.java)
-                startActivity(intent)
-                finish()
             }
         }
 
@@ -178,7 +172,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("userData", userData.toString())
             Log.d("isExistUser", userData.isExistUser.toString())
 
-            // 이미 존재하는 회원 true (토큰 재발급)
+            // 이미 존재하는 회원 true (토큰 재발급하는 경우)
             if (userData.isExistUser) {
                 tokenEditor.putString("accessToken", userData.accessToken)
                 tokenEditor.putString("refreshToken", userData.refreshToken)
@@ -216,6 +210,48 @@ class MainActivity : AppCompatActivity() {
             if(!response.success) {
                 kakaoLogout() // 로그 아웃
             }
+        }
+    }
+
+    // 토큰 검증 api
+    private suspend fun checkToken() {
+        Log.d("checkToken 함수", "실행")
+        ServiceAccessTokenDB.init(this)
+        val accessToken = ServiceAccessTokenDB.getInstance().getString("accessToken", "null")
+        try {
+            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
+            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
+            // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            if(accessToken != null) {
+                val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
+                    CheckTokenInstance.checkTokenService().checkToken(accessToken)
+                }
+                val serverResponse: SignUpResponse? = response.body()
+
+                // Response를 처리하는 코드
+                if (response.isSuccessful) {
+                    Log.d("토큰 검증 api isSuccessful", response.toString())
+                    checkTokenResponse(serverResponse)
+                } else { // success가 false일 때
+                    Log.d("checkToken 함수 에러", "토큰 검증 실패")
+                }
+            } else {
+                Log.d("accessToken","null")
+            }
+        } catch (e: Exception) {
+            // 예외 처리 코드
+            pushTokenError(e.message ?: "Unknown error occurred.", null)
+        }
+    }
+
+    private fun checkTokenResponse(response: SignUpResponse?) {
+        if(response?.success == true) { // 토큰 유효한 경우
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else { // 토큰 만료된 경우
+            kakaoLogout() // 로그아웃
+            kakaoLoginApi() // 재로그인
         }
     }
 

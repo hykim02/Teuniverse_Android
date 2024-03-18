@@ -243,6 +243,7 @@ interface VoteSummaryInterface {
     ): Response<ArtistServerResponse<VotesItem>>
 }
 
+// 투표권 미션
 interface GiveVoteInterface {
     @POST("vote/give-vote")
     @Headers("accept: */*",
@@ -251,4 +252,14 @@ interface GiveVoteInterface {
         @Header("Authorization") authorization: String?,
         @Body voteMission: VoteMission
         ): Response<ServerResponse<NumberOfVote>>
+}
+
+// 토큰 검증
+interface CheckTokenInterface {
+    @POST("user/check-token")
+    @Headers("accept: */*",
+        "Content-Type: application/json")
+    suspend fun checkToken(
+        @Body accessToken: String
+    ): Response<SignUpResponse>
 }

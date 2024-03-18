@@ -123,8 +123,8 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
 
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(context)
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(context)
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {

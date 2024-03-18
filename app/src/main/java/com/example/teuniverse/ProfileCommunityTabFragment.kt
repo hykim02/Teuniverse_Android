@@ -86,8 +86,8 @@ class ProfileCommunityTabFragment : Fragment() {
     private fun handleGetFeeds(theFeeds: ServerResponse<CommunityData>) {
         Log.d("handleGetFeeds함수","호출 성공")
         val feedsData = theFeeds.data.feeds
-        MainActivity.UserInfoDB.init(requireContext())
-        val userInfoData = MainActivity.UserInfoDB.getInstance().all
+        UserInfoDB.init(requireContext())
+        val userInfoData = UserInfoDB.getInstance().all
         val userID = userInfoData.getValue("id")
 
         for (i in feedsData.indices) {
@@ -146,8 +146,8 @@ class ProfileCommunityTabFragment : Fragment() {
 
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(requireContext())
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(requireContext())
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {

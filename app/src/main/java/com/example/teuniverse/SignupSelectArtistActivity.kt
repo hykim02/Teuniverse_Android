@@ -88,8 +88,8 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 SelectArtistDB.init(this@SignupSelectArtistActivity)
                 val artistDB = SelectArtistDB.getInstance()
                 val db = SelectArtistDB.getInstance().all
-                MainActivity.UserInfoDB.init(this@SignupSelectArtistActivity)
-                val userEditor = MainActivity.UserInfoDB.getInstance().edit()
+                UserInfoDB.init(this@SignupSelectArtistActivity)
+                val userEditor = UserInfoDB.getInstance().edit()
                 val searchText = s.toString()
                 var foundKey: String? = null
 
@@ -190,9 +190,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         })
 
         backBtn.setOnClickListener {
-            MainActivity.UserInfoDB.init(this)
-            val db = MainActivity.UserInfoDB.getInstance().all
-            val editor = MainActivity.UserInfoDB.getInstance().edit()
+            UserInfoDB.init(this)
+            val db = UserInfoDB.getInstance().all
+            val editor = UserInfoDB.getInstance().edit()
 
             if (db.getValue("edit") == 1) {
                 val menuActivityIntent = Intent(this, MenuActivity::class.java)
@@ -417,8 +417,8 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         //SharedPreferences 초기화
         SelectArtistDB.init(this)
         val artistDB = SelectArtistDB.getInstance()
-        MainActivity.UserInfoDB.init(this)
-        val userEditor = MainActivity.UserInfoDB.getInstance().edit()
+        UserInfoDB.init(this)
+        val userEditor = UserInfoDB.getInstance().edit()
         // 선택된 아티스트 이름 저장한 변수
         val clickedName = childView.contentDescription?.toString()
         Log.d("clickedName", clickedName.toString())
@@ -513,9 +513,9 @@ class SignupSelectArtistActivity:AppCompatActivity() {
         val nextBtn = findViewById<Button>(R.id.next_btn)
         if (trueCount == 1) {
             nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
-            MainActivity.UserInfoDB.init(this)
-            val db = MainActivity.UserInfoDB.getInstance().all
-            val editor = MainActivity.UserInfoDB.getInstance().edit()
+            UserInfoDB.init(this)
+            val db = UserInfoDB.getInstance().all
+            val editor = UserInfoDB.getInstance().edit()
 
             nextBtn.setOnClickListener {
                 if (db.containsKey("edit")) {
@@ -542,8 +542,8 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(this)
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(this)
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {

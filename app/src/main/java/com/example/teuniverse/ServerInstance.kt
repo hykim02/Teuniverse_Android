@@ -333,6 +333,7 @@ object EditCommentInstance {
         }
     }
 
+// 투표권 획득 미션
 object GiveVoteInstance {
     fun giveVoteService(): GiveVoteInterface {
         return Retrofit.Builder()
@@ -340,5 +341,16 @@ object GiveVoteInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(GiveVoteInterface::class.java)
+    }
+}
+
+// 토큰 검증
+object CheckTokenInstance {
+    fun checkTokenService(): CheckTokenInterface {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CheckTokenInterface::class.java)
     }
 }

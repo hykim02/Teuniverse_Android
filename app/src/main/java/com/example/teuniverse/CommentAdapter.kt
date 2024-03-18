@@ -196,8 +196,8 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
 
     // db에서 토큰 가져오기
     private fun getAccessToken(view: View): String? {
-        MainActivity.ServiceAccessTokenDB.init(view.context)
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(view.context)
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {

@@ -13,6 +13,7 @@ import com.example.teuniverse.GiveVoteInstance
 import com.example.teuniverse.MainActivity
 import com.example.teuniverse.NumberOfVote
 import com.example.teuniverse.ServerResponse
+import com.example.teuniverse.ServiceAccessTokenDB
 import com.example.teuniverse.VoteMission
 import com.example.teuniverse.VoteMissionDB
 import com.example.teuniverse.databinding.PopupVoteCheckBinding
@@ -131,8 +132,8 @@ class PopupVoteCheck(
 
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(context)
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(context)
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {

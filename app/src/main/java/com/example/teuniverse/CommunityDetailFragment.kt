@@ -284,8 +284,8 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
     // 댓글 생성
     @RequiresApi(Build.VERSION_CODES.O)
     private fun handleResponse(theComment: ServerResponse<CreateCommentResponse>) {
-        MainActivity.UserInfoDB.init(requireContext())
-        val getData = MainActivity.UserInfoDB.getInstance().all
+        UserInfoDB.init(requireContext())
+        val getData = UserInfoDB.getInstance().all
         val response = theComment.data
         binding.commentCount.text = response.commentCount.toString()
 
@@ -315,8 +315,8 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
 
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(requireContext())
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(requireContext())
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {

@@ -46,8 +46,8 @@ class ProfileUserTabFragment : Fragment() {
 
         // 최애 아티스트 변경
         binding.modifyBtn.setOnClickListener {
-            MainActivity.UserInfoDB.init(requireContext())
-            val editor = MainActivity.UserInfoDB.getInstance().edit()
+            UserInfoDB.init(requireContext())
+            val editor = UserInfoDB.getInstance().edit()
             editor.putInt("edit", 1)
             editor.apply()
 
@@ -56,8 +56,8 @@ class ProfileUserTabFragment : Fragment() {
         }
 
         binding.modifyTv.setOnClickListener {
-            MainActivity.UserInfoDB.init(requireContext())
-            val editor = MainActivity.UserInfoDB.getInstance().edit()
+            UserInfoDB.init(requireContext())
+            val editor = UserInfoDB.getInstance().edit()
             editor.putInt("edit", 1)
             editor.apply()
 
@@ -129,8 +129,8 @@ class ProfileUserTabFragment : Fragment() {
 
     // db에서 토큰 가져오기
     private fun getAccessToken(): String? {
-        MainActivity.ServiceAccessTokenDB.init(requireContext())
-        val serviceTokenDB = MainActivity.ServiceAccessTokenDB.getInstance()
+        ServiceAccessTokenDB.init(requireContext())
+        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
         var accessToken: String? = null
 
         for ((key, value) in serviceTokenDB.all) {
