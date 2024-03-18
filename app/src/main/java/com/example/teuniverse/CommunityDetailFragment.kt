@@ -80,7 +80,6 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
     // getArguments()를 통해 Bundle을 받아옴
     private fun getFeedId(): String? {
         val bundle = arguments
-        Log.d("bundle", bundle.toString())
         return bundle?.getString("feedId")
     }
 
@@ -134,7 +133,6 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
         }
         val param = dateTimeToMillSec(detailData.createdAt)
         binding.term.text = calculationTime(param)
-        Log.d("상세 피드 시간", binding.term.text.toString())
         binding.postContent.text = detailData.content
         binding.heartCount.text = detailData.likeCount.toString()
         binding.commentCount.text = detailData.commentCount.toString()
@@ -256,7 +254,6 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                 VoteMissionDB.init(requireContext())
                 val db = VoteMissionDB.getInstance()
                 val count = db.getInt("comment", 0)
-                Log.d("comment", count.toString())
 
                 // 텍스트 변경 후에 호출되는 메서드
                 binding.btnEnroll.setOnClickListener {
@@ -289,12 +286,18 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
         val response = theComment.data
         binding.commentCount.text = response.commentCount.toString()
 
+        val userImg: String
         val nickname = getData.getValue("nickName").toString()
-        val userImg = getData.getValue("thumbnailUrl").toString()
         val content = response.comment.content
         val commentId = response.comment.id
         val param = dateTimeToMillSec(response.comment.createdAt)
         val time = calculationTime(param)
+
+        if(getData.containsKey("thumbnailUrl")) {
+            userImg = getData.getValue("thumbnailUrl").toString()
+        } else {
+            userImg = getData.getValue("imageFile").toString()
+        }
 
         commentList.add(CommentItem(userImg, nickname, time, content, commentId))
 
@@ -505,6 +508,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                     if (theVotes != null) {
                         Toast.makeText(requireContext(), "일일미션 댓글쓰기 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         Log.d("댓글쓰기 미션", "${theVotes.statusCode} ${theVotes.message}")
+                        Log.d("투표권 지급 개수",theVotes.data.voteCount.toString())
                         handleMission()
                     } else {
                         Toast.makeText(requireContext(), "일일미션 댓글쓰기 실패", Toast.LENGTH_SHORT).show()

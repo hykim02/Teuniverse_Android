@@ -133,7 +133,7 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
 
     private fun handleError(errorMessage: String) {
         // 에러를 처리하는 코드
-        Log.d("Api 함수 Error", errorMessage)
+        Log.d("comment Api 함수 Error", errorMessage)
     }
 
     // 댓글 삭제 및 수정 옵션
@@ -184,7 +184,7 @@ class CommentAdapter(private val itemList: MutableList<CommentItem>,
         val iterator = itemList.iterator()
         while (iterator.hasNext()) {
             val comment = iterator.next()
-            Log.d("comment", comment.toString())
+
             if (comment.commendId == commentId) {
                 itemList.remove(comment)
                 break
