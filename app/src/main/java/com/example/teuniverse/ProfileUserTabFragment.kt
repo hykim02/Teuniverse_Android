@@ -37,11 +37,23 @@ class ProfileUserTabFragment : Fragment() {
 
         // 수정하기 버튼
         binding.editBtn.setOnClickListener {
-            showPopupEditDialog()
+            UserInfoDB.init(requireContext())
+            val editor = UserInfoDB.getInstance().edit()
+            editor.putInt("edit", 1)
+            editor.apply()
+
+            val intent = Intent(requireContext(), SignupProfileActivity::class.java)
+            startActivity(intent)
         }
 
         binding.editTv.setOnClickListener {
-            showPopupEditDialog()
+            UserInfoDB.init(requireContext())
+            val editor = UserInfoDB.getInstance().edit()
+            editor.putInt("edit", 1)
+            editor.apply()
+
+            val intent = Intent(requireContext(), SignupProfileActivity::class.java)
+            startActivity(intent)
         }
 
         // 최애 아티스트 변경
@@ -140,26 +152,4 @@ class ProfileUserTabFragment : Fragment() {
         }
         return accessToken
     }
-
-    // 수정하기 팝업창
-    private fun showPopupEditDialog() {
-        val popupProfileEdit = PopupProfileEdit(requireContext())
-        // 다이얼로그가 닫힌 후에 결과를 받기 위해 프래그먼트의 childFragmentManager를 사용
-        popupProfileEdit.show()
-        popupProfileEdit.setOnDismissListener {
-            Log.d("popupProfileEdit", "popupProfileEdit dialog dismissed.")
-        }
-    }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (requestCode == PICK_IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-//            val selectedImageUri: Uri? = data.data
-//            selectedImageUri?.let {
-//                // 이미지뷰에 선택한 이미지 설정
-//                PopupProfileEdit(requireContext()).setUserProfileImage(it)
-//            }
-//        }
-//    }
 }

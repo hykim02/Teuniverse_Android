@@ -19,6 +19,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
@@ -29,7 +30,13 @@ import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import java.io.File
 
 
 class SignupSelectArtistActivity:AppCompatActivity() {
@@ -520,10 +527,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             nextBtn.setOnClickListener {
                 if (db.containsKey("edit")) {
                     if (db.getValue("edit") == 1) {
-                        val menuActivityIntent = Intent(this, MenuActivity::class.java)
-                        // Intent에 프래그먼트로 이동할 것임을 표시
-                        menuActivityIntent.putExtra("goToProfileFragment", true)
-                        startActivity(menuActivityIntent)
+                        continueWithImageFileAccess()
                         editor.putInt("edit", 0)
                         editor.apply()
                     } else {
@@ -538,6 +542,79 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun continueWithImageFileAccess() {
+        UserInfoDB.init(this)
+        val userInfo = UserInfoDB.getInstance().all
+        val id = userInfo.getValue("id").toString()
+        val nickName = userInfo.getValue("nickName").toString()
+        val favoriteArtistId = userInfo.getValue("favoriteArtistId").toString()
+
+        var thumbnailUrl: RequestBody? = null
+        var imageFile: MultipartBody.Part? = null
+
+        if (userInfo.containsKey("thumbnailUrl")) { // 카카오 프로필 이용하는 경우
+            val url = userInfo.getValue("thumbnailUrl").toString()
+            thumbnailUrl = url.toRequestBody("text/plain".toMediaTypeOrNull())
+        } else if (userInfo.containsKey("imageFile")) { // 갤러리에서 선택한 경우
+            val imagePath = userInfo.getValue("imageFile").toString()
+            val file = File(imagePath)
+            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+            imageFile = MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+        }
+
+        val idRequestBody = id.toRequestBody("text/plain".toMediaType())
+        val nickNameRequestBody = nickName.toRequestBody("text/plain".toMediaType())
+        val favoriteArtistIdRequestBody = favoriteArtistId.toRequestBody("text/plain".toMediaType())
+
+        // 코루틴을 사용하여 서버로 회원가입 정보 전송
+        lifecycleScope.launch {
+            signUpInfoToServer(idRequestBody, nickNameRequestBody, thumbnailUrl, favoriteArtistIdRequestBody, imageFile)
+        }
+    }
+
+    private suspend fun signUpInfoToServer(id: RequestBody, nickName: RequestBody, thumbnailUrl: RequestBody?, favoriteArtistId: RequestBody, imageFile: MultipartBody.Part?) {
+        Log.d("signUpInfoToServer 함수(최애 수정)", "호출 성공")
+        try {
+            // IO 스레드에서 Retrofit 호출 및 코루틴 실행
+            // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
+            // Response는 Retrofit이 제공하는 HTTP 응답 객체
+            val response: Response<SignUpResponse> = withContext(Dispatchers.IO) {
+                SignUpInstance.signUpSuccessService().signUpSuccess(id, nickName, favoriteArtistId, thumbnailUrl, imageFile)
+            }
+            // Response를 처리하는 코드
+            if (response.isSuccessful) {
+                val signUpSuccess: SignUpResponse? = response.body()
+                if (signUpSuccess != null) {
+                    Log.d("artistList", "${signUpSuccess.statusCode} ${signUpSuccess.message}")
+                    handleResponse2()
+                } else {
+                    handleError2("Response body is null.")
+                }
+            } else {
+                Log.d("error", "서버 연동 실패")
+                handleError2("Error: ${response.code()} - ${response.message()}")
+                Toast.makeText(this, "최애 아티스트 수정 실패", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            // 예외 처리 코드
+            handleError2(e.message ?: "Unknown error occurred.")
+            Toast.makeText(this, "최애 아티스트 수정 실패", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun handleResponse2() {
+        Toast.makeText(this, "최애 아티스트 수정 성공", Toast.LENGTH_SHORT).show()
+        val menuActivityIntent = Intent(this, MenuActivity::class.java)
+        // Intent에 프래그먼트로 이동할 것임을 표시
+        menuActivityIntent.putExtra("goToProfileFragment", true)
+        startActivity(menuActivityIntent)
+    }
+
+    private fun handleError2(errorMessage: String) {
+        // 에러를 처리하는 코드
+        Log.d("signUpInfoToServer 함수(최애 수정)", errorMessage)
     }
 
     // db에서 토큰 가져오기
