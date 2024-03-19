@@ -113,7 +113,8 @@ class CommunityPostActivity: AppCompatActivity() {
                         postToServerApi(RequestBody.create("text/plain".toMediaType(), content), imageFile)
 
                         if(count <= 2) {
-                            voteMissionApi(10, 4, count) // 글쓰기 미션 10표(3회)
+                            handleMission()
+                            Toast.makeText(this@CommunityPostActivity, "일일미션 게시물 작성 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else { // 이미지 첨부 안한 경우
@@ -122,7 +123,8 @@ class CommunityPostActivity: AppCompatActivity() {
                         postToServerApi(RequestBody.create("text/plain".toMediaType(), content), null)
 
                         if(count <= 2) {
-                            voteMissionApi(10, 4, count) // 글쓰기 미션 10표(3회)
+                            handleMission()
+                            Toast.makeText(this@CommunityPostActivity, "일일미션 게시물 작성 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -220,39 +222,6 @@ class CommunityPostActivity: AppCompatActivity() {
         }
     }
 
-    // 투표권 지급 미션 api
-    @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun voteMissionApi(voteCount: Int, type: Int, count: Int) {
-        Log.d("voteMissionApi", "호출 성공")
-        val accessToken = getAccessToken()
-        val params = VoteMission(voteCount = voteCount, type = type)
-        try {
-            if (accessToken != null) {
-                val response: Response<ServerResponse<NumberOfVote>> = withContext(
-                    Dispatchers.IO) {
-                    GiveVoteInstance.giveVoteService().giveVote(accessToken, params)
-                }
-                if (response.isSuccessful) {
-                    val theVotes: ServerResponse<NumberOfVote>? = response.body()
-                    if (theVotes != null) {
-                        Toast.makeText(this, "일일미션 글쓰기 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
-                        Log.d("피드생성 미션", "${theVotes.statusCode} ${theVotes.message}")
-                        handleMission()
-                    } else {
-                        Toast.makeText(this, "일일미션 글쓰기 실패", Toast.LENGTH_SHORT).show()
-                        handleError("Response body is null.")
-                    }
-                } else {
-                    Toast.makeText(this, "일일미션 글쓰기 실패", Toast.LENGTH_SHORT).show()
-                    handleError("피드생성 미션 Error: ${response.code()} - ${response.message()}")
-                }
-            }
-        }
-        catch (e: Exception) {
-            handleError(e.message ?: "Unknown error occurred.")
-        }
-    }
-
     private fun handleMission() {
         VoteMissionDB.init(this)
         val db = VoteMissionDB.getInstance()
@@ -262,6 +231,7 @@ class CommunityPostActivity: AppCompatActivity() {
         editor.putInt("feed", count)
         editor.apply()
     }
+
     private fun handleResponse() {
         Toast.makeText(this, "피드 생성 성공", Toast.LENGTH_SHORT).show()
     }
