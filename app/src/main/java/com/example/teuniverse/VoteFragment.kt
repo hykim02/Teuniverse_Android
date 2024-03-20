@@ -118,6 +118,31 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         return view
     }
 
+    private fun visibleOfView() {
+        for(i in 0 until 3) {
+            // 이미지뷰 가져오기
+            val imageViewId = resources.getIdentifier("raking_${i+1}th_img", "id", requireContext().packageName)
+            val imageView = view?.findViewById<ImageView>(imageViewId)
+
+            // name 텍스트뷰 가져오기
+            val nameTvId = resources.getIdentifier("ranking_${i+1}th_name", "id", requireContext().packageName)
+            val nameTv = view?.findViewById<TextView>(nameTvId)
+
+            // Count 텍스트뷰 가져오기
+            val countTvId = resources.getIdentifier("ranking_${i+1}th_count","id",requireContext().packageName)
+            val countTv = view?.findViewById<TextView>(countTvId)
+
+            // Rank 텍스트뷰 가져오기
+            val rankTvId = resources.getIdentifier("ranking_${i+1}","id",requireContext().packageName)
+            val rankTv = view?.findViewById<TextView>(rankTvId)
+
+            imageView?.visibility = View.GONE
+            nameTv?.visibility = View.GONE
+            countTv?.visibility = View.GONE
+            rankTv?.visibility = View.GONE
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun settingDate() {
         // 현재 월
@@ -368,9 +393,10 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         }
     }
 
-    // 월간 아티스트 & 팬 순위
+    // 월간 아티스트 & 팬 순위 (수정)
     @SuppressLint("DiscouragedApi", "SetTextI18n", "NotifyDataSetChanged")
     private fun handleRankingData(voteCountList: ArtistServerResponse<VoteData>?) {
+        visibleOfView()
         rankingList.clear()
         if (voteCountList != null) {
             // 이미지뷰와 텍스트뷰의 인덱스 반복문으로 순회
@@ -391,6 +417,14 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
                     // Count 텍스트뷰 가져오기
                     val countTvId = resources.getIdentifier("ranking_${i+1}th_count","id",requireContext().packageName)
                     val countTv = view?.findViewById<TextView>(countTvId)
+                    // Rank 텍스트뷰 가져오기
+                    val rankTvId = resources.getIdentifier("ranking_${i+1}","id",requireContext().packageName)
+                    val rankTv = view?.findViewById<TextView>(rankTvId)
+
+                    imageView?.visibility = View.VISIBLE
+                    nameTv?.visibility = View.VISIBLE
+                    countTv?.visibility = View.VISIBLE
+                    rankTv?.visibility = View.VISIBLE
 
                     // 텍스트뷰에 데이터 연결
                     if (nameTv != null) {

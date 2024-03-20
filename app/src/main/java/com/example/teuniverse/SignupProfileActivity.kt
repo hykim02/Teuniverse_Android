@@ -45,6 +45,7 @@ class SignupProfileActivity:AppCompatActivity() {
     private lateinit var name: EditText
     private lateinit var nextBtn: Button
     private lateinit var textCount: TextView
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_profile)
@@ -79,8 +80,8 @@ class SignupProfileActivity:AppCompatActivity() {
 
         // 갤러리에서 이미지를 선택하기 위한 버튼 클릭 이벤트 등록
         galleryBtn.setOnClickListener {
-            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
+            // 외부 저장소 액세스 권한 확인 및 요청
+            checkExternalStorageAccess()
         }
     }
 
@@ -149,7 +150,6 @@ class SignupProfileActivity:AppCompatActivity() {
             editor.putString("thumbnailUrl", null)
             editor.apply()
 
-            checkExternalStorageAccess()
         } ?: Log.e("putImage", "Selected image URI is null")
     }
 
@@ -168,12 +168,19 @@ class SignupProfileActivity:AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     private fun checkExternalStorageAccess() {
         if (Environment.isExternalStorageManager()) {
-            // 파일에 접근하는 코드
+            // 외부 저장소 액세스 권한이 부여되어 있다면 갤러리를 엽니다.
+            openGallery()
         } else {
-            // 사용자에게 외부 저장소 액세스 권한을 요청합니다.
+            // 외부 저장소 액세스 권한이 부여되어 있지 않다면 사용자에게 권한을 요청합니다.
             val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
             startActivity(intent)
         }
+    }
+
+    // 갤러리를 엽니다.
+    private fun openGallery() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
     }
 
     private fun countText(nickName: Any?) {

@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+
     implementation("com.squareup.retrofit2:retrofit:2.9.0") // 레트로핏
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.android.material:material:1.11.0")
@@ -80,7 +81,9 @@ dependencies {
 
     implementation("com.android.identity:identity-credential-android:20231002")
 
-//    implementation("com.navercorp.nid:oauth:5.9.0") // 네이버 로그인 (jdk 11)
+    implementation("com.navercorp.nid:oauth:5.9.0") // 네이버 로그인 (jdk 11)
+    // 로그인한 유저 정보를 가져오는 메서드가 코루틴으로 실행됨
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
     implementation("androidx.constraintlayout:constraintlayout-compose-android:1.1.0-alpha13")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")

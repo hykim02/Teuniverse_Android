@@ -1,23 +1,23 @@
 package com.example.teuniverse
 
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.constraintlayout.core.motion.utils.Utils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.oauth.view.NidOAuthLoginButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.util.Calendar
@@ -25,13 +25,17 @@ import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var naverLogin: NidOAuthLoginButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val kakaoLogin = findViewById<ImageButton>(R.id.kakao_login)
-        val naverLogin = findViewById<ImageButton>(R.id.naver_login)
+        naverLogin = findViewById(R.id.buttonOAuthLoginImg)
 
+        // 초기화
+        NaverIdLoginSDK.initialize(this, getString(R.string.naver_client_id), getString(R.string.naver_client_secret), "Teuniverse")
         initMissionDB()
 
         // 최초 로그인 시 필히 실행(회원가입 테스트용)
@@ -57,11 +61,7 @@ class MainActivity : AppCompatActivity() {
             kakaoCheck()
         }
 
-        naverLogin.setOnClickListener{
-            val intent = Intent(this, SignupProfileActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        naverLoginApi()
     }
 
     private fun kakaoCheck() {
@@ -76,6 +76,30 @@ class MainActivity : AppCompatActivity() {
             Log.d("db확인","비회원")
             kakaoLoginApi()
         }
+    }
+
+    // 네이버 로그인 api
+    private fun naverLoginApi() {
+        Log.d("naverLoginApi", "실행")
+        naverLogin.setOAuthLogin(object : OAuthLoginCallback {
+            override fun onSuccess() {
+                // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
+                val accessToken = NaverIdLoginSDK.getAccessToken()
+
+                // 코루틴을 사용하여 pushToken 함수 호출
+                lifecycleScope.launch {
+                    pushToken(1, accessToken.toString())
+                }
+            }
+            override fun onFailure(httpStatus: Int, message: String) {
+                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                Log.e("naver Api error","errorCode:$errorCode, errorDesc:$errorDescription")
+            }
+            override fun onError(errorCode: Int, message: String) {
+                onFailure(errorCode, message)
+            }
+        })
     }
 
     // 카카오 로그인 api

@@ -67,6 +67,8 @@ class CommunityEditActivity : AppCompatActivity() {
 
             binding.feedId.text = feedId.toString()
             binding.feedId.visibility = View.GONE
+            
+            binding.textCount.text = postSummary?.length.toString()
 
             if (postImg != null) {
                 binding.postImg.visibility = View.VISIBLE

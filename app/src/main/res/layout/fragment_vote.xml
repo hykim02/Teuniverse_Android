@@ -459,7 +459,7 @@
                                 app:layout_constraintStart_toStartOf="parent" />
 
                             <TextView
-                                android:id="@+id/ranking_first"
+                                android:id="@+id/ranking_1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
@@ -472,7 +472,7 @@
                                 app:layout_constraintStart_toStartOf="@+id/raking_1th_img" />
 
                             <TextView
-                                android:id="@+id/ranking_third"
+                                android:id="@+id/ranking_3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
@@ -485,7 +485,7 @@
                                 app:layout_constraintStart_toStartOf="@+id/raking_3th_img" />
 
                             <TextView
-                                android:id="@+id/ranking_second"
+                                android:id="@+id/ranking_2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
