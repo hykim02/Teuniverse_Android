@@ -58,11 +58,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
         // 현재 날짜를 가져와서 해당 년도를 가져옴
         currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        // 초반에 한 번만 호출되도록 조건 설정 필요
-//        callApi(currentYear)
-
         datesWithDots = mutableListOf()
-
         scheduleList = ArrayList()
         // 리사이클러뷰 어댑터 연결
         calendarAdapter = CalendarAdapter(scheduleList)
@@ -83,7 +79,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         motionCalendar()
         findDate()
         setDot(requireContext(), datesWithDots)
-//        makeDot(datesWithDots)
         makeSchedule()
 
         VoteMissionDB.init(requireContext())
@@ -162,7 +157,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     private fun findDate() {
         Log.d("findDate 함수","실행")
         MonthDBManager.initAll(requireContext())
-        for (i in 1..12) {
+        for (i in 6..8) {
             val monthDB = MonthDBManager.getMonthInstance(i)
             val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), i.toString())
 
@@ -189,7 +184,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     // 필터링된 스케줄 타입에 맞는 색상 추가
     private fun setDot(context: Context, datesWithDots: MutableList<CalendarDay>) {
         Log.d("setDot 함수","실행")
-        // 동그라미를 표시하는 데코레이터를 모두 제거
+        // 동그라미를 표시하는 데코레이터를 모두 제거 (중복 방지)
         binding.calendarView.removeDecorators()
         // 오늘 날짜 Decorator 추가
         binding.calendarView.addDecorators(TodayDecorator(requireContext()))
@@ -246,7 +241,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     }
 
     // 스케줄 타입이 true인 것들 중에 일정이 존재하는지
-    private fun isExistSchedule(isTrueList: ArrayList<String>, list: ArrayList<Int>, date: CalendarDay) {
+    private fun isExistSchedule(isTrueList: ArrayList<String>, colorList: ArrayList<Int>, date: CalendarDay) {
         Log.d("isExistSchedule 함수","실행")
         val year = date.year
         val month = date.month + 1 // 월은 0부터 시작하므로 1을 더해줌
@@ -254,7 +249,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         val day2 = date.day
         val formatDay = formatNum(day2)
         val key = "$year-$formatMonth-$formatDay"
-        list.clear()
+        colorList.clear()
 
         MonthDBManager.initMonth(requireContext(), month)
         val monthDB = MonthDBManager.getMonthInstance(month)
@@ -274,11 +269,10 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                     val type = jsonObject.getString("type")
                     if (isTrueList.contains(type)) {
                         Log.d("type 일치", type.toString())
-                        findCorrectColor(type, list)
+                        findCorrectColor(type, colorList)
                     }
-                    Log.d("findCorrectColor","끝")
                 }
-                Log.d("colorList3", list.toString())
+                Log.d("colorList3", colorList.toString())
 
                 // 새로운 리스트를 만들어서 해당 날짜의 일정을 추가
                 val newDatesWithDots = mutableListOf<CalendarDay>()
@@ -286,21 +280,29 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 newDatesWithDots.add(date)
                 Log.d("newDatesWithDots", newDatesWithDots.toString())
 
-                // DayViewDecorator를 사용하여 날짜에 점을 표시합니다.
-                binding.calendarView.addDecorator(object : DayViewDecorator {
-                    override fun shouldDecorate(day: CalendarDay?): Boolean {
-                        // 특정 날짜에만 점을 표시하도록 수정
-                        return newDatesWithDots.contains(day)
-                    }
-
-                    // shouldDecorate의 리턴값이 true이면 실행
-                    override fun decorate(view: DayViewFacade?) {
-                        Log.d("decorate", "실행")
-                        // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
-                        view?.addSpan(MultiColorDotSpan(8f, list, date))
-                    }
-                })
+                val decorator = MultiColorDotDecorator(newDatesWithDots, colorList, date)
+                binding.calendarView.addDecorator(decorator)
             }
+        }
+    }
+
+    // DayViewDecorator 인터페이스를 구현하는 클래스 정의
+    private inner class MultiColorDotDecorator(
+        private val newDatesWithDots: List<CalendarDay>,
+        private val colorList: ArrayList<Int>,
+        private val date: CalendarDay
+    ) : DayViewDecorator {
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            // 특정 날짜에만 점을 표시하도록 수정
+            return newDatesWithDots.contains(day)
+        }
+        override fun decorate(view: DayViewFacade?) {
+            Log.d("decorate", "실행")
+            Log.d("date", date.toString())
+            // 동그라미를 표시하는 데코레이터를 모두 제거 (중복 방지)
+            binding.calendarView.removeDecorators()
+            // 날짜에 표시할 한 줄로 나란히 표시할 4개의 점을 설정
+            view?.addSpan(MultiColorDotSpan(8f, colorList, date))
         }
     }
 
@@ -617,7 +619,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     // CommunicationListener의 메서드 구현
     override fun onPopupCompleteButtonClicked() {
         // 팝업에서 버튼이 클릭되었을 때 실행할 코드
-        Log.d("팝업창 완료","click")
         setDot(requireContext(), datesWithDots)
     }
 

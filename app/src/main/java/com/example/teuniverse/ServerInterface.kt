@@ -260,6 +260,6 @@ interface CheckTokenInterface {
     @Headers("accept: */*",
         "Content-Type: application/json")
     suspend fun checkToken(
-        @Body accessToken: String
+        @Body accessToken: AccessToken
     ): Response<SignUpResponse>
 }

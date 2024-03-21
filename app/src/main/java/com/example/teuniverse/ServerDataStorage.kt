@@ -320,3 +320,8 @@ data class VoteMission(
     val voteCount: Int,
     val type: Int
 )
+
+// 토큰 검증
+data class AccessToken(
+    val accessToken: String
+)

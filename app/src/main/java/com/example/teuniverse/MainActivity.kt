@@ -187,6 +187,7 @@ class MainActivity : AppCompatActivity() {
 
         UserInfoDB.init(this) // 유저 db 초기화 및 생성
         val userEditor = UserInfoDB.getInstance().edit()
+        val userDB = UserInfoDB.getInstance()
         ServiceAccessTokenDB.init(this) // 토큰 db 초기화 및 생성
         val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
 
@@ -212,6 +213,11 @@ class MainActivity : AppCompatActivity() {
                 userEditor.putLong("id", userData.userProfileData.id)
                 userEditor.putString("nickName", userData.userProfileData.nickName)
                 userEditor.putString("thumbnailUrl", userData.userProfileData.thumbnailUrl)
+
+                if(userDB.contains("imageFile")) {
+                    userEditor.putString("imageFile", null)
+                    userEditor.apply()
+                }
 
                 // 회원 가입 진행
                 val intent = Intent(this, SignupProfileActivity::class.java)
@@ -241,7 +247,9 @@ class MainActivity : AppCompatActivity() {
     private suspend fun checkToken() {
         Log.d("checkToken 함수", "실행")
         ServiceAccessTokenDB.init(this)
-        val accessToken = ServiceAccessTokenDB.getInstance().getString("accessToken", "null")
+        val token = ServiceAccessTokenDB.getInstance().getString("accessToken", "null")
+        Log.d("token",token.toString())
+        val accessToken = token?.let { AccessToken(accessToken = it) }
         try {
             // IO 스레드에서 Retrofit 호출 및 코루틴 실행
             // Retrofit을 사용해 서버에서 받아온 응답을 저장하는 변수
@@ -271,10 +279,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkTokenResponse(response: SignUpResponse?) {
         if(response?.success == true) { // 토큰 유효한 경우
+            Log.d("토큰","유효함")
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
             finish()
         } else { // 토큰 만료된 경우
+            Log.d("토큰","만료됨")
             kakaoLogout() // 로그아웃
             kakaoLoginApi() // 재로그인
         }
