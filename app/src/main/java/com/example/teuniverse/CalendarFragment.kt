@@ -34,9 +34,11 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import retrofit2.Response
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 
 class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
@@ -381,7 +383,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                 val typeDB = ScheduleTypeDB.getInstance().all
                 // value가 true인 것이 하나라도 존재한다면
                 if (typeDB.containsValue(true)) {
-                    getScheduleData(dbFileName, isExist, key)
+                    getScheduleData(dbFileName, isExist, key, formatMonth, formatDay)
                 }
             }
         }
@@ -389,7 +391,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
     // DB 파일이 존재할 경우 데이터를 가져오는 작업을 수행
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getScheduleData(dbFileName: String, isExist: Boolean, key: String) {
+    private fun getScheduleData(dbFileName: String, isExist: Boolean, key: String, formatMonth: String, formatDay: String) {
         Log.d("getScheduleData 함수","실행")
         if (isExist) {
             val monthDB = MonthDBManager.getMonthInstance(dbFileName.toInt())
@@ -408,7 +410,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
                     val startAt = setTime(jsonObject.getString("startAt"))
                     val type = jsonObject.getString("type")
 
-                    findCorrectData(content, type, startAt)
+                    findCorrectData(content, type, startAt, formatMonth, formatDay)
                 }
             } else {
                 // 가져온 데이터가 null일 경우에 대한 처리
@@ -422,7 +424,8 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
     }
 
     // 표시된 동그라미와 일치하는 데이터 찾기
-    private fun findCorrectData(content: String, type: String, startAt: String) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun findCorrectData(content: String, type: String, startAt: String, formatMonth: String, formatDay: String) {
         Log.d("findCorrectData 함수","실행")
         ScheduleTypeDB.init(requireContext())
         val typeDB = ScheduleTypeDB.getInstance().all
@@ -436,16 +439,16 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
 
         for (item in typeList.indices) {
             if (typeList[item] == "video" && type == "방송") {
-                val typeImg = setTypeImg(type)
+                val typeImg = setTypeImg(type, formatMonth, formatDay, startAt)
                 scheduleList.add(Event(content, typeImg.toString(), startAt))
             } else if (typeList[item] == "festival" && type == "행사") {
-                val typeImg = setTypeImg(type)
+                val typeImg = setTypeImg(type, formatMonth, formatDay, startAt)
                 scheduleList.add(Event(content, typeImg.toString(), startAt))
             } else if (typeList[item] == "cake" && type == "기념일") {
-                val typeImg = setTypeImg(type)
+                val typeImg = setTypeImg(type, formatMonth, formatDay, startAt)
                 scheduleList.add(Event(content, typeImg.toString(), startAt))
             } else if (typeList[item] == "more" && type == "기타") {
-                val typeImg = setTypeImg(type)
+                val typeImg = setTypeImg(type, formatMonth, formatDay, startAt)
                 scheduleList.add(Event(content, typeImg.toString(), startAt))
             } else {
                 continue
@@ -466,6 +469,15 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         } else {
             binding.calendarRv.visibility = GONE
         }
+    }
+
+    // 날짜 부분만 추출
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setDate(dateTimeString: String): Int {
+        // ISO 8601 형식의 문자열을 LocalDateTime 객체로 변환
+        val dateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME)
+
+        return dateTime.toLocalDate().dayOfMonth //14
     }
 
     // 투표권 개수 가져오기
@@ -524,7 +536,41 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         return "$extractedHour:$extractedMinute"
     }
 
-    private fun setTypeImg(type: String): Int {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setTypeImg(type: String, formatMonth: String, formatDay: String, startAt: String): Int {
+        // 현재 날짜와 시간을 가져오는 Date 객체 생성
+        val currentDate = Date()
+        // SimpleDateFormat을 사용하여 원하는 형식으로 날짜를 출력
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd").format(currentDate).split("-")
+        val localMonth = dateFormat[1] // ex)03
+        val localDay = dateFormat[2]
+
+        val currentTime : Long = System.currentTimeMillis()
+        val localTime = SimpleDateFormat("HH:mm").format(currentTime).split(":") //12:05
+        val serverTime = startAt.split(":")
+
+        if(formatMonth < localMonth) {
+            return returnOffImg(type)
+        } else if(formatMonth > localMonth) {
+            return returnOnImg(type)
+        } else if((formatMonth == localMonth) && (formatDay < localDay)){
+            return returnOffImg(type)
+        } else if((formatMonth == localMonth) && (formatDay > localDay)) {
+            return returnOnImg(type)
+        } else if((formatMonth == localMonth) && (formatDay == localDay)) {
+            // 일정이 진행되기 몇 시간 전
+            if((localTime[0] < serverTime[0]) ||
+                (localTime[0] == serverTime[0]) && (localTime[1] < serverTime[1])) {
+                return returnOnImg(type)
+            } else {
+                return returnOffImg(type)
+            }
+        } else {
+            return returnOnImg(type)
+        }
+    }
+
+    private fun returnOnImg(type: String): Int {
         if (type == "기념일") {
             return R.drawable.cake_on
         } else if (type == "행사") {
@@ -533,6 +579,18 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             return R.drawable.video_on
         } else { // 기타
             return R.drawable.more_on
+        }
+    }
+
+    private fun returnOffImg(type: String): Int {
+        if (type == "기념일") {
+            return R.drawable.cake_off
+        } else if (type == "행사") {
+            return R.drawable.festival_off
+        } else if (type == "방송") {
+            return R.drawable.video_off
+        } else { // 기타
+            return R.drawable.more_off
         }
     }
 
