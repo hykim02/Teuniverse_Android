@@ -462,35 +462,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
         }
     }
 
-    // 피드 삭제 api
-    private suspend fun deleteFeedApi(feedId: String) {
-        Log.d("deleteFeedsApi 함수", "호출 성공")
-        val accessToken = getAccessToken()
-        try {
-            if (accessToken != null) {
-                val response: Response<SignUpResponse> = withContext(
-                    Dispatchers.IO) {
-                    DeleteFeedInstance.deleteFeedService().deleteFeed(feedId, accessToken)
-                }
-                if (response.isSuccessful) {
-                    val theDeleteFeed: SignUpResponse? = response.body()
-                    if (theDeleteFeed != null) {
-                        Toast.makeText(requireContext(), "피드 삭제 성공", Toast.LENGTH_SHORT).show()
-                        Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
-                    } else {
-                        Toast.makeText(requireContext(), "피드 삭제 실패", Toast.LENGTH_SHORT).show()
-                        handleError("Response body is null.")
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "피드 삭제 실패", Toast.LENGTH_SHORT).show()
-                    handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
-                }
-            }
-        }
-        catch (e: Exception) {
-            handleError(e.message ?: "Unknown error occurred.")
-        }
-    }
+
 
     private fun handleMission() {
         VoteMissionDB.init(requireContext())
@@ -512,9 +484,7 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                 R.id.delete -> {
                     // 삭제 버튼 클릭 시 처리
                     Log.d("삭제할 feedID", binding.feedID.text.toString())
-                    lifecycleScope.launch {
-                        deleteFeedApi(binding.feedID.text.toString())
-                    }
+                    showPopupDeleteDialog(binding.feedID.text.toString())
                     true
                 }
                 R.id.edit -> {
@@ -586,5 +556,15 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
                 }
             }
         })
+    }
+
+    private fun showPopupDeleteDialog(feedId: String) {
+        val popupDelete = PopupDelete(requireContext(), feedId)
+
+        popupDelete.show()
+
+        popupDelete.setOnDismissListener {
+            Log.d("popupDelete", "PopupVote dialog dismissed.")
+        }
     }
 }

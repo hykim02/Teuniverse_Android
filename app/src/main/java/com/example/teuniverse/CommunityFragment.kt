@@ -158,7 +158,7 @@ class CommunityFragment : Fragment() {
 
             feedList.add(
                 CommunityPostItem(
-                     feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
+                    feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
         }
         // 어댑터에 데이터가 변경되었음을 알리기
         communityAdapter.notifyDataSetChanged()
@@ -270,5 +270,3 @@ class CommunityFragment : Fragment() {
         }
     }
 }
-
-

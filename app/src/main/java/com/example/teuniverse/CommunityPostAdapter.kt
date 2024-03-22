@@ -30,7 +30,7 @@ import java.io.File
 
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                            private val navController: NavController,
-                           private val lifecycleOwner: LifecycleOwner,):
+                           private val lifecycleOwner: LifecycleOwner):
     RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
@@ -217,9 +217,7 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                 R.id.delete -> {
                     // 삭제 버튼 클릭 시 처리
                     Log.d("삭제할 피드id",item.feedId.toString())
-                    lifecycleOwner.lifecycleScope.launch {
-                        deleteFeedApi(item.feedId.toString(), view)
-                    }
+                    showPopupDeleteDialog(view, item.feedId.toString())
                     true
                 }
                 R.id.edit -> {
@@ -351,5 +349,14 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
             }
         }
         return accessToken
+    }
+
+    private fun showPopupDeleteDialog(view: View, feedId: String) {
+        val popupDelete = PopupDelete(view.context, feedId)
+        popupDelete.show()
+
+        popupDelete.setOnDismissListener {
+            Log.d("popupDelete", "PopupVote dialog dismissed.")
+        }
     }
 }
