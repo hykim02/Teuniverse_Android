@@ -10,8 +10,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.teuniverse.GiveVoteInstance
-import com.example.teuniverse.MainActivity
 import com.example.teuniverse.NumberOfVote
+import com.example.teuniverse.PopupVoteData
+import com.example.teuniverse.PopupVoteInstance
 import com.example.teuniverse.ServerResponse
 import com.example.teuniverse.ServiceAccessTokenDB
 import com.example.teuniverse.VoteMission
@@ -25,11 +26,7 @@ import retrofit2.Response
 
 class PopupVoteCheck(
     context: Context,
-    private val voteCount: String?,
-    private val artistName: String?,
-    private val month: String?,
-    private val rank: String?,
-    private val okCallback: (String) -> Unit,
+    private val voteCount: Int?,
     private val voteMissionListener: VoteMissionListener
 ) : Dialog(context) {
     private lateinit var binding: PopupVoteCheckBinding
@@ -45,18 +42,14 @@ class PopupVoteCheck(
         binding = PopupVoteCheckBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        okCallback("$voteCount $artistName $month $rank")
-        binding.tvVotes.text = voteCount
-        binding.tvMonth.text = month
-        binding.tvArtistName.text = artistName
-        binding.tvVotes2.text = voteCount
-        binding.tvArtistName2.text = artistName
-        binding.tvPercent.text = rank
+        GlobalScope.launch {
+            getPopupVoteApi(voteCount)
+        }
 
         VoteMissionDB.init(context)
         val db = VoteMissionDB.getInstance()
 
-        binding.bntOk.setOnClickListener {
+        binding.okBtn.setOnClickListener {
             val count = db.getInt("vote", 0)
             Log.d("vote", count.toString())
             if(count == 0) {
@@ -96,7 +89,6 @@ class PopupVoteCheck(
                     if (theVotes != null) {
                         val handler = Handler(Looper.getMainLooper())
                         handler.postDelayed({ Toast.makeText(context, "일일미션 투표하기 완료(${count+1}회)", Toast.LENGTH_SHORT).show() }, 0)
-//                        Toast.makeText(context, "일일미션 투표하기 완료(${count+1}회)", Toast.LENGTH_SHORT).show()
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
                         handleResponse(theVotes)
                     } else {
@@ -142,5 +134,46 @@ class PopupVoteCheck(
             }
         }
         return accessToken
+    }
+
+    // voteCount 는 투표할 투표권 개수를 뜻함
+    private suspend fun getPopupVoteApi(voteCount: Int?) {
+        Log.d("getPopupVoteApi 함수", "호출 성공")
+        val accessToken = getAccessToken()
+        val voteRequest = NumberOfVote(voteCount = voteCount)
+        try {
+            if (accessToken != null) {
+                val response: Response<ServerResponse<PopupVoteData>> = withContext(Dispatchers.IO) {
+                    PopupVoteInstance.getCurrentVoteInfoService().getCurrentVoteInfo(accessToken, voteRequest)
+                }
+                if (response.isSuccessful) {
+                    val voteInfo: ServerResponse<PopupVoteData>? = response.body()
+                    if (voteInfo != null) {
+                        Log.d("getPopupVoteApi 함수", "${voteInfo.statusCode} ${voteInfo.message}")
+                        // UI 업데이트는 Main 스레드에서 진행
+                        withContext(Dispatchers.Main) {
+                            handlePopupVote(voteInfo)
+                        }
+                    } else {
+                        handleError("Response body is null.")
+                    }
+                } else {
+                    handleError("getPopupVoteApi 함수 Error: ${response.code()}-${response.message()}")
+                }
+            }
+        }
+        catch (e: Exception) {
+            handleError(e.message ?: "Unknown error occurred.")
+        }
+    }
+
+    private fun handlePopupVote(voteInfo: ServerResponse<PopupVoteData>) {
+        Log.d("handlePopupVote 함수","호출 성공")
+        binding.tvVotes.text = voteInfo.data.voteCount.toString()
+        binding.tvVotes2.text = voteInfo.data.voteCount.toString()
+        binding.tvArtistName.text = voteInfo.data.artistName // 아티스트 이름
+        binding.tvArtistName2.text = voteInfo.data.artistName
+        binding.tvMonth.text = voteInfo.data.month.toString() // 월
+        binding.tvPercent.text = voteInfo.data.rank.toString() + "%" // 비율
     }
 }

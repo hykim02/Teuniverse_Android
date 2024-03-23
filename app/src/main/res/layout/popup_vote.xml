@@ -6,11 +6,47 @@
     android:layout_height="wrap_content"
     android:background="@drawable/custom_ranking_list">
 
+    <TextView
+        android:id="@+id/bnt_voting"
+        android:layout_width="140dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/btn_solid_mp"
+        android:gravity="center"
+        android:text="투표하기"
+        android:textAlignment="center"
+        android:textColor="@color/w"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_revoke"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_revoke"
+        app:layout_constraintTop_toTopOf="@+id/btn_revoke" />
+
+    <TextView
+        android:id="@+id/btn_revoke"
+        android:layout_width="140dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/textview_stroke_mp"
+        android:gravity="center"
+        android:text="취소"
+        android:textAlignment="center"
+        android:textColor="@color/mp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,9 +54,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_artistName"
@@ -44,20 +80,20 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/votes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="3"
-                android:textAlignment="center"
-                android:inputType="text"
                 android:hint="000"
-                android:textColorHint="@color/b"
+                android:inputType="text"
+                android:textAlignment="center"
                 android:textColor="@color/b"
+                android:textColorHint="@color/b"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -69,14 +105,15 @@
                 android:textColor="@color/b"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView13"
@@ -84,183 +121,26 @@
                 android:layout_height="wrap_content"
                 android:text="보유 투표권"
                 android:textColor="@color/b"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/remain_vote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="000"
                 android:layout_marginStart="5dp"
+                android:text="000"
                 android:textColor="@color/mp"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
                 android:text="장"
-                android:layout_marginStart="2dp"
                 android:textColor="@color/mp"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp">
-
-            <TextView
-                android:id="@+id/tv_month"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00"
-                android:textColor="@color/b" />
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="월에"
-                android:layout_marginStart="1dp"
-                android:textColor="@color/b" />
-
-            <TextView
-                android:id="@+id/tv_artistName3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="아티스트 1"
-                android:layout_marginStart="5dp"
-                android:textColor="@color/mp" />
-
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="님께"
-                android:layout_marginStart="1dp"
-                android:textColor="@color/b" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="1dp">
-
-            <TextView
-                android:id="@+id/tv_votes2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0000"
-                android:textColor="@color/b" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="표 투표하셨습니다."
-                android:layout_marginStart="1dp"
-                android:textColor="@color/b" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/tv_artistName2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="아티스트 1"
-                android:textColor="@color/mp" />
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="님께 투표한 이용자 중"
-                android:layout_marginStart="1dp"
-                android:textColor="@color/b" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="2dp">
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="상위"
-                android:textColor="@color/mp"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_percent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00.0%"
-                android:textColor="@color/mp"
-                android:textSize="18sp"
-                android:layout_marginStart="5dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="입니다."
-                android:textColor="@color/b"
-                android:textSize="18sp"
-                android:layout_marginStart="2dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="15dp">
-
-            <TextView
-                android:id="@+id/btn_revoke"
-                android:layout_width="140dp"
-                android:layout_height="30dp"
-                android:background="@drawable/textview_stroke_mp"
-                android:gravity="center"
-                android:text="취소"
-                android:layout_marginEnd="10dp"
-                android:textAlignment="center"
-                android:textColor="@color/mp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/bnt_voting"
-                android:layout_width="140dp"
-                android:layout_height="30dp"
-                android:background="@drawable/btn_solid_mp"
-                android:gravity="center"
-                android:text="투표하기"
-                android:layout_marginRight="10dp"
-                android:textAlignment="center"
-                android:textColor="@color/w"
-                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>

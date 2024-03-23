@@ -152,14 +152,6 @@ data class PopupVoteData(
     val rank: Float
 )
 
-// 회원 가입 완료 요청
-data class SignUpRequest(
-    val id: String,
-    val nickName: String,
-    val thumbnailUrl: String,
-    val favoriteArtistId: String
-)
-
 // 커뮤니티 피드 조회
 data class ArtistProfile(
     val id: Int,

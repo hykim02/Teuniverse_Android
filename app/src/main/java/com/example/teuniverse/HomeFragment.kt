@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -503,7 +502,8 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
     // 투표하기 다이얼로그를 생성
     private fun showPopupVoteDialog() {
-        val popupVote = PopupVote(requireContext()) { /* Callback if needed */ }
+        val remainVote = binding.voteCount.text.toString().toInt()
+        val popupVote = PopupVote(requireContext(), remainVote)
         popupVote.show()
 
         popupVote.setOnDismissListener {

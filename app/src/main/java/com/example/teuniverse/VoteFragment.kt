@@ -46,6 +46,7 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
     private lateinit var profileBtn: ImageButton
     private lateinit var voteMonth: TextView
     private lateinit var voteRemainDay: TextView
+    private lateinit var voteCount: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +77,7 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         voteMission = view.findViewById(R.id.img_btn_vote)
         voteMonth = view.findViewById(R.id.vote_tv_month)
         voteRemainDay = view.findViewById(R.id.vote_tv_lastday)
+        voteCount = view.findViewById(R.id.vote_count)
 
         voteRankAdapter = VoteRankAdapter(rankingList)
 
@@ -481,7 +483,8 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
     // 투표하기 다이얼로그를 생성
     private fun showPopupVoteDialog() {
-        val popupVote = PopupVote(requireContext()) { /* Callback if needed */ }
+        val remainVote = voteCount.text.toString().toInt()
+        val popupVote = PopupVote(requireContext(), remainVote)
         popupVote.show()
 
         popupVote.setOnDismissListener {

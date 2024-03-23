@@ -9,14 +9,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.widget.addTextChangedListener
 import com.example.teuniverse.databinding.PopupVoteBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Response
 
 // 뷰를 띄워야하므로 Dialog 클래스는 context를 인자로 받음
-class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dialog(context), PopupVoteCheck.VoteMissionListener {
+class PopupVote(context: Context, private val remainVote: Int):
+    Dialog(context), PopupVoteCheck.VoteMissionListener {
 
     private lateinit var binding : PopupVoteBinding
 
@@ -32,13 +28,34 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
         binding.votes.addTextChangedListener {
             val votes = binding.votes.text.toString().toIntOrNull()
             Log.d("votes", votes.toString())
+            Log.d("remainVote", remainVote.toString())
 
             if (votes != null) {
-                GlobalScope.launch {
-                    getPopupVoteApi(votes)
+                if((remainVote - votes) <= 0) {
+                    binding.remainVote.text = "0"
+                } else {
+                    binding.remainVote.text = (remainVote - votes).toString()
                 }
             } else {
-                Log.d("Error", "Invalid votes format")
+                binding.remainVote.text = "000"
+            }
+        }
+
+        // 투표 버튼
+        binding.bntVoting.setOnClickListener {
+            val voteCount = binding.votes.text.toString().toInt() // 투표할 개수
+            Log.d("voteCount", voteCount.toString())
+
+            // 투표할 투표권 개수보다 보유투표권이 적을 겨우
+            if(voteCount > remainVote) {
+                val popupVoteFail = PopupVoteFail(context)
+                popupVoteFail.show()
+                dismiss()
+            } else {
+                // 객체 생성(매개변수로 데이터 전달)
+                val popupVoteCheck = PopupVoteCheck(context, voteCount, this@PopupVote)
+                popupVoteCheck.show()
+                dismiss()
             }
         }
 
@@ -56,83 +73,6 @@ class PopupVote(context: Context, private val okCallback: (String) -> Unit): Dia
         // (중요) Dialog는 내부적으로 뒤에 흰 사각형 배경이 존재하므로, 배경을 투명하게 만들지 않으면
         // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // 투표 버튼
-        binding.bntVoting.setOnClickListener {
-            // 객체 생성(매개변수로 데이터 전달)
-            val popupVoteCheck = PopupVoteCheck(
-                context,
-                binding.votes.text.toString(),
-                binding.tvArtistName.text.toString(),
-                binding.tvMonth.text.toString(),
-                binding.tvPercent.text.toString(),
-                okCallback,
-                this@PopupVote
-            )
-            popupVoteCheck.show()
-            dismiss()
-        }
-    }
-
-    // voteCount 는 투표할 투표권 개수를 뜻함
-    private suspend fun getPopupVoteApi(voteCount: Int?) {
-        Log.d("getPopupVoteApi 함수", "호출 성공")
-        val accessToken = getAccessToken()
-        val voteRequest = NumberOfVote(voteCount = voteCount)
-        try {
-            if (accessToken != null) {
-                val response: Response<ServerResponse<PopupVoteData>> = withContext(Dispatchers.IO) {
-                    PopupVoteInstance.getCurrentVoteInfoService().getCurrentVoteInfo(accessToken, voteRequest)
-                }
-                if (response.isSuccessful) {
-                    val voteInfo: ServerResponse<PopupVoteData>? = response.body()
-                    if (voteInfo != null) {
-                        Log.d("getPopupVoteApi 함수", "${voteInfo.statusCode} ${voteInfo.message}")
-                        // UI 업데이트는 Main 스레드에서 진행
-                        withContext(Dispatchers.Main) {
-                            handlePopupVote(voteInfo)
-                        }
-                    } else {
-                        handleError("Response body is null.")
-                    }
-                } else {
-                    handleError("getPopupVoteApi 함수 Error: ${response.code()}-${response.message()}")
-                }
-            }
-        }
-        catch (e: Exception) {
-            handleError(e.message ?: "Unknown error occurred.")
-        }
-    }
-
-    private fun handlePopupVote(voteInfo: ServerResponse<PopupVoteData>) {
-        Log.d("handlePopupVote 함수","호출 성공")
-        binding.tvVotes2.text = voteInfo.data.voteCount.toString()
-        binding.tvArtistName.text = voteInfo.data.artistName // 아티스트 이름
-        binding.tvArtistName2.text = voteInfo.data.artistName
-        binding.tvArtistName3.text = voteInfo.data.artistName
-        binding.remainVote.text = voteInfo.data.remainVoteCount.toString() // 보유 투표권
-        binding.tvMonth.text = voteInfo.data.month.toString() // 월
-        binding.tvPercent.text = voteInfo.data.rank.toString() + "%" // 비율
-    }
-
-    private fun handleError(errorMessage: String) {
-        // 에러를 처리하는 코드
-        Log.d("getPopupVoteApi 함수 Error", errorMessage)
-    }
-
-    // db에서 토큰 가져오기
-    private fun getAccessToken(): String? {
-        ServiceAccessTokenDB.init(context)
-        val serviceTokenDB = ServiceAccessTokenDB.getInstance()
-        var accessToken: String? = null
-
-        for ((key, value) in serviceTokenDB.all) {
-            if (key == "accessToken") {
-                accessToken = "Bearer " + value.toString()
-            }
-        }
-        return accessToken
     }
 
     override fun giveVote(voteCount: Int) {
