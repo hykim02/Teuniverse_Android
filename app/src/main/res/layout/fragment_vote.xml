@@ -421,7 +421,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
                             android:background="@drawable/custom_ranking_list"
-                            android:elevation="1dp">
+                            android:elevation="2dp">
 
                             <ImageView
                                 android:id="@+id/raking_1th_img"

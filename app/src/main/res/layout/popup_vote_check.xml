@@ -54,6 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
+                android:textSize="16sp"
                 android:textColor="@color/b" />
 
             <TextView
@@ -62,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:text="월에"
+                android:textSize="16sp"
                 android:textColor="@color/b" />
 
             <TextView
@@ -70,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="아티스트1"
+                android:textSize="16sp"
                 android:textColor="@color/mp" />
 
             <TextView
@@ -78,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:text="님께"
+                android:textSize="16sp"
                 android:textColor="@color/b" />
         </LinearLayout>
 
@@ -93,6 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0000"
+                android:textSize="16sp"
                 android:textColor="@color/b" />
 
             <TextView
@@ -101,6 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:text="표 투표하셨습니다."
+                android:textSize="16sp"
                 android:textColor="@color/b"
                 tools:layout_editor_absoluteX="176dp"
                 tools:layout_editor_absoluteY="109dp" />
@@ -118,6 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="아티스트1"
+                android:textSize="16sp"
                 android:textColor="@color/mp"
                 tools:layout_editor_absoluteX="84dp"
                 tools:layout_editor_absoluteY="140dp" />
@@ -128,6 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:text="님께 투표한 이용자 중"
+                android:textSize="16sp"
                 android:textColor="@color/b"
                 tools:layout_editor_absoluteX="160dp"
                 tools:layout_editor_absoluteY="140dp" />
@@ -181,16 +189,16 @@
             android:layout_width="290dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="15dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_solid_mp"
             android:gravity="center"
             android:text="확인"
-            android:textSize="16sp"
             android:textAlignment="center"
             android:textColor="@color/w"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>

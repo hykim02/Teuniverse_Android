@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -31,7 +33,7 @@ import java.io.File
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                            private val navController: NavController,
                            private val lifecycleOwner: LifecycleOwner):
-    RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>() {
+    RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>(), PopupDelete.PopupDeleteListener{
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)
@@ -243,36 +245,6 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         view.context.startActivity(intent)
     }
 
-    // 피드 삭제 api
-    private suspend fun deleteFeedApi(feedId: String, view: View) {
-        Log.d("deleteFeedsApi 함수", "호출 성공")
-        val accessToken = getAccessToken(view)
-        try {
-            if (accessToken != null) {
-                val response: Response<SignUpResponse> = withContext(
-                    Dispatchers.IO) {
-                    DeleteFeedInstance.deleteFeedService().deleteFeed(feedId, accessToken)
-                }
-                if (response.isSuccessful) {
-                    val theDeleteFeed: SignUpResponse? = response.body()
-                    if (theDeleteFeed != null) {
-                        Toast.makeText(view.context, "피드 삭제 성공", Toast.LENGTH_SHORT).show()
-                        Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
-                    } else {
-                        Toast.makeText(view.context, "피드 삭제 실패", Toast.LENGTH_SHORT).show()
-                        handleError("Response body is null.")
-                    }
-                } else {
-                    Toast.makeText(view.context, "피드 삭제 실패", Toast.LENGTH_SHORT).show()
-                    handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
-                }
-            }
-        }
-        catch (e: Exception) {
-            handleError(e.message ?: "Unknown error occurred.")
-        }
-    }
-
     // 좋아요 생성
     private suspend fun clickLikeApi(feedId: Int, view: View, holder: CommunityPostViewHolder) {
         Log.d("clickLikeApi 함수", "호출 성공")
@@ -351,12 +323,32 @@ class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
         return accessToken
     }
 
+    // 댓글 삭제 후 댓글 내용 업데이트
+    private fun updateDeleteFeed(feedId: Int) {
+        // 댓글 삭제 후에 데이터 세트에서 해당 댓글을 제거
+        val iterator = itemList.iterator()
+        while (iterator.hasNext()) {
+            val feed = iterator.next()
+
+            if (feed.feedId == feedId) {
+                itemList.remove(feed)
+                break
+            }
+        }
+        // Adapter에게 데이터 변경을 알림
+        notifyDataSetChanged()
+    }
+
     private fun showPopupDeleteDialog(view: View, feedId: String) {
-        val popupDelete = PopupDelete(view.context, feedId)
+        val popupDelete = PopupDelete(view.context, feedId, this)
         popupDelete.show()
 
         popupDelete.setOnDismissListener {
             Log.d("popupDelete", "PopupVote dialog dismissed.")
         }
+    }
+
+    override fun deleteFeed(feedId: Int) {
+        updateDeleteFeed(feedId)
     }
 }

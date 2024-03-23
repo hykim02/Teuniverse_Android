@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
+class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener, PopupDelete.PopupDeleteListener {
 
     private lateinit var binding: FragmentCommunityDetailBinding
     private lateinit var commentAdapter: CommentAdapter
@@ -559,12 +559,19 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener {
     }
 
     private fun showPopupDeleteDialog(feedId: String) {
-        val popupDelete = PopupDelete(requireContext(), feedId)
+        val popupDelete = PopupDelete(requireContext(),feedId, this@CommunityDetailFragment)
 
         popupDelete.show()
 
         popupDelete.setOnDismissListener {
             Log.d("popupDelete", "PopupVote dialog dismissed.")
         }
+    }
+
+    override fun deleteFeed(feedId: Int) {
+        // 프래그먼트 매니저 가져옴
+        val fragmentManager = requireActivity().supportFragmentManager
+        // 백 스택에 이전 상태로 이동
+        fragmentManager.popBackStack()
     }
 }

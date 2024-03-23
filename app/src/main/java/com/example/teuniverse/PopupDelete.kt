@@ -15,8 +15,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-class PopupDelete(context: Context, private val feedId: String): Dialog(context) {
+class PopupDelete(context: Context, private val feedId: String,
+    private val deleteListener: PopupDeleteListener): Dialog(context) {
     private lateinit var binding : PopupDeleteBinding
+
+    interface PopupDeleteListener {
+        fun deleteFeed(feedId: Int)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,7 @@ class PopupDelete(context: Context, private val feedId: String): Dialog(context)
             GlobalScope.launch {
                 deleteFeedApi(feedId)
             }
+            deleteListener.deleteFeed(feedId.toInt())
             dismiss()
         }
     }
