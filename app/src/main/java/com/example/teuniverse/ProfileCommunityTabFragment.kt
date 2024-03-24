@@ -1,5 +1,6 @@
 package com.example.teuniverse
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
@@ -23,9 +24,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class ProfileCommunityTabFragment : Fragment() {
     private lateinit var binding: FragmentProfileCommunityTabBinding
@@ -102,9 +106,9 @@ class ProfileCommunityTabFragment : Fragment() {
                 val feedImg = feed.thumbnailUrl
                 var feedContent = feed.content
                 val heartCount = feed.likeCount
-                val time = "11분 전"
+                val param = dateTimeToMillSec(feed.createdAt)
+                val time = calculationTime(param)
                 val commentCount = feed.commentCount
-                setTime(feed.createdAt)
 
                 feedList.add(
                     CommunityPostItem(
@@ -126,22 +130,49 @@ class ProfileCommunityTabFragment : Fragment() {
         }
     }
 
-    // 일정 시간 추출 함수
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setTime(time: String){
-        // DateTimeFormatter를 사용하여 문자열을 LocalDateTime으로 파싱
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        val dateTime = LocalDateTime.parse(time, formatter)
-        val currentTime : Long = System.currentTimeMillis() // ms로 반환
+    // 서버 시간 가져와서 초로 계산
+    @SuppressLint("SimpleDateFormat")
+    private fun dateTimeToMillSec(serverTime: String): Long{
+        var timeInMilliseconds: Long = 0
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        try {
+            val mDate = sdf.parse(serverTime)
+            timeInMilliseconds = mDate.time
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return timeInMilliseconds
+    }
 
-        // LocalDateTime에서 시간과 분 추출
-        val hour = dateTime.hour.toString()
-        val minute = dateTime.minute.toString()
-        val month = dateTime.monthValue
-        val day = dateTime.dayOfMonth
-        val dataFormat5 = SimpleDateFormat("yyyy-MM-dd-hh:mm:ss")
-        Log.d("서버 시간", "$hour-$minute-$month-$day")
-        Log.d("로컬 시간", dataFormat5.format(currentTime))
+    // 현재 시간 가져온 후 서버 시간과 비교
+    private fun calculationTime(createDateTime: Long): String{
+        val nowDateTime = Calendar.getInstance().timeInMillis //현재 시간 to millisecond
+        var value = ""
+        val differenceValue = nowDateTime - createDateTime //현재 시간 - 비교가 될 시간
+        when {
+            differenceValue < 60000 -> { //59초 보다 적다면
+                value = "방금 전"
+            }
+            differenceValue < 3600000 -> { //59분 보다 적다면
+                value =  TimeUnit.MILLISECONDS.toMinutes(differenceValue).toString() + "분 전"
+            }
+            differenceValue < 86400000 -> { //23시간 보다 적다면
+                value =  TimeUnit.MILLISECONDS.toHours(differenceValue).toString() + "시간 전"
+            }
+            differenceValue <  604800000 -> { //7일 보다 적다면
+                value =  TimeUnit.MILLISECONDS.toDays(differenceValue).toString() + "일 전"
+            }
+            differenceValue < 2419200000 -> { //3주 보다 적다면
+                value =  (TimeUnit.MILLISECONDS.toDays(differenceValue)/7).toString() + "주 전"
+            }
+            differenceValue < 31556952000 -> { //12개월 보다 적다면
+                value =  (TimeUnit.MILLISECONDS.toDays(differenceValue)/30).toString() + "개월 전"
+            }
+            else -> { //그 외
+                value =  (TimeUnit.MILLISECONDS.toDays(differenceValue)/365).toString() + "년 전"
+            }
+        }
+        return value
     }
 
     // db에서 토큰 가져오기

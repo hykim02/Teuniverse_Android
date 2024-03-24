@@ -223,6 +223,7 @@
                 android:background="@drawable/custom_comment_enroll"
                 android:gravity="center"
                 android:text="등록"
+                android:textSize="16sp"
                 android:textAlignment="center"
                 android:textColor="@color/w"
                 app:layout_constraintBottom_toBottomOf="@+id/comment_txt"

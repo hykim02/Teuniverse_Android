@@ -78,6 +78,7 @@ class PopupVoteCheck(
         Log.d("voteMissionApi", "호출 성공")
         val accessToken = getAccessToken()
         val params = VoteMission(voteCount = voteCount, type = type)
+        val handler = Handler(Looper.getMainLooper())
         try {
             if (accessToken != null) {
                 val response: Response<ServerResponse<NumberOfVote>> = withContext(
@@ -87,16 +88,15 @@ class PopupVoteCheck(
                 if (response.isSuccessful) {
                     val theVotes: ServerResponse<NumberOfVote>? = response.body()
                     if (theVotes != null) {
-                        val handler = Handler(Looper.getMainLooper())
                         handler.postDelayed({ Toast.makeText(context, "일일미션 투표하기 완료(${count+1}회)", Toast.LENGTH_SHORT).show() }, 0)
                         Log.d("homeApi", "${theVotes.statusCode} ${theVotes.message}")
                         handleResponse(theVotes)
                     } else {
-                        Toast.makeText(context, "일일미션 투표하기 실패", Toast.LENGTH_SHORT).show()
+                        handler.postDelayed({ Toast.makeText(context, "일일미션 투표하기 실패(${count+1}회)", Toast.LENGTH_SHORT).show() }, 0)
                         handleError("Response body is null.")
                     }
                 } else {
-                    Toast.makeText(context, "일일미션 투표하기 실패", Toast.LENGTH_SHORT).show()
+                    handler.postDelayed({ Toast.makeText(context, "일일미션 투표하기 실패(${count+1}회)", Toast.LENGTH_SHORT).show() }, 0)
                     handleError("homeApi Error: ${response.code()} - ${response.message()}")
                 }
             }

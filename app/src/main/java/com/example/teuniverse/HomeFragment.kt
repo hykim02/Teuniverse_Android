@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.teuniverse.databinding.FragmentHomeBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,6 +40,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
     private lateinit var mediaList: ArrayList<HomeMediaItem>
     private lateinit var communityAdapter: HomeCommunityAdapter
     private lateinit var communityList: ArrayList<HomeCommunityItem>
+    private lateinit var bottomNavView: BottomNavigationView
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +73,7 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         // 미디어 리사이클러뷰 어댑터 연결
         mediaList = ArrayList()
         mediaAdapter = HomeMediaAdapter(mediaList)
+        bottomNavView = requireActivity().findViewById(R.id.bottom_navigation_view)
 
         navigate()
 
@@ -107,38 +110,48 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         // 투표 화면
         binding.toVote.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_vote)
+            // 프로필 탭의 아이디로 선택된 아이템을 변경
+            bottomNavView.selectedItemId = R.id.navigation_vote
         }
         binding.toVoteBtn.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_vote)
+            bottomNavView.selectedItemId = R.id.navigation_vote
         }
 
         // 일정 화면
         binding.toCalendar.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_calendar)
+            bottomNavView.selectedItemId = R.id.navigation_calendar
         }
         binding.toCalendarBtn.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_calendar)
+            bottomNavView.selectedItemId = R.id.navigation_calendar
         }
 
         // 미디어 화면
         binding.toMedia.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_media)
+            bottomNavView.selectedItemId = R.id.navigation_media
         }
         binding.toMediaBtn.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_media)
+            bottomNavView.selectedItemId = R.id.navigation_media
         }
 
         // 커뮤니티 화면
         binding.toCommunity.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_community)
+            bottomNavView.selectedItemId = R.id.navigation_community
         }
         binding.toCommunityBtn.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_community)
+            bottomNavView.selectedItemId = R.id.navigation_community
         }
 
         // 프로필
         binding.imgBtnPerson.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_profileFragment)
+            bottomNavView.selectedItemId = 0
         }
     }
 

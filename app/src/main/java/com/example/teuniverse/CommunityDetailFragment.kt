@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -569,9 +570,6 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener, 
     }
 
     override fun deleteFeed(feedId: Int) {
-        // 프래그먼트 매니저 가져옴
-        val fragmentManager = requireActivity().supportFragmentManager
-        // 백 스택에 이전 상태로 이동
-        fragmentManager.popBackStack()
+        findNavController().navigate(R.id.action_navigation_communityDetail_to_navigation_community)
     }
 }

@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -57,6 +59,7 @@ class PopupDelete(context: Context, private val feedId: String,
     private suspend fun deleteFeedApi(feedId: String) {
         Log.d("deleteFeedsApi 함수", "호출 성공")
         val accessToken = getAccessToken()
+        val handler = Handler(Looper.getMainLooper())
         try {
             if (accessToken != null) {
                 val response: Response<SignUpResponse> = withContext(
@@ -66,14 +69,14 @@ class PopupDelete(context: Context, private val feedId: String,
                 if (response.isSuccessful) {
                     val theDeleteFeed: SignUpResponse? = response.body()
                     if (theDeleteFeed != null) {
-
                         Log.d("deleteFeedApi 함수 response", "${theDeleteFeed.statusCode} ${theDeleteFeed.message}")
+                        handler.postDelayed({ Toast.makeText(context, "피드 삭제 성공", Toast.LENGTH_SHORT).show() }, 0)
                     } else {
-                        Toast.makeText(context, "피드 삭제 실패", Toast.LENGTH_SHORT).show()
+                        handler.postDelayed({ Toast.makeText(context, "피드 삭제 실패", Toast.LENGTH_SHORT).show() }, 0)
                         handleError("Response body is null.")
                     }
                 } else {
-                    Toast.makeText(context, "피드 삭제 실패", Toast.LENGTH_SHORT).show()
+                    handler.postDelayed({ Toast.makeText(context, "피드 삭제 실패", Toast.LENGTH_SHORT).show() }, 0)
                     handleError("deleteFeedApi 함수 Error: ${response.code()} - ${response.message()}")
                 }
             }
