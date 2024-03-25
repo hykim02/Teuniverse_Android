@@ -488,6 +488,17 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/noCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="작성한 글이 없어요"
+                    android:layout_gravity="center"
+                    android:textColor="@color/dg"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_home_community"
                     android:layout_width="wrap_content"
@@ -540,6 +551,17 @@
                         android:src="@drawable/right_arrow" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/noMedia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="올라온 영상이 없어요"
+                    android:textColor="@color/dg"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_home_media"

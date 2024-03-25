@@ -528,8 +528,6 @@ class SignupSelectArtistActivity:AppCompatActivity() {
                 if (db.containsKey("edit")) {
                     if (db.getValue("edit") == 1) {
                         continueWithImageFileAccess()
-                        editor.putInt("edit", 0)
-                        editor.apply()
                     } else {
                         val intent = Intent(this, SignupEndActivity::class.java)
                         startActivity(intent)

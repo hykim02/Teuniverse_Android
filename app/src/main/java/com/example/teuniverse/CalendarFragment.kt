@@ -471,15 +471,6 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
         }
     }
 
-    // 날짜 부분만 추출
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setDate(dateTimeString: String): Int {
-        // ISO 8601 형식의 문자열을 LocalDateTime 객체로 변환
-        val dateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME)
-
-        return dateTime.toLocalDate().dayOfMonth //14
-    }
-
     // 투표권 개수 가져오기
     private suspend fun getNumberOfVotes() {
         Log.d("getNumberOfVotes 함수", "호출 성공")

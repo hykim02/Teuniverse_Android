@@ -19,11 +19,8 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class ProfileUserTabFragment : Fragment() {
-    private lateinit var binding: FragmentProfileUserTabBinding
 
-    companion object {
-        private const val PICK_IMAGE_REQUEST_CODE = 100
-    }
+    private lateinit var binding: FragmentProfileUserTabBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

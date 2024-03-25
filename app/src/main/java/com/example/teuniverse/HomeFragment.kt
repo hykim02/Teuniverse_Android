@@ -31,7 +31,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
+class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var calendarAdapter: CalendarAdapter
@@ -76,13 +76,11 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         bottomNavView = requireActivity().findViewById(R.id.bottom_navigation_view)
 
         navigate()
+        setSchedule() // 일정 데이터
 
         VoteMissionDB.init(requireContext())
         val db = VoteMissionDB.getInstance()
         val count = db.getInt("attend", 0)
-        Log.d("attend", count.toString())
-
-        callApi(2024) // 스케줄 데이터 db에 저장
 
         lifecycleScope.launch {
             homeApi()
@@ -96,8 +94,44 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         return binding.root
     }
 
+    private fun setSchedule() {
+        Log.d("setSchedule","실행")
+        UserInfoDB.init(requireContext())
+        val db = UserInfoDB.getInstance().all
+        val editor = UserInfoDB.getInstance().edit()
+        val hasChanged = db.getValue("edit")
+        Log.d("hasChanged", hasChanged.toString())
+
+        if(hasChanged == 1) {
+            Log.d("hasChanged","1 실행")
+            clearSchedule()
+            callSchedule(2024)
+            editor.putInt("edit", 0)
+            editor.apply()
+        } else {
+            Log.d("hasChanged","0 실행")
+            callSchedule(2024)
+        }
+    }
+
+    // 일정 초기화
+    private fun clearSchedule() {
+        Log.d("일정", "초기화")
+        for(i in 1 .. 12) {
+            val isExist = MonthDBManager.doesSharedPreferencesFileExist(requireContext(), i.toString())
+            if(isExist) {
+                Log.d("${i}월", "초기화")
+                val editor = MonthDBManager.getMonthInstance(i).edit()
+                editor.clear()
+                editor.apply()
+            } else {
+                continue
+            }
+        }
+    }
+
     // 1-12월까지 api 모두 호출
-    private fun callApi(year: Int) {
+    private fun callSchedule(year: Int) {
         for (i in 1..12) {
             lifecycleScope.launch {
                 scheduleApi(year, i)
@@ -296,36 +330,54 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
 
         // 커뮤니티
         val communities = response.data.communities
+        binding.noCommunity.visibility = View.GONE
         communityList.clear()
-        for (i in communities.indices) {
-            val id = communities[i].id
-            val content = getContextPreview(communities[i].content)
-            val thumbnailUrl = communities[i].thumbnailUrl
 
-            communityList.add(HomeCommunityItem(id, content, thumbnailUrl))
-            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            binding.rvHomeCommunity.adapter = communityAdapter
-            binding.rvHomeCommunity.layoutManager = layoutManager
+        if(communities.isEmpty()) {
+            binding.noCommunity.visibility = View.VISIBLE
+            binding.rvHomeCommunity.visibility = View.GONE
+        } else {
+            binding.rvHomeCommunity.visibility = View.VISIBLE
 
-            // 어댑터에 데이터가 변경되었음을 알리기
-            communityAdapter.notifyDataSetChanged()
+            for (i in communities.indices) {
+                val id = communities[i].id
+                val content = getContextPreview(communities[i].content)
+                val thumbnailUrl = communities[i].thumbnailUrl
+
+                communityList.add(HomeCommunityItem(id, content, thumbnailUrl))
+                val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                binding.rvHomeCommunity.adapter = communityAdapter
+                binding.rvHomeCommunity.layoutManager = layoutManager
+
+                // 어댑터에 데이터가 변경되었음을 알리기
+                communityAdapter.notifyDataSetChanged()
+            }
         }
 
 
         // 미디어
         val medias = response.data.medias
+        binding.noMedia.visibility = View.GONE
         mediaList.clear()
-        for (i in medias.indices) {
-            val thumbnailUrl = medias[i].thumbnailUrl
-            val url = medias[i].url
 
-            mediaList.add(HomeMediaItem(url, thumbnailUrl))
-            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            binding.rvHomeMedia.adapter = mediaAdapter
-            binding.rvHomeMedia.layoutManager = layoutManager
+        if(medias.isEmpty()) {
+            binding.noMedia.visibility = View.VISIBLE
+            binding.rvHomeMedia.visibility = View.GONE
+        } else {
+            binding.rvHomeMedia.visibility = View.VISIBLE
 
-            // 어댑터에 데이터가 변경되었음을 알리기
-            mediaAdapter.notifyDataSetChanged()
+            for (i in medias.indices) {
+                val thumbnailUrl = medias[i].thumbnailUrl
+                val url = medias[i].url
+
+                mediaList.add(HomeMediaItem(url, thumbnailUrl))
+                val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                binding.rvHomeMedia.adapter = mediaAdapter
+                binding.rvHomeMedia.layoutManager = layoutManager
+
+                // 어댑터에 데이터가 변경되었음을 알리기
+                mediaAdapter.notifyDataSetChanged()
+            }
         }
     }
 
@@ -523,10 +575,4 @@ class HomeFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
             Log.d("VoteFragment", "PopupVote dialog dismissed.")
         }
     }
-
-    // 인터페이스 구현
-    override fun giveVote(voteCount: Int) {
-        binding.voteCount.text = voteCount.toString()
-    }
-
 }

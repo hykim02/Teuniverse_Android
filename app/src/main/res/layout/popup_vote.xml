@@ -88,14 +88,15 @@
                 android:id="@+id/votes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:ems="3"
                 android:hint="000"
-                android:inputType="text"
+                android:textStyle="bold"
                 android:textAlignment="center"
-                android:textColor="@color/b"
                 android:textColorHint="@color/b"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textColor="@color/b"
+                android:inputType="number" />
 
             <TextView
                 android:id="@+id/textView9"

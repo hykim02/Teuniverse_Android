@@ -12,7 +12,7 @@ import com.example.teuniverse.databinding.PopupVoteBinding
 
 // 뷰를 띄워야하므로 Dialog 클래스는 context를 인자로 받음
 class PopupVote(context: Context, private val remainVote: Int):
-    Dialog(context), PopupVoteCheck.VoteMissionListener {
+    Dialog(context) {
 
     private lateinit var binding : PopupVoteBinding
 
@@ -53,7 +53,7 @@ class PopupVote(context: Context, private val remainVote: Int):
                 dismiss()
             } else {
                 // 객체 생성(매개변수로 데이터 전달)
-                val popupVoteCheck = PopupVoteCheck(context, voteCount, this@PopupVote)
+                val popupVoteCheck = PopupVoteCheck(context, voteCount)
                 popupVoteCheck.show()
                 dismiss()
             }
@@ -73,9 +73,5 @@ class PopupVote(context: Context, private val remainVote: Int):
         // (중요) Dialog는 내부적으로 뒤에 흰 사각형 배경이 존재하므로, 배경을 투명하게 만들지 않으면
         // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    }
-
-    override fun giveVote(voteCount: Int) {
-        Log.d("PopupVote", "giveVote override")
     }
 }

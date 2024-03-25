@@ -33,7 +33,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.util.Calendar
 
-class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
+class VoteFragment : Fragment() {
     private lateinit var fanTab: TextView
     private lateinit var fanAll: TextView
     private lateinit var fanBest: TextView
@@ -499,10 +499,5 @@ class VoteFragment : Fragment(), PopupVoteCheck.VoteMissionListener {
         popupVoteMission.setOnDismissListener {
             Log.d("popupVoteMission", "PopupVote dialog dismissed.")
         }
-    }
-
-    // 인터페이스 구현
-    override fun giveVote(voteCount: Int) {
-        numberOfVote.text = voteCount.toString()
     }
 }

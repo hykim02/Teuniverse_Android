@@ -463,8 +463,6 @@ class CommunityDetailFragment : Fragment(), CommentAdapter.OnEditClickListener, 
         }
     }
 
-
-
     private fun handleMission() {
         VoteMissionDB.init(requireContext())
         val db = VoteMissionDB.getInstance()

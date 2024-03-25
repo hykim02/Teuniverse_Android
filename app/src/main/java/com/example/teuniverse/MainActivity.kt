@@ -38,24 +38,6 @@ class MainActivity : AppCompatActivity() {
         NaverIdLoginSDK.initialize(this, getString(R.string.naver_client_id), getString(R.string.naver_client_secret), "Teuniverse")
         initMissionDB()
 
-        // 최초 로그인 시 필히 실행(회원가입 테스트용)
-//        ServiceAccessTokenDB.init(this)
-//        val tokenEditor = ServiceAccessTokenDB.getInstance().edit()
-//        UserInfoDB.init(this)
-//        val userEditor = UserInfoDB.getInstance().edit()
-//
-//        tokenEditor.clear()
-//        tokenEditor.apply()
-//        userEditor.clear()
-//        userEditor.apply()
-
-//        ScheduleTypeDB.init(this)
-//        val editor = ScheduleTypeDB.getInstance().edit()
-//        editor.clear()
-//        editor.apply()
-
-//        kakaoUnlink()
-
         // 기존회원인지 여부확인하는 조건 다시 설정하기
         kakaoLogin.setOnClickListener{
             kakaoCheck()

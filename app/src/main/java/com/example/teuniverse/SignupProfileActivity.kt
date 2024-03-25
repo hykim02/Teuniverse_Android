@@ -57,6 +57,11 @@ class SignupProfileActivity:AppCompatActivity() {
         name = findViewById(R.id.set_name)
         textCount = findViewById(R.id.text_count)
 
+        UserInfoDB.init(this)
+        val editor = UserInfoDB.getInstance().edit()
+        editor.putInt("edit", 0)
+        editor.apply()
+
         setInitialProfile()
 
         backBtn.setOnClickListener{

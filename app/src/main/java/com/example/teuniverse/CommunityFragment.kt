@@ -45,6 +45,7 @@ class CommunityFragment : Fragment() {
     private lateinit var postBtn: FloatingActionButton
     private lateinit var profileBtn: ImageButton
     private lateinit var voteBtn: ImageButton
+    private lateinit var noPost: TextView
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,7 @@ class CommunityFragment : Fragment() {
         numberOfVote = view.findViewById(R.id.vote_count)
         postBtn = view.findViewById(R.id.add_btn)
         voteBtn = view.findViewById(R.id.img_btn_vote)
+        noPost = view.findViewById(R.id.noPost)
 
         // 어댑터에 NavController 전달
         val navController = findNavController()
@@ -130,7 +132,6 @@ class CommunityFragment : Fragment() {
         val artistProfileData = theFeeds.data.artistProfile
         val feedsData = theFeeds.data.feeds
         val dataFormat5 = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss")
-        val localTime = dataFormat5.format(System.currentTimeMillis())
 
         // 아티스트 데이터
         Glide.with(this)
@@ -139,29 +140,37 @@ class CommunityFragment : Fragment() {
             .into(artistProfile)
 
         artistName.text = artistProfileData.name
+        noPost.visibility = View.GONE
 
-        for (i in feedsData.indices) {
-            val feed = feedsData[i]
-            // user
-            val userProfileData = feed.userProfile
-            val userName = userProfileData.nickName
-            val userImg = userProfileData.thumbnailUrl
-            // feed
-            val feedId = feed.id
-            val feedImg = feed.thumbnailUrl
-            var feedContent = feed.content
-            val heartCount = feed.likeCount
-            val param = dateTimeToMillSec(feed.createdAt)
-            val time = calculationTime(param)
-            val commentCount = feed.commentCount
-            Log.d("게시물 시간", time)
+        if(feedsData.isEmpty()) {
+            noPost.visibility = View.VISIBLE
+            rvCommunity.visibility = View.GONE
+        } else {
+            rvCommunity.visibility = View.VISIBLE
 
-            feedList.add(
-                CommunityPostItem(
-                    feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
+            for (i in feedsData.indices) {
+                val feed = feedsData[i]
+                // user
+                val userProfileData = feed.userProfile
+                val userName = userProfileData.nickName
+                val userImg = userProfileData.thumbnailUrl
+                // feed
+                val feedId = feed.id
+                val feedImg = feed.thumbnailUrl
+                var feedContent = feed.content
+                val heartCount = feed.likeCount
+                val param = dateTimeToMillSec(feed.createdAt)
+                val time = calculationTime(param)
+                val commentCount = feed.commentCount
+                Log.d("게시물 시간", time)
+
+                feedList.add(
+                    CommunityPostItem(
+                        feedId, userImg, userName,time,feedImg,feedContent,heartCount,commentCount))
+            }
+            // 어댑터에 데이터가 변경되었음을 알리기
+            communityAdapter.notifyDataSetChanged()
         }
-        // 어댑터에 데이터가 변경되었음을 알리기
-        communityAdapter.notifyDataSetChanged()
     }
 
     // 서버 시간 가져와서 초로 계산
