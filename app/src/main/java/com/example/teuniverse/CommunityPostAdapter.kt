@@ -34,7 +34,7 @@ import java.io.File
 class CommunityPostAdapter(private val itemList: ArrayList<CommunityPostItem>,
                            private val navController: NavController,
                            private val lifecycleOwner: LifecycleOwner):
-    RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>(), PopupDelete.PopupDeleteListener{
+    RecyclerView.Adapter<CommunityPostAdapter.CommunityPostViewHolder>(), PopupDelete.PopupDeleteListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityPostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.community_rv_item, parent, false)

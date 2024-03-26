@@ -198,16 +198,23 @@ class SignupSelectArtistActivity:AppCompatActivity() {
 
         backBtn.setOnClickListener {
             UserInfoDB.init(this)
+            val isExist = UserInfoDB.doesFileExist(this)
             val db = UserInfoDB.getInstance().all
             val editor = UserInfoDB.getInstance().edit()
 
-            if (db.getValue("edit") == 1) {
-                val menuActivityIntent = Intent(this, MenuActivity::class.java)
-                // Intent에 프래그먼트로 이동할 것임을 표시
-                menuActivityIntent.putExtra("goToProfileFragment", true)
-                startActivity(menuActivityIntent)
-                editor.putInt("edit", 0)
-                editor.apply()
+            if(db.containsKey("edit")) {
+                if (db.getValue("edit") == 1) {
+                    val menuActivityIntent = Intent(this, MenuActivity::class.java)
+                    // Intent에 프래그먼트로 이동할 것임을 표시
+                    menuActivityIntent.putExtra("goToProfileFragment", true)
+                    startActivity(menuActivityIntent)
+                    editor.putInt("edit", 0)
+                    editor.apply()
+                } else {
+                    val intent = Intent(this, SignupApprovalActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             } else {
                 val intent = Intent(this, SignupApprovalActivity::class.java)
                 startActivity(intent)
@@ -522,7 +529,7 @@ class SignupSelectArtistActivity:AppCompatActivity() {
             nextBtn.setBackgroundColor(Color.parseColor("#5C21A4"))
             UserInfoDB.init(this)
             val db = UserInfoDB.getInstance().all
-            val editor = UserInfoDB.getInstance().edit()
+            UserInfoDB.getInstance().edit()
 
             nextBtn.setOnClickListener {
                 if (db.containsKey("edit")) {

@@ -308,10 +308,7 @@ class CalendarFragment : Fragment(), PopupScheduleType.CommunicationListener {
             // 특정 날짜에만 데코레이터 적용
             return date == day
         }
-
         override fun decorate(view: DayViewFacade?) {
-            Log.d("decorate", "실행")
-            Log.d("date", date.toString())
             // 해당 날짜에 점을 표시하는 데코레이터 설정
             view?.addSpan(MultiColorDotSpan(8f, colorList))
         }

@@ -57,25 +57,27 @@ class SignupProfileActivity:AppCompatActivity() {
         name = findViewById(R.id.set_name)
         textCount = findViewById(R.id.text_count)
 
-        UserInfoDB.init(this)
-        val editor = UserInfoDB.getInstance().edit()
-        editor.putInt("edit", 0)
-        editor.apply()
-
         setInitialProfile()
 
         backBtn.setOnClickListener{
             UserInfoDB.init(this)
+            val isExist = UserInfoDB.doesFileExist(this)
             val db = UserInfoDB.getInstance().all
             val editor = UserInfoDB.getInstance().edit()
 
-            if (db.getValue("edit") == 1) {
-                val menuActivityIntent = Intent(this, MenuActivity::class.java)
-                // Intent에 프래그먼트로 이동할 것임을 표시
-                menuActivityIntent.putExtra("goToProfileFragment", true)
-                startActivity(menuActivityIntent)
-                editor.putInt("edit", 0)
-                editor.apply()
+            if(isExist && db.containsKey("edit")) {
+                if (db.getValue("edit") == 1) {
+                    val menuActivityIntent = Intent(this, MenuActivity::class.java)
+                    // Intent에 프래그먼트로 이동할 것임을 표시
+                    menuActivityIntent.putExtra("goToProfileFragment", true)
+                    startActivity(menuActivityIntent)
+                    editor.putInt("edit", 0)
+                    editor.apply()
+                } else {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             } else {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
