@@ -24,6 +24,15 @@ class PopupVote(context: Context, private val remainVote: Int):
 
         initViews()
 
+        UserInfoDB.init(context)
+        SignupSelectArtistActivity.SelectArtistDB.init(context)
+        val artistDB = SignupSelectArtistActivity.SelectArtistDB.getInstance().all
+        val db = UserInfoDB.getInstance().all
+        val artistID = db.getValue("favoriteArtistId")
+        val key = "artist$artistID.name"
+        val artistName = artistDB.getValue(key)
+        binding.tvArtistName.text = artistName.toString()
+
         // editText의 변화가 감지되면
         binding.votes.addTextChangedListener {
             val votes = binding.votes.text.toString().toIntOrNull()

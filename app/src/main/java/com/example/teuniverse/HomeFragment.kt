@@ -99,17 +99,24 @@ class HomeFragment : Fragment() {
         UserInfoDB.init(requireContext())
         val db = UserInfoDB.getInstance().all
         val editor = UserInfoDB.getInstance().edit()
-        val hasChanged = db.getValue("edit")
-        Log.d("hasChanged", hasChanged.toString())
 
-        if(hasChanged == 1) {
-            Log.d("hasChanged","1 실행")
-            clearSchedule()
-            callSchedule(2024)
-            editor.putInt("edit", 0)
-            editor.apply()
+        if(db.containsKey("edit")) {
+            Log.d("key edit","존재")
+            val hasChanged = db.getValue("edit")
+            Log.d("hasChanged", hasChanged.toString())
+
+            if(hasChanged == 1) {
+                Log.d("hasChanged","1 실행")
+                clearSchedule()
+                callSchedule(2024)
+                editor.putInt("edit", 0)
+                editor.apply()
+            } else {
+                Log.d("hasChanged","0 실행")
+                callSchedule(2024)
+            }
         } else {
-            Log.d("hasChanged","0 실행")
+            Log.d("key edit","없음")
             callSchedule(2024)
         }
     }
