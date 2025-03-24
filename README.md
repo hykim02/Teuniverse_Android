@@ -9,7 +9,8 @@
 
 1. 로그인&회원가입 (카카오/네이버)
 
-![회원가입](https://github.com/user-attachments/assets/676864e3-dbe5-41a7-9c71-a376ed69f5b7){: width="30%" height="70%"}
+![회원가입](https://github.com/user-attachments/assets/676864e3-dbe5-41a7-9c71-a376ed69f5b7)
+<img src="https://github.com/user-attachments/assets/676864e3-dbe5-41a7-9c71-a376ed69f5b7" width="650" height="400" />
 
 
 2. 아티스트 투표 기능
