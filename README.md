@@ -39,6 +39,6 @@
 
 6. 마이페이지
 
-![마이페이지](https://github.com/user-attachments/assets/02c554d0-eff5-458b-868f-8654a3fee3bb){: width="30%" height="70%"}
+<img src="https://github.com/user-attachments/assets/02c554d0-eff5-458b-868f-8654a3fee3bb" width="200" height="400" />
 
 
