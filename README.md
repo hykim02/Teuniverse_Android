@@ -14,23 +14,21 @@
 
 2. 아티스트 투표 기능
 
-![투표](https://github.com/user-attachments/assets/1d5f7e50-bf44-422c-a60f-b35e36b58599){: width="30%" height="70%"}
+<img src="https://github.com/user-attachments/assets/1d5f7e50-bf44-422c-a60f-b35e36b58599" width="200" height="400" />
 
 
 3. 커뮤니티 기능
 
-![커뮤니티](https://github.com/user-attachments/assets/ff05ca7b-1423-47fc-b8f2-b8c4b31a143a){: width="30%" height="70%"}
-
+<img src="https://github.com/user-attachments/assets/ff05ca7b-1423-47fc-b8f2-b8c4b31a143a" width="200" height="400" />
 
 4. 아티스트 관련 미디어 기능
 
-![미디어](https://github.com/user-attachments/assets/cd8d7015-0b92-4673-bc52-6f0fcb1a1ae4){: width="30%" height="70%"}
-
+<img src="https://github.com/user-attachments/assets/cd8d7015-0b92-4673-bc52-6f0fcb1a1ae4" width="200" height="400" />
 
 5. 아티스트 일정 확인 기능
 
-![일정](https://github.com/user-attachments/assets/9bcfc594-04cb-48a7-9e02-63055abe74fd){: width="30%" height="70%"}
-능
+<img src="https://github.com/user-attachments/assets/9bcfc594-04cb-48a7-9e02-63055abe74fd" width="200" height="400" />
+
 
 
 6. 마이페이지
